@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimary">#12422A</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+
+    <!-- Custom AgriCircle Colors -->
+    <color name="colorAgricircle">#12422A</color>
+    <color name="colorButton">#FD9209</color>
+    <color name="colorWhite">#FFFFFF</color>
+
 </resources>
