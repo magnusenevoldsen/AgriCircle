@@ -5,22 +5,22 @@
 
     <item
         android:id="@+id/navigation_map"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/ic_map_white_24dp"
         android:title="@string/title_map" />
 
     <item
         android:id="@+id/navigation_sampling"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/ic_timeline_white_24dp"
         android:title="@string/title_sampling" />
 
     <item
         android:id="@+id/navigation_workspace"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/ic_assignment_white_24dp"
         android:title="@string/title_workspace" />
 
     <item
         android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/ic_settings_white_24dp"
         android:title="@string/title_settings" />
 
 </menu>

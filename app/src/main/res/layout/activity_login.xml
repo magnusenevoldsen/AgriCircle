@@ -120,7 +120,7 @@
         android:layout_width="331dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/colorButton"
+        android:backgroundTint="@color/colorOrange"
         android:text="@string/login_seperated"
         app:cornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"

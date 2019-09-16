@@ -15,7 +15,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
-        navView.labelVisibilityMode = LABEL_VISIBILITY_LABELED
+        navView.labelVisibilityMode = LABEL_VISIBILITY_LABELED //Show labels on all items in navigation view
+
+
+        supportActionBar?.hide() //Hide the action bar
 
         
 
