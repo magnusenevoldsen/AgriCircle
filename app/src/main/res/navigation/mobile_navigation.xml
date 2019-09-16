@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_map">
+
+    <fragment
+        android:id="@+id/navigation_map"
+        android:name="com.magnusenevoldsen.agricircle.ui.map.MapFragment"
+        android:label="@string/title_map"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_sampling"
+        android:name="com.magnusenevoldsen.agricircle.ui.sampling.SamplingFragment"
+        android:label="@string/title_sampling"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/navigation_workspace"
+        android:name="com.magnusenevoldsen.agricircle.ui.workspace.WorkspaceFragment"
+        android:label="@string/title_workspace"
+        tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.magnusenevoldsen.agricircle.ui.map.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation>
