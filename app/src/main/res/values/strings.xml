@@ -14,13 +14,24 @@
 
 
 
-    <!-- Navigation Screen -->
+    <!-- Navigation screen -->
     <string name="title_activity_map">MapActivity</string>
     <string name="title_map">Map</string>
     <string name="title_sampling">Sampling</string>
     <string name="title_workspace">Workspace</string>
     <string name="title_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
+
+
+
+    <!-- Settings screen -->
+    <string name="log_out">Log out</string>
+    <string name="unit_preferences">Unit Preferences</string>
+    <string name="more_settings">More settings</string>
+    <string name="john_doe">John Doe</string>
+    <string name="map_preferences">Map preferences</string>
+    <string name="some_setting">Some setting</string>
+    <string name="userimage">UserImage</string>
 
 
 

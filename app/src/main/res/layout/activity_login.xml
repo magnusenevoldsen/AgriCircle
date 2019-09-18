@@ -39,32 +39,32 @@
         android:id="@+id/loginLogoImageView"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:contentDescription="@string/logo"
         android:src="@drawable/agricircle_logo_temporary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/usernameEditText"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/usernameEditText"
         android:layout_width="0dp"
         android:layout_height="62dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="32dp"
+
+
         android:hint="@string/login"
         android:textColorHint="@color/colorWhite"
-
-
         app:boxBackgroundColor="@color/colorAgricircle"
+
+
         app:boxStrokeColor="@color/colorWhite"
         app:hintTextColor="@color/colorWhite"
-
-
         app:layout_constraintBottom_toTopOf="@+id/passwordEditText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:passwordToggleTint="#00FFFFFF">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -82,24 +82,20 @@
         android:id="@+id/passwordEditText"
         android:layout_width="0dp"
         android:layout_height="62dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="16dp"
         android:hint="@string/password"
+
+
         android:textColorHint="@color/colorWhite"
-
-
-
-
         app:boxBackgroundColor="@color/colorAgricircle"
         app:boxStrokeColor="@color/colorWhite"
+
+
         app:hintTextColor="@color/colorWhite"
-
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="parent"
         app:passwordToggleTint="#00FFFFFF">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -113,20 +109,20 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/loginButton"
         style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="331dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginTop="32dp"
         android:backgroundTint="@color/colorOrange"
         android:text="@string/login_seperated"
-        app:cornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        app:cornerRadius="@dimen/button_corner_radius"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
-
 
     <TextView
         android:id="@+id/createAccountTextView"
@@ -136,22 +132,41 @@
         android:text="@string/dont_have_an_account"
         android:textColor="@color/colorWhite"
         app:layout_constraintBottom_toTopOf="@+id/signUpButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/loginButton"
+        app:layout_constraintVertical_bias="1.0" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signUpButton"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/small_button_height"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/colorGrey"
+        android:backgroundTint="@color/colorLightGrey"
         android:text="@string/sign_up"
-        app:cornerRadius="20dp"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textColor="@color/colorAgricircle"
+        app:cornerRadius="@dimen/small_button_corner_radius"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:strokeColor="@color/colorGrey" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
