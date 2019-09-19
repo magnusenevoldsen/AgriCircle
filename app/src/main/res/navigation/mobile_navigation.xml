@@ -9,19 +9,19 @@
         android:id="@+id/navigation_map"
         android:name="com.magnusenevoldsen.agricircle.ui.map.MapFragment"
         android:label="@string/title_map"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/navigation_sampling"
         android:name="com.magnusenevoldsen.agricircle.ui.sampling.SamplingFragment"
         android:label="@string/title_sampling"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_sampling" />
 
     <fragment
         android:id="@+id/navigation_workspace"
         android:name="com.magnusenevoldsen.agricircle.ui.workspace.WorkspaceFragment"
         android:label="@string/title_workspace"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_workspace" />
 
     <fragment
         android:id="@+id/navigation_settings"

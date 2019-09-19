@@ -21,7 +21,7 @@ class WorkspaceFragment : Fragment() {
     ): View? {
         workspaceViewModel =
             ViewModelProviders.of(this).get(WorkspaceViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_notifications, container, false)
+        val root = inflater.inflate(R.layout.fragment_workspace, container, false)
         val textView: TextView = root.findViewById(R.id.text_notifications)
         workspaceViewModel.text.observe(this, Observer {
             textView.text = it

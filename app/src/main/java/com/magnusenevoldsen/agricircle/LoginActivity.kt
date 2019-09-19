@@ -24,6 +24,9 @@ class LoginActivity : AppCompatActivity() {
         val loginButton = findViewById<Button>(R.id.loginButton)
         val signUpButton = findViewById<Button>(R.id.signUpButton)
 
+        usernameEditText.editText.toString()
+        passwordEditText.editText.toString()
+
 
 
         loginButton.setOnClickListener {
