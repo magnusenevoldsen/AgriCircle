@@ -1,13 +1,10 @@
 package com.magnusenevoldsen.agricircle
 
-import android.content.res.Resources
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.LabelVisibilityMode.LABEL_VISIBILITY_LABELED
 import com.google.android.material.snackbar.Snackbar
@@ -41,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
 
     fun sendMessageToUser(message: String) {
-        val mySnackbar = Snackbar.make(findViewById(R.id.activityLogin), message, Snackbar.LENGTH_SHORT)
+        val mySnackbar = Snackbar.make(findViewById(R.id.mainActivity), message, Snackbar.LENGTH_SHORT)
         mySnackbar.show()
     }
 

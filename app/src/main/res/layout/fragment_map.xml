@@ -6,12 +6,221 @@
     android:layout_height="match_parent">
 
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:id="@+id/mapTopView"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="200dp"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/mapMapView"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintRight_toRightOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent">-->
+
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mapConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAgricircle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineEighty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.8" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineFifty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineTwenty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.2" />
+
+        <TextView
+            android:id="@+id/fieldNameTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/field_name_textview"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/fieldSizeTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/field_size_textview"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fieldNameTextView" />
+
+        <!-- Product 1 -->
+
+        <View
+            android:id="@+id/viewDividerOne"
+            style="@style/Divider"
+            android:layout_width="0dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fieldSizeTextView" />
+
+        <ImageView
+            android:id="@+id/actionOneImageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineTwenty"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/viewDividerOne"
+            app:srcCompat="@drawable/agricircle_logo_temporary" />
+
+        <TextView
+            android:id="@+id/actionOneTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/placeholder_sowing"
+            android:textColor="@color/colorWhite"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/actionOneImageView"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineFifty"
+            app:layout_constraintStart_toStartOf="@+id/guidelineTwenty"
+            app:layout_constraintTop_toTopOf="@+id/actionOneImageView" />
+
+        <TextView
+            android:id="@+id/productOneTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/placeholder_product_x"
+            android:textColor="@color/colorWhite"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/actionOneTextView"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineEighty"
+            app:layout_constraintStart_toStartOf="@+id/guidelineFifty"
+            app:layout_constraintTop_toTopOf="@+id/actionOneTextView" />
+
+        <ImageButton
+            android:id="@+id/actionOneImageButton"
+            android:background="@drawable/imagebutton_rounded"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="@+id/actionOneImageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guidelineEighty"
+            app:layout_constraintTop_toTopOf="@+id/actionOneImageView"
+            app:srcCompat="@drawable/ic_play_arrow_white_24dp" />
+
+
+        <!-- Product 2 -->
+
+        <View
+            android:id="@+id/viewDividerTwo"
+            style="@style/Divider"
+            android:layout_width="0dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/actionOneImageView" />
+
+        <ImageView
+            android:id="@+id/actionTwoImageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineTwenty"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/viewDividerTwo"
+            app:srcCompat="@drawable/agricircle_logo_temporary" />
+
+        <TextView
+            android:id="@+id/actionTwoTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/placeholder_sowing"
+            android:textColor="@color/colorWhite"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/actionTwoImageView"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineFifty"
+            app:layout_constraintStart_toStartOf="@+id/guidelineTwenty"
+            app:layout_constraintTop_toTopOf="@+id/actionTwoImageView" />
+
+        <TextView
+            android:id="@+id/productTwoTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/placeholder_product_x"
+            android:textColor="@color/colorWhite"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/actionTwoImageView"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineEighty"
+            app:layout_constraintStart_toStartOf="@+id/guidelineFifty"
+            app:layout_constraintTop_toTopOf="@+id/actionTwoImageView" />
+
+        <ImageButton
+            android:id="@+id/actionTwoImageButton"
+            android:background="@drawable/imagebutton_rounded"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="@+id/actionTwoImageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guidelineEighty"
+            app:layout_constraintTop_toTopOf="@+id/actionTwoImageView"
+            app:srcCompat="@drawable/ic_play_arrow_white_24dp" />
+
+        <!-- Bottom line -->
+        <View
+            android:id="@+id/viewDividerThree"
+            style="@style/Divider"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/actionTwoImageView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <fragment
         android:id="@+id/mapMapView"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mapConstraintLayout"
+        tools:layout_editor_absoluteX="-1dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fieldFloatingActionButton"
@@ -20,6 +229,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
+        app:backgroundTint="@color/colorOrange"
         app:layout_constraintBottom_toBottomOf="@+id/mapMapView"
         app:layout_constraintEnd_toEndOf="@+id/mapMapView"
         app:srcCompat="@drawable/ic_field_dashboard_white_24dp" />
@@ -31,16 +241,18 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
+        app:backgroundTint="@color/colorOrange"
         app:layout_constraintBottom_toTopOf="@+id/fieldFloatingActionButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_gps_fixed_white_24dp" />
 
+
     <!--    <com.google.android.gms.maps.MapView-->
-<!--        android:id="@+id/mapView"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="0dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <!--        android:id="@+id/mapView"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

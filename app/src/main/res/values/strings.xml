@@ -34,11 +34,20 @@
     <string name="userimage">UserImage</string>
 
 
+    <!-- Map screen-->
+    <string name="field_name_textview">Field Name</string>
+    <string name="field_size_textview">Field size (ha)</string>
+
+
 
     <!-- Sort later -->
     <string name="logo">logo</string>
 
-
+    <!-- Placeholders -->
+    <string name="placeholder_sowing">Sowing</string>
+    <string name="placeholder_Fertilization">Fertilization</string>
+    <string name="placeholder_product_x">Product X</string>
+    <string name="placeholder_product_y">Product Y</string>
 
 
 
