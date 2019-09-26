@@ -92,7 +92,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         val fieldFAB : FloatingActionButton = root!!.findViewById(R.id.fieldFloatingActionButton)
         fieldFAB.setColorFilter(Color.WHITE)
         fieldFAB.setOnClickListener {
-            sendMessageToUser(root!!, "Not implemented")
+//            sendMessageToUser(root!!, "Not implemented")
 
             //Test purposes
             if (constToggle) constLayout.visibility = View.GONE
