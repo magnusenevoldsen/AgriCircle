@@ -89,7 +89,7 @@
             app:layout_constraintTop_toBottomOf="@id/fieldSizeTextView" />
 
         <ImageView
-            android:id="@+id/actionOneImageView"
+            android:id="@+id/drivingIconImageView"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="8dp"
@@ -99,7 +99,7 @@
             app:srcCompat="@drawable/agricircle_logo_temporary" />
 
         <TextView
-            android:id="@+id/actionOneTextView"
+            android:id="@+id/drivingFieldTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -107,13 +107,13 @@
             android:text="@string/placeholder_sowing"
             android:textColor="@color/colorWhite"
             android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="@+id/actionOneImageView"
+            app:layout_constraintBottom_toBottomOf="@+id/drivingIconImageView"
             app:layout_constraintEnd_toStartOf="@+id/guidelineFifty"
             app:layout_constraintStart_toStartOf="@+id/guidelineTwenty"
-            app:layout_constraintTop_toTopOf="@+id/actionOneImageView" />
+            app:layout_constraintTop_toTopOf="@+id/drivingIconImageView" />
 
         <TextView
-            android:id="@+id/productOneTextView"
+            android:id="@+id/drivingWorkTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -121,20 +121,20 @@
             android:text="@string/placeholder_product_x"
             android:textColor="@color/colorWhite"
             android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="@+id/actionOneTextView"
+            app:layout_constraintBottom_toBottomOf="@+id/drivingFieldTextView"
             app:layout_constraintEnd_toStartOf="@+id/guidelineEighty"
             app:layout_constraintStart_toStartOf="@+id/guidelineFifty"
-            app:layout_constraintTop_toTopOf="@+id/actionOneTextView" />
+            app:layout_constraintTop_toTopOf="@+id/drivingFieldTextView" />
 
         <ImageButton
             android:id="@+id/actionOneImageButton"
             android:background="@drawable/imagebutton_rounded"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:layout_constraintBottom_toBottomOf="@+id/actionOneImageView"
+            app:layout_constraintBottom_toBottomOf="@+id/drivingIconImageView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guidelineEighty"
-            app:layout_constraintTop_toTopOf="@+id/actionOneImageView"
+            app:layout_constraintTop_toTopOf="@+id/drivingIconImageView"
             app:srcCompat="@drawable/ic_play_arrow_white_24dp" />
 
 
@@ -148,7 +148,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/actionOneImageView" />
+            app:layout_constraintTop_toBottomOf="@id/drivingIconImageView" />
 
         <ImageView
             android:id="@+id/actionTwoImageView"
@@ -166,7 +166,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:text="@string/placeholder_sowing"
+            android:text="@string/placeholder_Fertilization"
             android:textColor="@color/colorWhite"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="@+id/actionTwoImageView"
@@ -180,7 +180,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:text="@string/placeholder_product_x"
+            android:text="@string/placeholder_product_y"
             android:textColor="@color/colorWhite"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="@+id/actionTwoImageView"

@@ -7,6 +7,7 @@
 
     <!-- Custom AgriCircle Colors -->
     <color name="colorAgricircle">#135137</color>
+    <color name="colorGreen">#4DAF69</color>
     <color name="colorOrange">#FD9209</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorGrey">#323232</color>
