@@ -1,10 +1,8 @@
 package com.magnusenevoldsen.agricircle.ui.map
 
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,8 +22,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.magnusenevoldsen.agricircle.MainActivity
-import java.util.zip.Inflater
 
 class MapFragment : Fragment(), OnMapReadyCallback{
 
@@ -204,13 +200,13 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     fun startActivityOne() {
         //Needs data with the intent start : what activity etc
-        val intent = Intent (activity, drivingActivity::class.java)
+        val intent = Intent (activity, DrivingActivity::class.java)
         activity!!.startActivity(intent)
     }
 
     fun startActivityTwo() {
         //Needs data with the intent start : what activity etc
-        val intent = Intent (activity, drivingActivity::class.java)
+        val intent = Intent (activity, DrivingActivity::class.java)
         activity!!.startActivity(intent)
     }
 

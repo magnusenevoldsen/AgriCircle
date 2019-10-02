@@ -11,5 +11,8 @@
     <dimen name="small_button_height">40dp</dimen>
     <dimen name="small_button_corner_radius">15dp</dimen>
 
+    <!-- Fragment info  dp -->
+    <dimen name="marginTopFragmentInfo">8dp</dimen>
+
 
 </resources>

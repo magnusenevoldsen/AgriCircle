@@ -15,9 +15,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.magnusenevoldsen.agricircle.MainActivity
 import com.magnusenevoldsen.agricircle.R
+import com.magnusenevoldsen.agricircle.ui.workspace.WorkspaceInfoFragment
 
-class drivingActivity : AppCompatActivity(), OnMapReadyCallback {
+class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private lateinit var mMap : GoogleMap

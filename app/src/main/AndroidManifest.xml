@@ -17,7 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".ui.map.drivingActivity"></activity>
+        <activity android:name=".ui.map.DrivingActivity"></activity>
         <activity android:name=".ui.sampling.SamplingParametersActivity" />
         <activity
             android:name=".MainActivity"
