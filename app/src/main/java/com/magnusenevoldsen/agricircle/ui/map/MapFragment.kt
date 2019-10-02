@@ -1,6 +1,7 @@
 package com.magnusenevoldsen.agricircle.ui.map
 
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -75,6 +76,18 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         actionOneImageButton.setColorFilter(R.color.colorAgricircle)
         val actionTwoImageButton = root!!.findViewById<ImageButton>(R.id.actionTwoImageButton)
         actionTwoImageButton.setColorFilter(R.color.colorAgricircle)
+
+        //Click Listeners
+        actionOneImageButton.setOnClickListener {
+            startActivityOne()
+        }
+        actionTwoImageButton.setOnClickListener {
+            startActivityTwo()
+        }
+
+
+
+
 
 
 
@@ -189,8 +202,17 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         mySnackbar.show()
     }
 
+    fun startActivityOne() {
+        //Needs data with the intent start : what activity etc
+        val intent = Intent (activity, drivingActivity::class.java)
+        activity!!.startActivity(intent)
+    }
 
-
+    fun startActivityTwo() {
+        //Needs data with the intent start : what activity etc
+        val intent = Intent (activity, drivingActivity::class.java)
+        activity!!.startActivity(intent)
+    }
 
 
 

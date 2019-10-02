@@ -185,8 +185,9 @@
             android:layout_height="60dp"
             android:layout_marginTop="8dp"
             android:contentDescription="@string/userimage"
-            app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
-            app:layout_constraintStart_toStartOf="@+id/constraintLayout"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineFifty"
+            app:layout_constraintHorizontal_bias="0.75"
+            app:layout_constraintStart_toStartOf="@+id/guidelineTwenty"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
             app:srcCompat="@drawable/tractor_temp" />
 
@@ -196,8 +197,9 @@
             android:layout_height="60dp"
             android:layout_marginTop="8dp"
             android:contentDescription="@string/userimage"
-            app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
-            app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineEighty"
+            app:layout_constraintHorizontal_bias="0.25"
+            app:layout_constraintStart_toStartOf="@+id/guidelineFifty"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
             app:srcCompat="@drawable/tractor_temp" />
 
