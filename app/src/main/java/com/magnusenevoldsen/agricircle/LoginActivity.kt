@@ -42,8 +42,8 @@ class LoginActivity : AppCompatActivity() {
 
 
 
-            val email : String = SensitiveInfo.email
-            val password : String = SensitiveInfo.password
+            val email : String = ""//SensitiveInfo.email
+            val password : String = ""//SensitiveInfo.password
 
             if (AgriCircleBackend.login(email, password))
                 println("Login was successful!")
