@@ -13,3 +13,4 @@
 /captures
 .externalNativeBuild
 .cxx
+/app/src/main/java/com/magnusenevoldsen/agricircle/SensitiveInfo.kt

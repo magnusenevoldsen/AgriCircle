@@ -8,12 +8,20 @@ import android.widget.Button
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import org.json.JSONException
+import org.json.JSONObject
+import java.lang.Exception
 
 
 class LoginActivity : AppCompatActivity() {
 
+    var loginButton : Button? = null
 
 
+    override fun onResume() {
+        super.onResume()
+        loginButton!!.isClickable = true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,17 +29,31 @@ class LoginActivity : AppCompatActivity() {
 
         val usernameEditText = findViewById<TextInputLayout>(R.id.usernameEditText)
         val passwordEditText = findViewById<TextInputLayout>(R.id.passwordEditText)
-        val loginButton = findViewById<Button>(R.id.loginButton)
+        loginButton = findViewById<Button>(R.id.loginButton)
         val signUpButton = findViewById<Button>(R.id.signUpButton)
 
-        usernameEditText.editText.toString()
-        passwordEditText.editText.toString()
+//        usernameEditText.editText.toString()
+//        passwordEditText.editText.toString()
 
 
 
-        loginButton.setOnClickListener {
-            val goToMainActivity = Intent(this, MainActivity::class.java)//.apply { putExtra(EXTRA_MESSAGE, message) }
-            startActivity(goToMainActivity)
+
+        loginButton!!.setOnClickListener {
+
+
+
+            val email : String = SensitiveInfo.email
+            val password : String = SensitiveInfo.password
+
+            if (AgriCircleBackend.login(email, password))
+                println("Login was successful!")
+            else {
+                println("Login was not successful")
+            }
+
+            //            loginButton!!.isClickable = false
+//            val goToMainActivity = Intent(this, MainActivity::class.java)//.apply { putExtra(EXTRA_MESSAGE, message) }
+//            startActivity(goToMainActivity)
         }
 
         signUpButton.setOnClickListener {
