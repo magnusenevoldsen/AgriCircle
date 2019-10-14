@@ -29,6 +29,10 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
 
+        //Load user from DB
+        sendMessageToUser("Loading user : "+AgriCircleBackend.loadUser())
+
+
 
 
 

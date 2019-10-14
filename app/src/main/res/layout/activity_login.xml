@@ -71,6 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorLightGreen"
+            android:inputType="textEmailAddress"
 
             android:textColorHint="#00FFFFFF" />
 

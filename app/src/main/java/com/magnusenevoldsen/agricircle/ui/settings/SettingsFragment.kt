@@ -7,13 +7,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.magnusenevoldsen.agricircle.AgriCircleBackend
 import com.magnusenevoldsen.agricircle.R
+import com.squareup.picasso.Picasso
 
 class SettingsFragment : Fragment() {
 
     private lateinit var settingsViewModel: SettingsViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,8 +29,29 @@ class SettingsFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_settings, container, false)
 
         val userImageView : ImageView = root.findViewById(R.id.userImageView)
+
         val userNameTextView : TextView = root.findViewById(R.id.userNameTextView)
 
+
+        //Load data into page:
+        try {
+            var avatarUrl : String = AgriCircleBackend.user!!.avatarUrl
+            var shortened : String = avatarUrl.substring(avatarUrl.length - 4, avatarUrl.length)
+
+
+            if (shortened.equals(".svg")) {
+
+            } else {
+                Picasso.get().load(avatarUrl).into(userImageView)
+            }
+
+
+
+            userNameTextView.text = AgriCircleBackend.user!!.name
+        } catch (e : KotlinNullPointerException) {
+            println("  --  SETTINGS SCREEN  --  // User was never created, trying now")
+            AgriCircleBackend.loadUser()
+        }
 
 
 

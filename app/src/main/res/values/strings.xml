@@ -11,6 +11,7 @@
     <string name="password">Password</string>
     <string name="dont_have_an_account">Don\'t have an account?</string>
     <string name="sign_up">Sign up</string>
+    <string name="login_bad_info">Error: Bad e-mail or password</string>
 
 
     <!-- Navigation screen -->
@@ -60,6 +61,19 @@
 
 
     <!-- Inside code -->
+    <string name="backend_data">data</string>
+    <string name="backend_user">user</string>
+    <string name="backend_login">login</string>
+    <string name="backend_cookie">cookie</string>
+    <string name="backend_name">name</string>
+    <string name="backend_language">language</string>
+    <string name="backend_avatar_url">avatarUrl</string>
+    <string name="backend_planning_years">planningYears</string>
+    <string name="backend_decimal_separator">decimalSeparator</string>
+    <string name="backend_date_format">dateFormat</string>
+    <string name="backend_slug">slug</string>
+    <string name="backend_features">features</string>
+    <string name="backend_typename">__typename</string>
 
     <!-- Error Messages -->
     <string name="not_implemented_yet">Not implemented yet.</string>
