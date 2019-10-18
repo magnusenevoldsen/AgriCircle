@@ -32,9 +32,18 @@ class MainActivity : AppCompatActivity() {
         //Load user from DB
         sendMessageToUser("Loading user : "+AgriCircleBackend.loadUser())
 
+        //Load companies from DB
+        sendMessageToUser("Loading companies : "+AgriCircleBackend.loadCompanies())
 
+        //Load fields from DB
+        sendMessageToUser("Loading fields : "+AgriCircleBackend.loadFields())
 
-
+        //Test all is working and print it to terminal
+        println("-----------------------------------"+
+                "User : \n ${AgriCircleBackend.user.toString()} "+
+                "Companies : \n ${AgriCircleBackend.companies.toString()} "+
+                "Fields : \n ${AgriCircleBackend.fields.toString()} \n"+
+                "-----------------------------------")
 
 
 

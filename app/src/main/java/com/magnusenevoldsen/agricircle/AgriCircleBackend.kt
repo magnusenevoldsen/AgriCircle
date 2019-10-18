@@ -1,5 +1,8 @@
 package com.magnusenevoldsen.agricircle
 
+import com.google.android.gms.maps.model.LatLng
+import com.magnusenevoldsen.agricircle.model.Company
+import com.magnusenevoldsen.agricircle.model.Field
 import com.magnusenevoldsen.agricircle.model.User
 import okhttp3.*
 import org.json.JSONObject
@@ -8,8 +11,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONException
-import android.os.AsyncTask.execute
-import okhttp3.RequestBody
 
 
 
@@ -21,7 +22,10 @@ object AgriCircleBackend {
     private var cookieString : String ?=null
     private val successfulResponse : Int = 200
     var user : User? = null
+    var companies : ArrayList<Company> = ArrayList()
+    var fields : ArrayList<Field> = ArrayList()
     private var userWasLoadedCorrectly : Boolean = false
+    private var companyWasLoadedCorrectly : Boolean = false
     private val client = OkHttpClient()
 
     fun login (email : String, password : String) : Boolean {
@@ -97,7 +101,7 @@ object AgriCircleBackend {
         var loadUserThread : Thread = Thread {
             val client = OkHttpClient()
 
-            //Request body string for login
+            //Request body string for user
             val requestBodyString = "{\n    \"operationName\": \"user\",\n    \"variables\": {},\n    \"query\": \"query user {\\n  user {\\n    name\\n    language\\n    avatarUrl\\n planningYears\\n    decimalSeparator\\n    dateFormat\\n    slug\\n    features\\n    avatarUrl\\n    __typename\\n  }\\n}\\n\"\n}"
 
             //Create the request body
@@ -160,6 +164,175 @@ object AgriCircleBackend {
             }
             else {
                 println("Error loading user")
+            }
+        }
+        if (userWasLoadedCorrectly) {
+            loadUserThread.start()
+            loadUserThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
+        }
+        return succes
+
+    }
+
+
+    fun loadFields () : Boolean {
+        var succes = false
+        var loadUserThread : Thread = Thread {
+            val client = OkHttpClient()
+
+            var companyId : Int = 2434
+            var year : Int = 2019
+
+            //Request body string for fields
+            val requestBodyString = "{\n    \"operationName\": \"fields\",\n    \"variables\": {\n    \t\"options\":\n    \t{\n        \t\"companyId\": $companyId,\n        \t\"year\": $year\n    \t}\n    },\n    \"query\": \"query fields(\$options: LayersInput!) {\\n  fields(options: \$options) {\\n   id\\n   company_id\\n   layer_type\\n   name\\n   shape\\n    __typename\\n  }\\n}\\n\"\n}"
+
+            //Create the request body
+            val body = requestBodyString.toRequestBody("application/json".toMediaTypeOrNull())
+
+            //Create the request
+            val request = Request.Builder()
+                .url(url)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "*/*").addHeader(
+                    "x-cookie",
+                    cookieString!!
+                )
+                .build()
+
+            //Executing the request
+            val response = client.newCall(request).execute()
+
+            if (response.code == successfulResponse) { //Hvis denne rammer er request gået igennem - login er enten rigtig eller forkert
+                println("Getting the response : ")
+                val bodyString = response.body!!.string()
+                println("Response : $bodyString")
+//                val bodyUserPath : JSONObject = JSONObject(bodyString).getJSONObject("data").getJSONObject("user")
+
+                println("Attempting to get the user")
+                try {
+                    val bodyUserPath : JSONArray = JSONObject(bodyString).getJSONObject("data").getJSONArray("fields")
+
+                    for (i in 0 until bodyUserPath!!.length()) {
+                        var idFromJSON : Int = bodyUserPath.getJSONObject(i).getInt("id")
+                        var companyIdFromJSON : Int = bodyUserPath.getJSONObject(i).getInt("company_id")
+                        var layerTypeFromJSON : String = bodyUserPath.getJSONObject(i).getString("layer_type")
+                        var nameFromJSON : String = bodyUserPath.getJSONObject(i).getString("name")
+                        var shapeTypeFromJSON : String = bodyUserPath.getJSONObject(i).getJSONObject("shape").getString("type")
+
+                        //Hent coordinater til array
+                        var shapeCoordinatesFromJSON : ArrayList<LatLng> = ArrayList()
+                        var shapeCoordinatesPath = bodyUserPath.getJSONObject(i).getJSONObject("shape").getJSONArray("coordinates").getJSONArray(0)
+
+                        for (j in 0 until shapeCoordinatesPath.length()) {
+                            val lat = shapeCoordinatesPath.getJSONArray(j).getDouble(0)
+                            val lng = shapeCoordinatesPath.getJSONArray(j).getDouble(1)
+                            val coordinate : LatLng = LatLng(lat, lng)
+                            shapeCoordinatesFromJSON.add(coordinate)
+                        }
+
+                        //Load into fields
+                        val field = Field(
+                            id = idFromJSON,
+                            companyId = companyIdFromJSON,
+                            layerType = layerTypeFromJSON,
+                            name = nameFromJSON,
+                            shapeType = shapeTypeFromJSON,
+                            shapeCoordinates = shapeCoordinatesFromJSON
+                            )
+                        fields.add(field)
+                    }
+                    succes = true
+                } catch (e: JSONException) { //If the jsonobject cant be found eg. bad login -> go here
+                    println("We didn't get any fields")
+                    succes = false
+                }
+            }
+            else {
+                println("Error loading fields")
+            }
+        }
+        if (companyWasLoadedCorrectly) {
+            loadUserThread.start()
+            loadUserThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
+        }
+        return succes
+
+    }
+
+    fun loadCompanies () : Boolean {
+        var succes = false
+        var loadUserThread : Thread = Thread {
+            val client = OkHttpClient()
+
+            //Request body string for companies
+            val requestBodyString = "[\n    {\n        \"operationName\": \"companies\",\n        \"variables\": {},\n        \"query\": \"query companies {\\n  companies {\\n    id\\n    name\\n    owner_photo_url\\n    access\\n    default\\n    location {\\n      type\\n      coordinates\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\n    }\n]"
+
+            //Create the request body
+            val body = requestBodyString.toRequestBody("application/json".toMediaTypeOrNull())
+
+            //Create the request
+            val request = Request.Builder()
+                .url(url)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "*/*").addHeader(
+                    "x-cookie",
+                    cookieString!!
+                )
+                .build()
+
+            //Executing the request
+            val response = client.newCall(request).execute()
+
+            if (response.code == successfulResponse) { //Hvis denne rammer er request gået igennem
+                println("Getting the response : ")
+                val bodyString = response.body!!.string()
+                println("Response : $bodyString")
+
+                println("Removing \"[]\" : ")
+                var str = bodyString.substring(1, bodyString.length - 1) //Fjerner [] så det ligner array
+                println("So it becomes : $str")
+
+
+                println("Attempting to get the companies")
+                try {
+                    val bodyUserPath : JSONArray = JSONObject(str).getJSONObject("data").getJSONArray("companies")
+
+                    for (i in 0 until bodyUserPath!!.length()) {
+                        val idFromJSON : Int = bodyUserPath.getJSONObject(i).getInt("id")
+                        val nameFromJSON : String = bodyUserPath.getJSONObject(i).getString("name")
+                        val locationTypeFromJSON : String = bodyUserPath.getJSONObject(i).getJSONObject("location").getString("type")
+                        //Get coordinates
+                        val locationCoordinatesFromJSON = bodyUserPath.getJSONObject(i).getJSONObject("location").getJSONArray("coordinates")
+                        val lat = locationCoordinatesFromJSON.getDouble(0)
+                        val lng = locationCoordinatesFromJSON.getDouble(1)
+                        val finishedLocationCoordinatesFromJSON : LatLng = LatLng(lat, lng)
+                        val defaultFromJSON : Boolean = bodyUserPath.getJSONObject(i).getBoolean("default")
+                        val ownerPhotoUrlFromJSON : String = bodyUserPath.getJSONObject(i).getString("owner_photo_url")
+                        val accessFromJSON : String = bodyUserPath.getJSONObject(i).getString("access")
+                        //Load into companies
+                        var company = Company(
+                            id = idFromJSON,
+                            name = nameFromJSON,
+                            locationType = locationTypeFromJSON,
+                            locationCoordinates = finishedLocationCoordinatesFromJSON,
+                            default = defaultFromJSON,
+                            ownerPhotoUrl = ownerPhotoUrlFromJSON,
+                            access = accessFromJSON
+                            )
+                        companies.add(company)
+
+                    }
+                    companyWasLoadedCorrectly = true
+                    succes = true
+                } catch (e: JSONException) { //If the jsonobject cant be found eg. bad login -> go here
+                    println("We didn't get any company")
+                    succes = false
+                }
+            }
+            else {
+                println("Error loading company")
             }
         }
         if (userWasLoadedCorrectly) {
