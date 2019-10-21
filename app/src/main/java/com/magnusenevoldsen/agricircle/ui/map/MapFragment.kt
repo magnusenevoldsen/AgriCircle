@@ -20,6 +20,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
@@ -89,13 +91,37 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
 
 
+
+
+
         //Buttons
 
         val positionFAB : FloatingActionButton = root!!.findViewById(R.id.positionFloatingActionButton)
         positionFAB.setColorFilter(Color.WHITE)
         positionFAB.setOnClickListener {
-            updatesOn = !updatesOn
-            mMap.isMyLocationEnabled = updatesOn
+//            updatesOn = !updatesOn
+//            mMap.isMyLocationEnabled = updatesOn
+
+
+            val arnakke = LatLng(55.671006, 11.770301)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(arnakke, 15.0f))
+
+            var poly1 : Polyline = mMap.addPolyline(
+                PolylineOptions().clickable(true)
+                    .add(
+                        LatLng(55.672343, 11.769163),
+                        LatLng(55.669511, 11.766824),
+                        LatLng(55.668428, 11.771030),
+                        LatLng(55.669874, 11.774560),
+                        LatLng(55.671653, 11.773927),
+                        LatLng(55.672391, 11.771805)))
+
+
+            poly1.color = Color.RED
+            poly1.tag = "hej"
+
+
+
         }
 
         val fieldFAB : FloatingActionButton = root!!.findViewById(R.id.fieldFloatingActionButton)
@@ -183,6 +209,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = false
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+
+
+
 
 
 

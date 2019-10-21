@@ -40,10 +40,10 @@ class MainActivity : AppCompatActivity() {
 
         //Test all is working and print it to terminal
         println("-----------------------------------"+
-                "User : \n ${AgriCircleBackend.user.toString()} "+
-                "Companies : \n ${AgriCircleBackend.companies.toString()} "+
-                "Fields : \n ${AgriCircleBackend.fields.toString()} \n"+
-                "-----------------------------------")
+                "\nUser : \n ${AgriCircleBackend.user.toString()} "+
+                "\nCompanies : \n ${AgriCircleBackend.companies.toString()} "+
+                "\nFields : \n ${AgriCircleBackend.fields.toString()} "+
+                "\n-----------------------------------")
 
 
 
