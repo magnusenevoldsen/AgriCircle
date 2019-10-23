@@ -14,4 +14,8 @@
     <color name="colorLightGreen">#799D8D</color>
     <color name="colorLightGrey">#919191</color>
 
+
+    <color name="colorPolygonBorder">#BF1F6DB9</color>
+    <color name="colorPolygonFill">#4D1F6DB9</color>
+
 </resources>

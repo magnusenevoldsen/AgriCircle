@@ -1,5 +1,7 @@
 package com.magnusenevoldsen.agricircle
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +11,13 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.LabelVisibilityMode.LABEL_VISIBILITY_LABELED
 import com.google.android.material.snackbar.Snackbar
 
+
+
 class MainActivity : AppCompatActivity() {
+
+
+    //Shared prefs
+    var myPref : SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +35,30 @@ class MainActivity : AppCompatActivity() {
         )
 //        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
+        //Set up initial shared prefs
+//        myPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
+
+        //Map Preference -> Hybrid, Terrain, Satellite
+
+//        myPref!!.edit().remove(getString(R.string.settings_map_type_preference)).apply()
+
+
+//        val mapType = myPref!!.getString(getString(R.string.settings_map_type_preference), getString(R.string.map_type_none))
+//        if (mapType.equals(getString(R.string.map_type_none))) {
+//            val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
+//            with (sharedPref.edit()) {
+//                putString(getString(R.string.settings_map_type_preference), getString(R.string.map_type_hybrid))
+//                commit()
+//            }
+//        }
+//        else
+//            sendMessageToUser("We got one!")
+
+
+
+
 
 
         //Load user from DB

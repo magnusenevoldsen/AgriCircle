@@ -24,6 +24,7 @@ object AgriCircleBackend {
     var user : User? = null
     var companies : ArrayList<Company> = ArrayList()
     var fields : ArrayList<Field> = ArrayList()
+    var selectedField : Int = 0
     private var userWasLoadedCorrectly : Boolean = false
     private var companyWasLoadedCorrectly : Boolean = false
     private val client = OkHttpClient()
@@ -89,9 +90,10 @@ object AgriCircleBackend {
                 succes = false
             }
         }
+        println("-----------------------------------")
         loginThread.start()
         loginThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
-
+        println("-----------------------------------")
         return succes
     }
 
@@ -166,10 +168,12 @@ object AgriCircleBackend {
                 println("Error loading user")
             }
         }
+        println("-----------------------------------")
         if (userWasLoadedCorrectly) {
             loadUserThread.start()
             loadUserThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
         }
+        println("-----------------------------------")
         return succes
 
     }
@@ -209,7 +213,7 @@ object AgriCircleBackend {
                 println("Response : $bodyString")
 //                val bodyUserPath : JSONObject = JSONObject(bodyString).getJSONObject("data").getJSONObject("user")
 
-                println("Attempting to get the user")
+                println("Attempting to get the fields")
                 try {
                     val bodyUserPath : JSONArray = JSONObject(bodyString).getJSONObject("data").getJSONArray("fields")
 
@@ -224,9 +228,11 @@ object AgriCircleBackend {
                         var shapeCoordinatesFromJSON : ArrayList<LatLng> = ArrayList()
                         var shapeCoordinatesPath = bodyUserPath.getJSONObject(i).getJSONObject("shape").getJSONArray("coordinates").getJSONArray(0)
 
-                        for (j in 0 until shapeCoordinatesPath.length()) {
-                            val lat = shapeCoordinatesPath.getJSONArray(j).getDouble(0)
-                            val lng = shapeCoordinatesPath.getJSONArray(j).getDouble(1)
+                        var shapeCoordinatesIteratorFromJSON : Iterable<LatLng>
+
+                        for (j in 0 until shapeCoordinatesPath.length()) {  //Lat og Lng ligger som Lng -> Lat i DB, så de er byttet om her.
+                            val lat = shapeCoordinatesPath.getJSONArray(j).getDouble(1)
+                            val lng = shapeCoordinatesPath.getJSONArray(j).getDouble(0)
                             val coordinate : LatLng = LatLng(lat, lng)
                             shapeCoordinatesFromJSON.add(coordinate)
                         }
@@ -252,10 +258,12 @@ object AgriCircleBackend {
                 println("Error loading fields")
             }
         }
+        println("-----------------------------------")
         if (companyWasLoadedCorrectly) {
             loadUserThread.start()
             loadUserThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
         }
+        println("-----------------------------------")
         return succes
 
     }
@@ -335,10 +343,13 @@ object AgriCircleBackend {
                 println("Error loading company")
             }
         }
+
+        println("-----------------------------------")
         if (userWasLoadedCorrectly) {
             loadUserThread.start()
             loadUserThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
         }
+        println("-----------------------------------")
         return succes
 
     }

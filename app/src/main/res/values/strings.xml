@@ -59,6 +59,14 @@
     <string name="placeholder_suggested_speed">suggested speed</string>
     <string name="placeholder_100_km_h">100 km/h</string>
 
+    <!-- Shared Prefs -->
+    <string name="settings_map_type_preference">settingsmaptypepreference</string>
+    <string name="map_type_hybrid">maptypehybrid</string>
+    <string name="map_type_terrain">maptypeterrain</string>
+    <string name="map_type_satellite">maptypesatellite</string>
+    <string name="map_type_none">maptypenone</string>
+
+
 
     <!-- Inside code -->
     <string name="backend_data">data</string>
