@@ -200,7 +200,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         //Takes the fields which are from the first company of the user
         println("Making a new fields list")
         for (i in 0 until AgriCircleBackend.fields.size)
-            if (AgriCircleBackend.fields[i].companyId == AgriCircleBackend.companies[0].id)
+//            if (AgriCircleBackend.fields[i].companyId == AgriCircleBackend.companies[0].id)
                 newFields.add(AgriCircleBackend.fields[i])
         println("Fields : ")
         for (i in 0 until newFields.size)

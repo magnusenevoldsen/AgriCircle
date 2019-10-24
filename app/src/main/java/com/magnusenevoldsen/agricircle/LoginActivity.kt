@@ -38,8 +38,10 @@ class LoginActivity : AppCompatActivity() {
 
 
 
-        override fun onResume() {
+    override fun onResume() {
         super.onResume()
+        AgriCircleBackend.fields.clear()
+        AgriCircleBackend.companies.clear()
         loginButton!!.isClickable = true
     }
 
@@ -123,7 +125,7 @@ class LoginActivity : AppCompatActivity() {
 //        var email : String = usernameEditText!!.editText!!.text.toString()
 //        var password : String = passwordEditText!!.editText!!.text.toString()
 
-        val chosenUser : Int = 1 //1 for Jacob, 2 for Magnus
+        val chosenUser : Int = 2 //1 for Jacob, 2 for Magnus
         val email : String = SensitiveInfo.returnEmail(chosenUser)
         val password : String = SensitiveInfo.returnPassword(chosenUser)
 

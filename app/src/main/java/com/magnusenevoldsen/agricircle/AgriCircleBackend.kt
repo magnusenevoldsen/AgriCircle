@@ -181,88 +181,97 @@ object AgriCircleBackend {
 
     fun loadFields () : Boolean {
         var succes = false
-        var loadUserThread : Thread = Thread {
-            val client = OkHttpClient()
 
-            var companyId : Int = 2434
-            var year : Int = 2019
+        var companyIdList : ArrayList<Int> = ArrayList()
+        for (i in 0 until companies.size)
+            companyIdList.add(companies[i].id)
+        var year : Int = 2019
 
-            //Request body string for fields
-            val requestBodyString = "{\n    \"operationName\": \"fields\",\n    \"variables\": {\n    \t\"options\":\n    \t{\n        \t\"companyId\": $companyId,\n        \t\"year\": $year\n    \t}\n    },\n    \"query\": \"query fields(\$options: LayersInput!) {\\n  fields(options: \$options) {\\n   id\\n   company_id\\n   layer_type\\n   name\\n   shape\\n    __typename\\n  }\\n}\\n\"\n}"
+        for (i in 0 until companyIdList.size) {
+            var loadUserThread : Thread = Thread {
+                val client = OkHttpClient()
 
-            //Create the request body
-            val body = requestBodyString.toRequestBody("application/json".toMediaTypeOrNull())
+                val companyId : Int = companyIdList[i]
 
-            //Create the request
-            val request = Request.Builder()
-                .url(url)
-                .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "*/*").addHeader(
-                    "x-cookie",
-                    cookieString!!
-                )
-                .build()
+                //Request body string for fields
+                val requestBodyString = "{\n    \"operationName\": \"fields\",\n    \"variables\": {\n    \t\"options\":\n    \t{\n        \t\"companyId\": $companyId,\n        \t\"year\": $year\n    \t}\n    },\n    \"query\": \"query fields(\$options: LayersInput!) {\\n  fields(options: \$options) {\\n   id\\n   company_id\\n   layer_type\\n   name\\n   shape\\n    __typename\\n  }\\n}\\n\"\n}"
 
-            //Executing the request
-            val response = client.newCall(request).execute()
+                //Create the request body
+                val body = requestBodyString.toRequestBody("application/json".toMediaTypeOrNull())
 
-            if (response.code == successfulResponse) { //Hvis denne rammer er request gået igennem - login er enten rigtig eller forkert
-                println("Getting the response : ")
-                val bodyString = response.body!!.string()
-                println("Response : $bodyString")
+                //Create the request
+                val request = Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Accept", "*/*").addHeader(
+                        "x-cookie",
+                        cookieString!!
+                    )
+                    .build()
+
+                //Executing the request
+                val response = client.newCall(request).execute()
+
+                if (response.code == successfulResponse) { //Hvis denne rammer er request gået igennem - login er enten rigtig eller forkert
+                    println("Getting the response : ")
+                    val bodyString = response.body!!.string()
+                    println("Response : $bodyString")
 //                val bodyUserPath : JSONObject = JSONObject(bodyString).getJSONObject("data").getJSONObject("user")
 
-                println("Attempting to get the fields")
-                try {
-                    val bodyUserPath : JSONArray = JSONObject(bodyString).getJSONObject("data").getJSONArray("fields")
+                    println("Attempting to get the fields")
+                    try {
+                        val bodyUserPath : JSONArray = JSONObject(bodyString).getJSONObject("data").getJSONArray("fields")
 
-                    for (i in 0 until bodyUserPath!!.length()) {
-                        var idFromJSON : Int = bodyUserPath.getJSONObject(i).getInt("id")
-                        var companyIdFromJSON : Int = bodyUserPath.getJSONObject(i).getInt("company_id")
-                        var layerTypeFromJSON : String = bodyUserPath.getJSONObject(i).getString("layer_type")
-                        var nameFromJSON : String = bodyUserPath.getJSONObject(i).getString("name")
-                        var shapeTypeFromJSON : String = bodyUserPath.getJSONObject(i).getJSONObject("shape").getString("type")
+                        for (i in 0 until bodyUserPath!!.length()) {
+                            var idFromJSON : Int = bodyUserPath.getJSONObject(i).getInt("id")
+                            var companyIdFromJSON : Int = bodyUserPath.getJSONObject(i).getInt("company_id")
+                            var layerTypeFromJSON : String = bodyUserPath.getJSONObject(i).getString("layer_type")
+                            var nameFromJSON : String = bodyUserPath.getJSONObject(i).getString("name")
+                            var shapeTypeFromJSON : String = bodyUserPath.getJSONObject(i).getJSONObject("shape").getString("type")
 
-                        //Hent coordinater til array
-                        var shapeCoordinatesFromJSON : ArrayList<LatLng> = ArrayList()
-                        var shapeCoordinatesPath = bodyUserPath.getJSONObject(i).getJSONObject("shape").getJSONArray("coordinates").getJSONArray(0)
+                            //Hent coordinater til array
+                            var shapeCoordinatesFromJSON : ArrayList<LatLng> = ArrayList()
+                            var shapeCoordinatesPath = bodyUserPath.getJSONObject(i).getJSONObject("shape").getJSONArray("coordinates").getJSONArray(0)
 
-                        var shapeCoordinatesIteratorFromJSON : Iterable<LatLng>
+                            var shapeCoordinatesIteratorFromJSON : Iterable<LatLng>
 
-                        for (j in 0 until shapeCoordinatesPath.length()) {  //Lat og Lng ligger som Lng -> Lat i DB, så de er byttet om her.
-                            val lat = shapeCoordinatesPath.getJSONArray(j).getDouble(1)
-                            val lng = shapeCoordinatesPath.getJSONArray(j).getDouble(0)
-                            val coordinate : LatLng = LatLng(lat, lng)
-                            shapeCoordinatesFromJSON.add(coordinate)
-                        }
+                            for (j in 0 until shapeCoordinatesPath.length()) {  //Lat og Lng ligger som Lng -> Lat i DB, så de er byttet om her.
+                                val lat = shapeCoordinatesPath.getJSONArray(j).getDouble(1)
+                                val lng = shapeCoordinatesPath.getJSONArray(j).getDouble(0)
+                                val coordinate : LatLng = LatLng(lat, lng)
+                                shapeCoordinatesFromJSON.add(coordinate)
+                            }
 
-                        //Load into fields
-                        val field = Field(
-                            id = idFromJSON,
-                            companyId = companyIdFromJSON,
-                            layerType = layerTypeFromJSON,
-                            name = nameFromJSON,
-                            shapeType = shapeTypeFromJSON,
-                            shapeCoordinates = shapeCoordinatesFromJSON
+                            //Load into fields
+                            val field = Field(
+                                id = idFromJSON,
+                                companyId = companyIdFromJSON,
+                                layerType = layerTypeFromJSON,
+                                name = nameFromJSON,
+                                shapeType = shapeTypeFromJSON,
+                                shapeCoordinates = shapeCoordinatesFromJSON
                             )
-                        fields.add(field)
+                            fields.add(field)
+                        }
+                        succes = true
+                    } catch (e: JSONException) { //If the jsonobject cant be found eg. bad login -> go here
+                        println("We didn't get any fields")
+                        succes = false
                     }
-                    succes = true
-                } catch (e: JSONException) { //If the jsonobject cant be found eg. bad login -> go here
-                    println("We didn't get any fields")
-                    succes = false
+                }
+                else {
+                    println("Error loading fields")
                 }
             }
-            else {
-                println("Error loading fields")
+            println("-----------------------------------")
+            if (companyWasLoadedCorrectly) {
+                loadUserThread.start()
+                loadUserThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
             }
         }
-        println("-----------------------------------")
-        if (companyWasLoadedCorrectly) {
-            loadUserThread.start()
-            loadUserThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
-        }
+
+
         println("-----------------------------------")
         return succes
 

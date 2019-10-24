@@ -78,6 +78,16 @@ class MainActivity : AppCompatActivity() {
                 "\n-----------------------------------")
 
 
+        println("Companies")
+        for (i in 0 until AgriCircleBackend.companies.size)
+            println(AgriCircleBackend.companies[i].toString())
+
+        println("Fields")
+        for (i in 0 until AgriCircleBackend.fields.size)
+            println(AgriCircleBackend.fields[i].toString())
+
+
+
 
     }
 
