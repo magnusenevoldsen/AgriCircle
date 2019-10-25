@@ -167,17 +167,29 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
+
+        <Chronometer
             android:id="@+id/drivingTimeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/placeholder_time"
             android:textColor="@color/colorWhite"
             android:textSize="22sp"
             app:layout_constraintEnd_toStartOf="@+id/guidelineEighty"
             app:layout_constraintStart_toStartOf="@+id/guidelineTwenty"
             app:layout_constraintTop_toBottomOf="@+id/viewDividerTwo" />
+
+<!--        <TextView-->
+<!--            android:id="@+id/drivingTimeTextView"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:text="@string/placeholder_time"-->
+<!--            android:textColor="@color/colorWhite"-->
+<!--            android:textSize="22sp"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/guidelineEighty"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/guidelineTwenty"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/viewDividerTwo" />-->
 
         <ImageView
             android:id="@+id/drivingCurrentTractorImageView"
@@ -229,23 +241,23 @@
 
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/finishFloatingActionButton"
+        android:id="@+id/pauseFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:clickable="true"
-        android:text="Pause"
+        android:text="Start"
         android:textAllCaps="false"
         android:textColor="@color/colorWhite"
         app:backgroundTint="@color/colorAgricircle"
-        app:icon="@drawable/ic_pause_circle_outline_black_24dp"
+        app:icon="@drawable/ic_play_circle_outline_black_24dp"
         app:iconTint="@color/colorWhite"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineFiftyAll" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/pauseFloatingActionButton"
+        android:id="@+id/finishFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

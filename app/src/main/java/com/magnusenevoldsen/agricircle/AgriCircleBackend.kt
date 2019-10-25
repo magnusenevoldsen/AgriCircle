@@ -194,7 +194,7 @@ object AgriCircleBackend {
                 val companyId : Int = companyIdList[i]
 
                 //Request body string for fields
-                val requestBodyString = "{\n    \"operationName\": \"fields\",\n    \"variables\": {\n    \t\"options\":\n    \t{\n        \t\"companyId\": $companyId,\n        \t\"year\": $year\n    \t}\n    },\n    \"query\": \"query fields(\$options: LayersInput!) {\\n  fields(options: \$options) {\\n   id\\n   company_id\\n   layer_type\\n   name\\n   shape\\n    __typename\\n  }\\n}\\n\"\n}"
+                val requestBodyString = "{\n    \"operationName\": \"fields\",\n    \"variables\": {\n    \t\"options\":\n    \t{\n        \t\"companyId\": $companyId,\n        \t\"year\": $year\n    \t}\n    },\n    \"query\": \"query fields(\$options: LayersInput!) {\\n  fields(options: \$options) {\\n   surface\\n   id\\n   active_crop_name\\n   active_crop_image_url\\n   center_point\\n   company_id\\n   layer_type\\n   name\\n   shape\\n    __typename\\n  }\\n}\\n\"\n}"
 
                 //Create the request body
                 val body = requestBodyString.toRequestBody("application/json".toMediaTypeOrNull())
@@ -234,8 +234,6 @@ object AgriCircleBackend {
                             var shapeCoordinatesFromJSON : ArrayList<LatLng> = ArrayList()
                             var shapeCoordinatesPath = bodyUserPath.getJSONObject(i).getJSONObject("shape").getJSONArray("coordinates").getJSONArray(0)
 
-                            var shapeCoordinatesIteratorFromJSON : Iterable<LatLng>
-
                             for (j in 0 until shapeCoordinatesPath.length()) {  //Lat og Lng ligger som Lng -> Lat i DB, så de er byttet om her.
                                 val lat = shapeCoordinatesPath.getJSONArray(j).getDouble(1)
                                 val lng = shapeCoordinatesPath.getJSONArray(j).getDouble(0)
@@ -243,12 +241,24 @@ object AgriCircleBackend {
                                 shapeCoordinatesFromJSON.add(coordinate)
                             }
 
+
+                            //Nye tilføjelser
+                            var surfaceFromJSON = bodyUserPath.getJSONObject(i).getDouble("surface")
+                            var activeCropNameFromJSON = bodyUserPath.getJSONObject(i).getString("active_crop_name")
+                            var activeCropImageUrlFromJSON = bodyUserPath.getJSONObject(i).getString("active_crop_image_url")
+                            var centerPointFromPath = bodyUserPath.getJSONObject(i).getJSONObject("center_point").getJSONArray("coordinates")
+                            var centerPointFromJSON = LatLng(centerPointFromPath.getDouble(1), centerPointFromPath.getDouble(0))
+
                             //Load into fields
                             val field = Field(
                                 id = idFromJSON,
                                 companyId = companyIdFromJSON,
                                 layerType = layerTypeFromJSON,
                                 name = nameFromJSON,
+                                surface = surfaceFromJSON,
+                                activeCropName = activeCropNameFromJSON,
+                                activeCropImageUrl = activeCropImageUrlFromJSON,
+                                centerPoint = centerPointFromJSON,
                                 shapeType = shapeTypeFromJSON,
                                 shapeCoordinates = shapeCoordinatesFromJSON
                             )

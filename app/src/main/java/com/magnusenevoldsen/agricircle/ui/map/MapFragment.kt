@@ -237,6 +237,10 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
             AgriCircleBackend.selectedField = fieldNumber
             fieldNameTextView.text = newFields[fieldNumber].name
+            fieldSizeTextView.text = newFields[fieldNumber].surface.toString()+" ha"
+
+            println("You clicked on field:")
+            println(newFields[fieldNumber].toString())
 
         }
     }

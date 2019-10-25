@@ -7,9 +7,18 @@ data class Field(var id : Int,
                  var layerType : String,
                  var name : String,
 
+                 var surface : Double,
+                 var activeCropName : String,
+                 var activeCropImageUrl : String,
+                 var centerPoint : LatLng,
+
                  var shapeType : String,
                  var shapeCoordinates : ArrayList<LatLng>
 )
+
+
+
+//surface\n    active_crop_name\n   active_crop_image_url\n   center_point\n
 
 
 //{

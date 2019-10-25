@@ -6,9 +6,12 @@ import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.SystemClock
+import android.widget.Chronometer
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import com.google.android.gms.location.*
@@ -16,17 +19,18 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.magnusenevoldsen.agricircle.AgriCircleBackend
 import com.magnusenevoldsen.agricircle.MainActivity
 import com.magnusenevoldsen.agricircle.R
 import com.magnusenevoldsen.agricircle.ui.workspace.WorkspaceInfoFragment
+import kotlinx.android.synthetic.main.fragment_workspace_info.view.*
 import java.sql.Time
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.collections.ArrayList
 
 class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -35,7 +39,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     private val zoom : Float = 18.0f
     private var locationRequest : LocationRequest? = null
     private var fusedLocationClient : FusedLocationProviderClient? = null
-    private var updatesOn = true
     private var locationCallback : LocationCallback? = null
     private val MY_PERMISSION_FINE_LOCATION = 101
     private var speedCurrentLocation : LatLng? = null
@@ -48,13 +51,22 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     var fieldPictureImageView : ImageView? = null
     var fieldNameTextView : TextView? = null
     var fieldWorkTextView : TextView? = null
-    var timeTextView : TextView? = null
     var yourSpeedTextView : TextView? = null
     var yourSpeedNumberTextView : TextView? = null
     var suggestedSpeedTextView : TextView? = null
     var yourTractorImageView : ImageView? = null
     var suggestedSpeedNumberTextView : TextView? = null
     var suggestedTractorImageView : ImageView? = null
+    var finishFAB : ExtendedFloatingActionButton? = null
+    var pauseFAB : ExtendedFloatingActionButton? = null
+
+    //Track
+    var trackArray : ArrayList<LatLng> = ArrayList()
+
+    //Time
+    private var playOrPause : Boolean = false
+    var pauseOffset : Long = 0
+    var timeTextView : Chronometer? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,11 +88,18 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         fieldWorkTextView = findViewById(R.id.drivingWorkTextView)
 
         //Field progress
-        timeTextView = findViewById(R.id.drivingTimeTextView)
         yourSpeedTextView = findViewById(R.id.drivingCurrentSpeedTextView)
         yourSpeedNumberTextView = findViewById(R.id.drivingNumberCurrentSpeedTextView)
         suggestedSpeedTextView = findViewById(R.id.drivingSuggestedSpeedTextView)
         suggestedSpeedNumberTextView = findViewById(R.id.drivingNumberSuggestedSpeedTextView)
+
+        //Time
+        timeTextView = findViewById(R.id.drivingTimeTextView)
+//        timeTextView!!.format = "Time: %s"
+
+//        timeTextView!!.setOnChronometerTickListener {
+//            timeTextView!!.base = SystemClock.elapsedRealtime()
+//        }
 
         //Tractors
         yourTractorImageView = findViewById(R.id.drivingCurrentTractorImageView)
@@ -93,15 +112,16 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         suggestedTractorImageView!!.setColorFilter(colorGreen)
 
         //Buttons
-        val finishFAB : ExtendedFloatingActionButton = findViewById(R.id.finishFloatingActionButton)
-        val pauseFAB : ExtendedFloatingActionButton = findViewById(R.id.pauseFloatingActionButton)
+        finishFAB = findViewById(R.id.finishFloatingActionButton)
+        pauseFAB = findViewById(R.id.pauseFloatingActionButton)
+
 
         //Click Listeners
-        finishFAB.setOnClickListener {
+        finishFAB!!.setOnClickListener {
             finishSession()
         }
 
-        pauseFAB.setOnClickListener {
+        pauseFAB!!.setOnClickListener {
             pauseSession()
         }
 
@@ -133,7 +153,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                 super.onLocationResult(p0)
                 for (location in p0!!.locations) {
                     //Update UI
-                    if (location != null && updatesOn) {
+                    if (location != null && playOrPause) {
                         val currentLocation = LatLng(location.latitude, location.longitude)
                         mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation))
 //                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))   //Brug animateCamera eller moveCamera
@@ -141,6 +161,25 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                         println("Lat = "+currentLocation.latitude+", Lng = "+currentLocation.longitude+"")
 
 
+// -----------------------------------------------------------------------------------------------------------------------------------------
+                        // Draw line
+                        drawTrack(currentLocation)
+
+
+
+
+
+
+
+// -----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+// -----------------------------------------------------------------------------------------------------------------------------------------
+                        //  Calculate speed
 
                         println("----------------------------------")
                         println("TIME")
@@ -166,6 +205,10 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                             println("----------------------------------")
 //                        speedCurrently = speedCurrently / (lastLocationTime - currentLocationTime.to)
                         }
+
+// -----------------------------------------------------------------------------------------------------------------------------------------
+
+
 
 
 
@@ -204,6 +247,42 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         //Update image
     }
 
+    fun drawTrack(location : LatLng) {
+        //Add location to array
+        trackArray.add(location)
+
+        //Add a marker
+        addCustomMarker(location)
+
+        //Get nr. of tracks
+        var amountOfTracks = trackArray.size
+
+        //Draw the track
+        if (amountOfTracks >= 2){
+            var poly : Polyline = mMap.addPolyline(
+                PolylineOptions()
+                    .clickable(false)
+                    .add(trackArray[amountOfTracks-2],
+                        trackArray[amountOfTracks-1])
+            )
+            poly.color = ContextCompat.getColor(this, R.color.colorPolygonDriving)
+        }
+
+        println("-----------------------------------------------")
+        println("Time be like : " + SystemClock.elapsedRealtime())
+        println("-----------------------------------------------")
+
+    }
+
+    fun addCustomMarker(location : LatLng) {
+        mMap.addMarker(MarkerOptions().position(location))
+    }
+
+
+    fun calculateSpeed() {
+
+    }
+
 
     fun finishSession () {
         //Save progress
@@ -215,14 +294,39 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     fun pauseSession () {
         //Pause session
+        playOrPause = !playOrPause
+        switchPlayPause()
+        startStopChronometer()
 
-        //Currently just goes back
-        super.onBackPressed() //Remove this
+    }
+
+    fun switchPlayPause() {
+        if (playOrPause) {  //Started
+            pauseFAB!!.setIconResource(R.drawable.ic_pause_circle_outline_black_24dp)
+            pauseFAB!!.text = "Pause"
+        } else { //Stopped
+            pauseFAB!!.setIconResource(R.drawable.ic_play_circle_outline_black_24dp)
+            pauseFAB!!.text = "Start"
+        }
+    }
+
+    fun startStopChronometer() {
+        if (playOrPause) {  //Started
+            timeTextView!!.base = SystemClock.elapsedRealtime() - pauseOffset
+            timeTextView!!.start()
+        } else {    //Stopped
+            timeTextView!!.stop()
+            pauseOffset = SystemClock.elapsedRealtime() - timeTextView!!.base;
+        }
+    }
+
+    fun resetChronometer() {
+        timeTextView!!.base = SystemClock.elapsedRealtime()
+        pauseOffset = 0
     }
 
     override fun onResume() {
         super.onResume()
-//        if (updatesOn)
         startLocationUpdates()
     }
 
