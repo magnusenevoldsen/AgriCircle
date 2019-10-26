@@ -1,5 +1,6 @@
 package com.magnusenevoldsen.agricircle.ui.map
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,11 +8,14 @@ import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.magnusenevoldsen.agricircle.AgriCircleBackend
+import com.magnusenevoldsen.agricircle.LoginActivity
+import com.magnusenevoldsen.agricircle.MainActivity
 import com.magnusenevoldsen.agricircle.R
 import com.squareup.picasso.Picasso
 
@@ -20,6 +24,7 @@ class SettingsFragment : Fragment() {
     private lateinit var settingsViewModel: SettingsViewModel
     var userImageView : ImageView? = null
     var userWebView : WebView? = null
+    var logOutButton : Button? = null
 
 
     override fun onCreateView(
@@ -68,6 +73,12 @@ class SettingsFragment : Fragment() {
             AgriCircleBackend.loadUser()
         }
 
+        logOutButton = root!!.findViewById(R.id.logOutButton)
+        logOutButton!!.setOnClickListener {
+            val intent = Intent (activity, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            activity!!.startActivity(intent)
+        }
 
 
 

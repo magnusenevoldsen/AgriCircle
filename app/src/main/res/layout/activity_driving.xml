@@ -15,11 +15,13 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <ImageView
+        <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/drivingIconImageView"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="8dp"
+            app:civ_border="false"
+            app:civ_circle_color="@color/colorAgricircle"
             android:contentDescription="@android:string/fingerprint_icon_content_description"
             app:layout_constraintEnd_toStartOf="@+id/guidelineTwenty"
             app:layout_constraintStart_toStartOf="parent"

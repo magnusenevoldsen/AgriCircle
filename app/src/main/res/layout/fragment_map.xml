@@ -88,15 +88,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fieldSizeTextView" />
 
-        <ImageView
+
+        <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/drivingIconImageView"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="8dp"
+            app:civ_border="false"
+            app:civ_circle_color="@color/colorAgricircle"
+            android:src="@drawable/agricircle_logo_temporary"
             app:layout_constraintEnd_toStartOf="@+id/guidelineTwenty"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/viewDividerOne"
-            app:srcCompat="@drawable/agricircle_logo_temporary" />
+            app:layout_constraintTop_toBottomOf="@+id/viewDividerOne"/>
+
+<!--        <ImageView-->
+<!--            android:id="@+id/drivingIconImageView"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/guidelineTwenty"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/viewDividerOne"-->
+<!--            app:srcCompat="@drawable/agricircle_logo_temporary" />-->
 
         <TextView
             android:id="@+id/drivingFieldTextView"
@@ -150,15 +163,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/drivingIconImageView" />
 
-        <ImageView
+        <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/actionTwoImageView"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="8dp"
+            app:civ_border="false"
+            app:civ_circle_color="@color/colorAgricircle"
             app:layout_constraintEnd_toStartOf="@+id/guidelineTwenty"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewDividerTwo"
             app:srcCompat="@drawable/agricircle_logo_temporary" />
+
+<!--        <ImageView-->
+<!--            android:id="@+id/actionTwoImageView"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/guidelineTwenty"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/viewDividerTwo"-->
+<!--            app:srcCompat="@drawable/agricircle_logo_temporary" />-->
 
         <TextView
             android:id="@+id/actionTwoTextView"

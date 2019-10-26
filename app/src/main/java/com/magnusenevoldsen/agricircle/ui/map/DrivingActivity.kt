@@ -22,10 +22,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.shape.RoundedCornerTreatment
 import com.magnusenevoldsen.agricircle.AgriCircleBackend
 import com.magnusenevoldsen.agricircle.MainActivity
 import com.magnusenevoldsen.agricircle.R
 import com.magnusenevoldsen.agricircle.ui.workspace.WorkspaceInfoFragment
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_workspace_info.view.*
 import java.sql.Time
 import java.time.LocalDateTime
@@ -240,11 +242,16 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun setupUI() {
+        //Update field name
         fieldNameTextView!!.text = AgriCircleBackend.fields[AgriCircleBackend.selectedField].name
         //Update workitem text
         //Update timer
         //Update speed
         //Update image
+        var imageUrl : String = AgriCircleBackend.fields[AgriCircleBackend.selectedField].activeCropImageUrl
+        if (imageUrl != null){
+            Picasso.get().load(imageUrl).into(fieldPictureImageView)
+        }
     }
 
     fun drawTrack(location : LatLng) {

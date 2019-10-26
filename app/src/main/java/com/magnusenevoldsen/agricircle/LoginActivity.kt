@@ -40,8 +40,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        AgriCircleBackend.fields.clear()
-        AgriCircleBackend.companies.clear()
+        resetUserDataOnlogout()
         loginButton!!.isClickable = true
     }
 
@@ -146,6 +145,13 @@ class LoginActivity : AppCompatActivity() {
     fun goToNextScreen () {
         val goToMainActivity = Intent(this, MainActivity::class.java)//.apply { putExtra(EXTRA_MESSAGE, message) }
         startActivity(goToMainActivity)
+    }
+
+    fun resetUserDataOnlogout() {
+        AgriCircleBackend.fields.clear()
+        AgriCircleBackend.companies.clear()
+        AgriCircleBackend.userWasLoadedCorrectly = false
+        AgriCircleBackend.companyWasLoadedCorrectly = false
     }
 
 

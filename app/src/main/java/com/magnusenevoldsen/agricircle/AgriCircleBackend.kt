@@ -25,8 +25,8 @@ object AgriCircleBackend {
     var companies : ArrayList<Company> = ArrayList()
     var fields : ArrayList<Field> = ArrayList()
     var selectedField : Int = 0
-    private var userWasLoadedCorrectly : Boolean = false
-    private var companyWasLoadedCorrectly : Boolean = false
+    var userWasLoadedCorrectly : Boolean = false
+    var companyWasLoadedCorrectly : Boolean = false
     private val client = OkHttpClient()
 
     fun login (email : String, password : String) : Boolean {

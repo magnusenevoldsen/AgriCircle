@@ -8,8 +8,8 @@
 
     <WebView
         android:id="@+id/userWebView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="40dp"
         android:contentDescription="@string/userimage"
         android:src="@drawable/agricircle_logo_temporary"
@@ -17,11 +17,13 @@
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/userImageView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="40dp"
+        app:civ_border="false"
+        app:civ_circle_color="@color/colorAgricircle"
         android:contentDescription="@string/userimage"
         android:src="@drawable/agricircle_logo_temporary"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
@@ -118,7 +120,7 @@
 
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/loginButton"
+        android:id="@+id/logOutButton"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="0dp"
         android:layout_height="60dp"
