@@ -3,6 +3,8 @@ package com.magnusenevoldsen.agricircle.ui.map
 import android.annotation.TargetApi
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
+import android.location.LocationManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -33,6 +35,7 @@ import java.sql.Time
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.absoluteValue
 
 class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -69,6 +72,12 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     private var playOrPause : Boolean = false
     var pauseOffset : Long = 0
     var timeTextView : Chronometer? = null
+
+    //Calculations
+    var oldLocationSave : LatLng? = null
+    var newLocationSave : LatLng? = null
+    var oldTimeSave : Long? = null
+    var newTimeSave : Long? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -185,13 +194,72 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                         // Draw line
                         drawTrack(currentLocation)
 
-
-
-
-
-
-
 // -----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+                        //New test
+
+                        //Set time
+                        if (newTimeSave != null) {
+                            oldTimeSave = newTimeSave
+                        }
+                        newTimeSave = location.elapsedRealtimeNanos
+
+                        //Set location
+                        if (newLocationSave != null) {
+                            oldLocationSave = newLocationSave
+                        }
+                        newLocationSave = LatLng(location.latitude, location.longitude)
+
+                        if (oldTimeSave != null) {
+                            println("----------------------------------")
+                            println("TIME")
+                            var time = calculateTime(oldTimeSave!!, newTimeSave!!)
+                            println(time)
+                            println("In seconds, that is : "+ (time / 1000000000)+ " seconds")
+                        }
+
+                        //Set location
+                        if (oldLocationSave != null) {
+                            println("----------------------------------")
+                            println("Distance")
+                            var distance = calculateDistance(oldLocationSave!!, newLocationSave!!)
+                            println(distance)
+
+
+
+                            var time = calculateTime(oldTimeSave!!, newTimeSave!!)
+
+                            println("----------------------------------")
+                            println("Speed")
+                            var speed = calculateSpeed(distance, time)
+                            println(speed)
+
+                            yourSpeedNumberTextView!!.text = ""+speed
+
+
+                        }
+
+
+
+                        println("----------------------------------")
+                        println("stats")
+                        println("old time : "+oldTimeSave)
+                        println("new time : "+newTimeSave)
+                        println("old location : "+oldLocationSave)
+                        println("new location : "+newLocationSave)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -201,30 +269,30 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 // -----------------------------------------------------------------------------------------------------------------------------------------
                         //  Calculate speed
 
-                        println("----------------------------------")
-                        println("TIME")
-                        lastLocationTime = currentLocationTime
-                        currentLocationTime = System.currentTimeMillis()
-                        println("Last time : $lastLocationTime")
-                        println("Current time : $currentLocationTime")
-
-                        println("----------------------------------")
-                        println("LOCATION")
-                        speedLastLocation = speedCurrentLocation
-                        speedCurrentLocation = currentLocation
-                        println("Last location : $speedLastLocation")
-                        println("Current location : $speedCurrentLocation")
-
-                        if (speedLastLocation != null) {
-                            println("----------------------------------")
-                            println("CALCULATION")
-                            speedCurrently = Math.sqrt(
-                                Math.pow(speedCurrentLocation!!.longitude - speedLastLocation!!.longitude, 2.0)
-                                        +Math.pow(speedCurrentLocation!!.latitude - speedLastLocation!!.latitude, 2.0)
-                            )
-                            println("----------------------------------")
-//                        speedCurrently = speedCurrently / (lastLocationTime - currentLocationTime.to)
-                        }
+//                        println("----------------------------------")
+//                        println("TIME")
+//                        lastLocationTime = currentLocationTime
+//                        currentLocationTime = System.currentTimeMillis()
+//                        println("Last time : $lastLocationTime")
+//                        println("Current time : $currentLocationTime")
+//
+//                        println("----------------------------------")
+//                        println("LOCATION")
+//                        speedLastLocation = speedCurrentLocation
+//                        speedCurrentLocation = currentLocation
+//                        println("Last location : $speedLastLocation")
+//                        println("Current location : $speedCurrentLocation")
+//
+//                        if (speedLastLocation != null) {
+//                            println("----------------------------------")
+//                            println("CALCULATION")
+//                            speedCurrently = Math.sqrt(
+//                                Math.pow(speedCurrentLocation!!.longitude - speedLastLocation!!.longitude, 2.0)
+//                                        +Math.pow(speedCurrentLocation!!.latitude - speedLastLocation!!.latitude, 2.0)
+//                            )
+//                            println("----------------------------------")
+////                        speedCurrently = speedCurrently / (lastLocationTime - currentLocationTime.to)
+//                        }
 
 // -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -293,9 +361,9 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
             poly.color = ContextCompat.getColor(this, R.color.colorPolygonDriving)
         }
 
-        println("-----------------------------------------------")
-        println("Time be like : " + SystemClock.elapsedRealtime())
-        println("-----------------------------------------------")
+//        println("-----------------------------------------------")
+//        println("Time be like : " + SystemClock.elapsedRealtime())
+//        println("-----------------------------------------------")
 
     }
 
@@ -304,8 +372,58 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    fun calculateSpeed() {
+    fun calculateSpeed(distanceTraveled : Float, timeTraveled : Long) : Float {
+        //We are given nano seconds and meters
 
+        var time = timeTraveled
+        var distance = distanceTraveled
+        var kmh : Float = 0f
+
+        //Nanoseconds to hours
+        time = time / (1000000000 * 60 * 60)    //1000000000 makes it seconds -> minutes -> hours
+
+
+        println("distance in meters = $distance")
+        //Meters to kms
+        distance = distance / 1000 //Makes it km
+
+
+        var mps = (distance / (timeTraveled / 1000000000))
+        println("mps = $mps")
+
+        println("time = $time")
+        println("distance = $distance")
+
+
+        // km/hour
+        kmh = distance / time
+        println("--------")
+        println("Float : $kmh")
+//        println("Double : ${kmh.toDouble()}")
+//        println("Big decimal : ${kmh.toBigDecimal()}")
+//        println("Int : ${kmh.toInt()}")
+
+        return kmh
+    }
+
+
+    fun calculateTime (oldTime : Long, newTime : Long) : Long {
+        return newTime-oldTime
+    }
+
+    fun calculateDistance (oldLocation : LatLng, newLocation : LatLng) : Float {
+        var fromLocation = Location(LocationManager.GPS_PROVIDER)
+        fromLocation.latitude = oldLocation.latitude
+        fromLocation.longitude = oldLocation.longitude
+
+        var toLocation = Location(LocationManager.GPS_PROVIDER)
+        toLocation.latitude = newLocation.latitude
+        toLocation.longitude = newLocation.longitude
+
+
+        var distance = fromLocation.distanceTo(toLocation)
+
+        return distance
     }
 
 
