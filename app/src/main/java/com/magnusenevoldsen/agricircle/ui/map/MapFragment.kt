@@ -1,23 +1,24 @@
 package com.magnusenevoldsen.agricircle.ui.map
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -34,6 +35,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.magnusenevoldsen.agricircle.AgriCircleBackend
+import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.model.Field
 import kotlinx.android.synthetic.main.fragment_map.*
 
@@ -111,6 +113,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         }
         finishFloatingActionButton!!.setOnClickListener {
             finishedAddingPointsButtonClicked()
+            toggleActionButtons(true)
+            toggleCrosshair(false)
+            toggleTopView(false)
         }
 
 
@@ -150,8 +155,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
             val field0 = AgriCircleBackend.fields[counter].centerPoint
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(field0, zoom))
-
-            sendMessageToUser(root!!, "Field : ${AgriCircleBackend.fields[counter].name}")
 
             var countMax = newFields.size - 1 //7 fields -> 0..6
             if (counter < countMax)
@@ -301,8 +304,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
 
 
-
-
 //        Current location
 //        Lat = 55.5756983, Lng = 11.5702983
 
@@ -380,9 +381,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         //Toggle Floating Action Buttons
         toggleActionButtons(false)
 
-        //Counter for nr. of points
-        var pointCounter : Int = 0
-
         //Toggle editing
         editingFields = true
     }
@@ -399,8 +397,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                 .image(it)
                 .clickable(true)
                 .position(location, 10f, 10f)
-        };
-        var overlay : GroundOverlay = mMap.addGroundOverlay(markerOverlay);
+        }
+        var overlay : GroundOverlay = mMap.addGroundOverlay(markerOverlay)
         groundOverlayArray.add(overlay)
 
 
@@ -409,9 +407,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         //Get nr. of tracks
         var amountOfTracks = newFieldLocations.size
-
-
-        sendMessageToUser(root!!, ""+amountOfTracks)
 
         // calc dist
         if (amountOfTracks >= 2) {
@@ -432,26 +427,11 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         if (doneEditingFields) {
             newFieldLocations.removeAt(newFieldLocations.size - 1)
             newFieldLocations.add(newFieldLocations[0])
-
-            //Go to next screen
-
-            //Go to new screen to type field info -> bring array
-
-            //On new screen ->
-
-            //Input stuff from logbog
-
-            //Push to local sqlite array (implement this as well)
-
-
+            enterFieldInfoDialog()
         }
 
-
-
         //Draw the track
-        //If point != first
-        //Draw line between points
-        if (newFieldLocations.size >= 2) {
+        if (amountOfTracks >= 2) {
 
             var poly : Polyline = mMap.addPolyline(
                 PolylineOptions()
@@ -464,6 +444,18 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         }
 
+    }
+
+    fun goToUploadFieldView () {
+        //Go to next screen
+
+        //Go to new screen to type field info -> bring array
+
+        //On new screen ->
+
+        //Input stuff from logbog
+
+        //Push to local sqlite array (implement this as well)
     }
 
 
@@ -487,6 +479,48 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             draw(Canvas(bitmap))
             BitmapDescriptorFactory.fromBitmap(bitmap)
         }
+    }
+
+
+    private fun enterFieldInfoDialog () {
+        var builder = AlertDialog.Builder(root!!.context)
+        builder.setTitle("Field properties")
+
+        var layout = LinearLayout(root!!.context)
+        layout.orientation = LinearLayout.VERTICAL
+
+
+        var fieldNameInput = EditText(root!!.context)
+        fieldNameInput.inputType = InputType.TYPE_CLASS_TEXT
+        fieldNameInput.hint = "Field name"
+        layout.addView(fieldNameInput)
+
+        var fieldIdInput = EditText(root!!.context)
+        fieldIdInput.inputType = InputType.TYPE_CLASS_NUMBER
+        fieldIdInput.hint = "Field ID"
+
+        layout.addView(fieldIdInput)
+
+        builder.setView(layout)
+
+        builder.setPositiveButton(android.R.string.yes) {dialog, which ->
+            //Upload
+            LocalBackend.prepareFieldForLocalUpload(
+                array = newFieldLocations,
+                fieldName = fieldNameInput.text.toString(),
+                fieldId = fieldIdInput.text.toString().toInt()
+            )
+        }
+
+        builder.setNegativeButton(android.R.string.no) {dialog, which ->
+            finishedAddingPointsButtonClicked()
+        }
+
+        builder.setOnCancelListener {
+            finishedAddingPointsButtonClicked()
+        }
+
+        builder.show()
     }
 
 
