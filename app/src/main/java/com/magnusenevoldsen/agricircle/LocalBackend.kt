@@ -4,12 +4,20 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.SphericalUtil
 import com.magnusenevoldsen.agricircle.model.Field
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 
 object LocalBackend {
 
 
     private var field : Field? = null
+
+    var localFields : ArrayList<Field> = ArrayList()
+
+    fun loadLocalFields () {
+        //TODO load fields from local db and put into localFields array
+    }
 
 
     fun uploadFieldToLocalArray() {
@@ -18,6 +26,7 @@ object LocalBackend {
         //Push into db
 
         //Push into AgricircleBackend Array
+        field?.let { localFields.add(it) }
 
     }
 
@@ -49,12 +58,20 @@ object LocalBackend {
             shapeType = shapeType,
             shapeCoordinates = array
             )
-
+        uploadFieldToLocalArray()
     }
 
     fun calculateSize (array : ArrayList<LatLng>) : Double {
         var size : Double = SphericalUtil.computeArea(array)
+        size = (size / 10000)
+        size = roundOffDecimal(size)
         return size
+    }
+
+    fun roundOffDecimal(number: Double): Double {
+        val decimalFormat = DecimalFormat("#.##")
+        decimalFormat.roundingMode = RoundingMode.CEILING
+        return decimalFormat.format(number).toDouble()
     }
 
     fun calculateCenterpoint (array : ArrayList<LatLng>) : LatLng {

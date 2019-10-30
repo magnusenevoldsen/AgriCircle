@@ -113,9 +113,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         }
         finishFloatingActionButton!!.setOnClickListener {
             finishedAddingPointsButtonClicked()
-            toggleActionButtons(true)
-            toggleCrosshair(false)
-            toggleTopView(false)
         }
 
 
@@ -215,47 +212,93 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         //Takes the fields which are from the first company of the user
         println("Making a new fields list")
         for (i in 0 until AgriCircleBackend.fields.size)
-//            if (AgriCircleBackend.fields[i].companyId == AgriCircleBackend.companies[0].id)
                 newFields.add(AgriCircleBackend.fields[i])
+
+        for (i in 0 until LocalBackend.localFields.size)
+            newFields.add(LocalBackend.localFields[i])
+
         println("Fields : ")
         for (i in 0 until newFields.size)
             println("Field $i : ${newFields[i]}")
     }
+
+
+
 
     private fun drawFields () {
         for (i in 0 until newFields.size) {
             var poly : Polygon = mMap.addPolygon(
                 PolygonOptions()
                     .clickable(true)
-                    .addAll(AgriCircleBackend.fields[i].shapeCoordinates)
+                    .addAll(newFields[i].shapeCoordinates)
             )
 
-            poly.tag = AgriCircleBackend.fields[i].id
+            poly.tag = newFields[i].id
             poly.strokeColor = ContextCompat.getColor(activity!!, R.color.colorPolygonBorder)
             poly.fillColor = ContextCompat.getColor(activity!!, R.color.colorPolygonFill)
         }
     }
 
-    private fun makePolygonClickListeners () {
+//    private fun drawLocalFields () {
+//
+//        //Remove
+//
+//        for (i in 0 until LocalBackend.localFields.size) {
+//            var poly : Polygon = mMap.addPolygon(
+//                PolygonOptions()
+//                    .clickable(true)
+//                    .addAll(LocalBackend.localFields[i].shapeCoordinates)
+//            )
+//
+//            poly.tag = LocalBackend.localFields[i].id
+//            poly.strokeColor = ContextCompat.getColor(activity!!, R.color.colorPolygonBorder)
+//            poly.fillColor = ContextCompat.getColor(activity!!, R.color.colorPolygonFill)
+//        }
+//    }
+
+//    private fun makePolygonClickListeners () {
+//        mMap.setOnPolygonClickListener { polygon ->
+//            //            if (constToggle) constLayout!!.visibility = View.GONE
+////            else
+//            toggleTopView(true)
+//            constToggle = !constToggle
+//
+//            //Update UI to field ->
+//            val fieldId = polygon.tag.toString().toInt()
+//            var fieldNumber : Int = -1
+//            for (i in 0 until newFields.size)
+//                if (newFields[i].id == fieldId)
+//                    fieldNumber = i
+//
+//            AgriCircleBackend.selectedField = fieldNumber
+//            fieldNameTextView.text = newFields[fieldNumber].name
+//            fieldSizeTextView.text = newFields[fieldNumber].surface.toString()+" ha"
+//
+//            println("You clicked on field:")
+//            println(newFields[fieldNumber].toString())
+//
+//        }
+//    }
+
+    private fun makePolygonClickListeners (array : ArrayList<Field>) {
         mMap.setOnPolygonClickListener { polygon ->
             //            if (constToggle) constLayout!!.visibility = View.GONE
 //            else
             toggleTopView(true)
-            constToggle = !constToggle
 
             //Update UI to field ->
             val fieldId = polygon.tag.toString().toInt()
             var fieldNumber : Int = -1
-            for (i in 0 until newFields.size)
-                if (newFields[i].id == fieldId)
+            for (i in 0 until array.size)
+                if (array[i].id == fieldId)
                     fieldNumber = i
 
             AgriCircleBackend.selectedField = fieldNumber
-            fieldNameTextView.text = newFields[fieldNumber].name
-            fieldSizeTextView.text = newFields[fieldNumber].surface.toString()+" ha"
+            fieldNameTextView.text = array[fieldNumber].name
+            fieldSizeTextView.text = array[fieldNumber].surface.toString()+" ha"
 
             println("You clicked on field:")
-            println(newFields[fieldNumber].toString())
+            println(array[fieldNumber].toString())
 
         }
     }
@@ -299,9 +342,11 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         goToCompanyLocation()           //Move map to company location
         makeFieldList()                 //Sort field list to only include from one company
-        drawFields()                    //Draw fields on the map
-        makePolygonClickListeners()     //Add click listeners to the fields
+//        drawFields()                    //Draw fields on the map
+//        drawLocalFields()               //Draw locally stored fields on the map
+//        makePolygonClickListeners(AgriCircleBackend.fields)     //Add click listeners to the fields
 
+        redrawFields()
 
 
 //        Current location
@@ -446,16 +491,14 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     }
 
-    fun goToUploadFieldView () {
-        //Go to next screen
+    fun redrawFields() {
 
-        //Go to new screen to type field info -> bring array
+        newFields.clear()                       //Clear all fields
+        makeFieldList()                         //Make a new list
+        mMap.clear()                            //Clear the map
+        drawFields()                            //Draw fields on map
+        makePolygonClickListeners(newFields)    //Set click listeners
 
-        //On new screen ->
-
-        //Input stuff from logbog
-
-        //Push to local sqlite array (implement this as well)
     }
 
 
@@ -470,6 +513,11 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         groundOverlayArray.clear()
         polylineArray.clear()
         doneEditingFields = false
+
+
+        toggleActionButtons(true)
+        toggleCrosshair(false)
+        toggleTopView(false)
     }
 
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
@@ -510,6 +558,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                 fieldName = fieldNameInput.text.toString(),
                 fieldId = fieldIdInput.text.toString().toInt()
             )
+            redrawFields()
+            finishedAddingPointsButtonClicked()
         }
 
         builder.setNegativeButton(android.R.string.no) {dialog, which ->
