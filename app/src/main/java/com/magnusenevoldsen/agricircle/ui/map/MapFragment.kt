@@ -4,13 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Color
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -51,7 +58,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     //Polygons
     var newFields : ArrayList<Field> = ArrayList()
-    private var polyList : ArrayList<Polygon> = ArrayList()
 
     //Shared prefs
     var myPref : SharedPreferences? = null
@@ -65,6 +71,11 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
 
     //Add fields
+    private var editingFields : Boolean = false
+    private var doneEditingFields : Boolean = false
+    private var newFieldLocations : ArrayList<LatLng> = ArrayList()
+    private var groundOverlayArray : ArrayList<GroundOverlay> = ArrayList()
+    private var polylineArray : ArrayList<Polyline> = ArrayList()
     private var mapCrosshair : ImageView? = null
     private var addPointFloatingActionButton : ExtendedFloatingActionButton? = null
     private var finishFloatingActionButton : ExtendedFloatingActionButton? = null
@@ -89,15 +100,18 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapMapView) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        myPref = activity?.getPreferences(Context.MODE_PRIVATE)
-
         //Add new fields settings
         mapCrosshair = root!!.findViewById(R.id.mapCrosshair)
         mapCrosshair!!.setColorFilter(R.color.colorOrange)
         toggleCrosshair(false)
         addPointFloatingActionButton = root!!.findViewById(R.id.addPointFloatingActionButton)
         finishFloatingActionButton = root!!.findViewById(R.id.finishPointFloatingActionButton)
-        toggleActionButtons(true)
+        addPointFloatingActionButton!!.setOnClickListener {
+            addPointButtonClicked()
+        }
+        finishFloatingActionButton!!.setOnClickListener {
+            finishedAddingPointsButtonClicked()
+        }
 
 
         //Top layout
@@ -118,36 +132,14 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         }
 
 
-
-
-
-
-
-
-
         var counter : Int = 0
-
-
-
-
-
 
         //Buttons
 
         positionFAB = root!!.findViewById(R.id.positionFloatingActionButton)
         positionFAB!!.setColorFilter(Color.WHITE)
         positionFAB!!.setOnClickListener {
-//            updatesOn = !updatesOn
-//            mMap.isMyLocationEnabled = updatesOn
-
-
-            sendMessageToUser(root!!, "Draw a field")
-            // DRAW FIELD
             drawNewField()
-
-
-
-
         }
 
         fieldFAB = root!!.findViewById(R.id.fieldFloatingActionButton)
@@ -215,6 +207,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         return root
     }
 
+
     private fun makeFieldList () {
         //Takes the fields which are from the first company of the user
         println("Making a new fields list")
@@ -277,8 +270,11 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     override fun onResume() {
         super.onResume()
+        toggleActionButtons(true)
+        toggleCrosshair(false)
+        toggleTopView(false)
 //        if (updatesOn)
-            startLocationUpdates()
+//            startLocationUpdates()
     }
 
     override fun onPause() {
@@ -294,6 +290,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = false
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+
+
+        toggleActionButtons(true)
 
         goToCompanyLocation()           //Move map to company location
         makeFieldList()                 //Sort field list to only include from one company
@@ -347,18 +346,21 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private fun toggleActionButtons (toggle : Boolean) {
         //Show standard buttons and hide new field buttons
         if (toggle) {
-            fieldFloatingActionButton.visibility = View.VISIBLE
-            positionFloatingActionButton.visibility = View.VISIBLE
+            fieldFAB!!.visibility = View.VISIBLE
+            positionFAB!!.visibility = View.VISIBLE
 
             addPointFloatingActionButton!!.visibility = View.GONE
+            finishFloatingActionButton!!.visibility = View.GONE
 
 
         }
         //Show new field buttons and hide standard buttons
         else {
-            fieldFloatingActionButton.visibility = View.GONE
-            positionFloatingActionButton.visibility = View.GONE
+            fieldFAB!!.visibility = View.GONE
+            positionFAB!!.visibility = View.GONE
 
+            addPointFloatingActionButton!!.visibility = View.VISIBLE
+            finishFloatingActionButton!!.visibility = View.VISIBLE
         }
     }
 
@@ -366,49 +368,125 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         //Draw fields
 
+        //Toggle done editing
+        doneEditingFields = false
+
         //Show crosshair
         toggleCrosshair(true)
 
         //Hide top layout
         toggleTopView(false)
 
+        //Toggle Floating Action Buttons
+        toggleActionButtons(false)
+
         //Counter for nr. of points
         var pointCounter : Int = 0
 
-        //Show 'add point' button
+        //Toggle editing
+        editingFields = true
+    }
 
-        //On click
+    fun addPointButtonClicked() {
 
-            //Add point (little square)
-            mMap.addMarker(MarkerOptions().position(mMap.cameraPosition.target))
+        var location : LatLng = mMap.cameraPosition.target
 
-            //Push point to array
+        //Add point (little square)
 
-            //If point != first
-                //Draw line between points
+//
+        var markerOverlay = bitmapDescriptorFromVector(root!!.context, R.drawable.ic_stop_red_24dp)?.let {
+            GroundOverlayOptions()
+                .image(it)
+                .clickable(true)
+                .position(location, 10f, 10f)
+        };
+        var overlay : GroundOverlay = mMap.addGroundOverlay(markerOverlay);
+        groundOverlayArray.add(overlay)
 
-        //Add finish button
 
-        //On click
+        //Push point to array
+        newFieldLocations.add(location)
+
+        //Get nr. of tracks
+        var amountOfTracks = newFieldLocations.size
+
+
+        sendMessageToUser(root!!, ""+amountOfTracks)
+
+        // calc dist
+        if (amountOfTracks >= 2) {
+            var firstLocation = Location(LocationManager.GPS_PROVIDER)
+            firstLocation.latitude = newFieldLocations[0].latitude
+            firstLocation.longitude = newFieldLocations[0].longitude
+
+            var newestLocation = Location(LocationManager.GPS_PROVIDER)
+            newestLocation.latitude = newFieldLocations[amountOfTracks-1].latitude
+            newestLocation.longitude = newFieldLocations[amountOfTracks-1].longitude
+
+            if (firstLocation.distanceTo(newestLocation) < 3.0) {
+                doneEditingFields = true
+            }
+        }
+
+        //Push first LatLng to the array to make sure its all connected
+        if (doneEditingFields) {
+            newFieldLocations.removeAt(newFieldLocations.size - 1)
+            newFieldLocations.add(newFieldLocations[0])
+
+            //Go to next screen
 
             //Go to new screen to type field info -> bring array
 
-                //On new screen ->
+            //On new screen ->
 
-                //Input stuff from logbog
+            //Input stuff from logbog
 
-                //Push to local sqlite array (implement this as well)
-
-
+            //Push to local sqlite array (implement this as well)
 
 
-
-
-
-//        sendMessageToUser(root!!, ""+mMap.cameraPosition.target)
+        }
 
 
 
+        //Draw the track
+        //If point != first
+        //Draw line between points
+        if (newFieldLocations.size >= 2) {
+
+            var poly : Polyline = mMap.addPolyline(
+                PolylineOptions()
+                    .clickable(false)
+                    .add(newFieldLocations[amountOfTracks-2],
+                        newFieldLocations[amountOfTracks-1])
+            )
+            poly.color = ContextCompat.getColor(this.context!!, R.color.colorPolygonDriving)
+            polylineArray.add(poly)
+
+        }
+
+    }
+
+
+    fun finishedAddingPointsButtonClicked() {
+        for (i in 0 until groundOverlayArray.size)
+            groundOverlayArray[i].remove()
+
+        for (i in 0 until polylineArray.size)
+            polylineArray[i].remove()
+
+        newFieldLocations.clear()
+        groundOverlayArray.clear()
+        polylineArray.clear()
+        doneEditingFields = false
+    }
+
+    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+        return ContextCompat.getDrawable(context, vectorResId)?.run {
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+            val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+            draw(Canvas(bitmap))
+            BitmapDescriptorFactory.fromBitmap(bitmap)
+        }
     }
 
 

@@ -142,6 +142,24 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                     val currentLocation = LatLng(location.latitude, location.longitude)
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))   //Brug animateCamera eller moveCamera
                     mMap.addMarker(MarkerOptions().position(currentLocation).title("You are here"))
+
+                    println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    println("Location information:")
+                    println(""+location.toString())
+
+                    println("Accuracy : "+location.accuracy)
+                    println("Time : "+location.time)
+                    println("Altitude : "+location.altitude)
+                    println("Speed : "+location.speed)
+                    println("Elapsed Realtime Nanos : "+location.elapsedRealtimeNanos)
+
+
+
+
+                    println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+
+
                 }
             }
         } else {
