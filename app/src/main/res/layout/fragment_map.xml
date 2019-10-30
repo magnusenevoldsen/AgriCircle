@@ -271,6 +271,55 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_gps_fixed_white_24dp" />
 
+    <ImageView
+        android:id="@+id/mapCrosshair"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/mapMapView"
+        app:layout_constraintEnd_toEndOf="@+id/mapMapView"
+        app:layout_constraintStart_toStartOf="@+id/mapMapView"
+        app:layout_constraintTop_toTopOf="@+id/mapMapView"
+        app:srcCompat="@drawable/map_crosshair" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/addPointFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:text="Add point"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        app:backgroundTint="@color/colorOrange"
+        app:icon="@drawable/ic_add_black_24dp"
+        app:iconTint="@color/colorWhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guidelineFiftyAll" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/finishPointFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:text="Finish"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        app:backgroundTint="@color/colorOrange"
+        app:icon="@drawable/ic_stop_black_24dp"
+        app:iconTint="@color/colorWhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineFiftyAll"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineFiftyAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
 
     <!--    <com.google.android.gms.maps.MapView-->
     <!--        android:id="@+id/mapView"-->

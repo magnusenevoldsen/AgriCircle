@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.magnusenevoldsen.agricircle.AgriCircleBackend
@@ -55,7 +57,17 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     var myPref : SharedPreferences? = null
 
     //Test purposes
-    private var constToggle : Boolean = false
+    private var constToggle : Boolean = false           //Not used??????
+
+    //Standard Action Buttons
+    private var positionFAB : FloatingActionButton? = null
+    private var fieldFAB : FloatingActionButton? = null
+
+
+    //Add fields
+    private var mapCrosshair : ImageView? = null
+    private var addPointFloatingActionButton : ExtendedFloatingActionButton? = null
+    private var finishFloatingActionButton : ExtendedFloatingActionButton? = null
 
 
 
@@ -79,10 +91,19 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         myPref = activity?.getPreferences(Context.MODE_PRIVATE)
 
+        //Add new fields settings
+        mapCrosshair = root!!.findViewById(R.id.mapCrosshair)
+        mapCrosshair!!.setColorFilter(R.color.colorOrange)
+        toggleCrosshair(false)
+        addPointFloatingActionButton = root!!.findViewById(R.id.addPointFloatingActionButton)
+        finishFloatingActionButton = root!!.findViewById(R.id.finishPointFloatingActionButton)
+        toggleActionButtons(true)
+
 
         //Top layout
         constLayout = root!!.findViewById<ConstraintLayout>(R.id.mapConstraintLayout)
-        constLayout!!.visibility = View.GONE //Hide view initially
+        toggleTopView(false)
+
         val actionOneImageButton = root!!.findViewById<ImageButton>(R.id.actionOneImageButton)
         actionOneImageButton.setColorFilter(R.color.colorAgricircle)
         val actionTwoImageButton = root!!.findViewById<ImageButton>(R.id.actionTwoImageButton)
@@ -113,40 +134,38 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         //Buttons
 
-        val positionFAB : FloatingActionButton = root!!.findViewById(R.id.positionFloatingActionButton)
-        positionFAB.setColorFilter(Color.WHITE)
-        positionFAB.setOnClickListener {
+        positionFAB = root!!.findViewById(R.id.positionFloatingActionButton)
+        positionFAB!!.setColorFilter(Color.WHITE)
+        positionFAB!!.setOnClickListener {
 //            updatesOn = !updatesOn
 //            mMap.isMyLocationEnabled = updatesOn
 
 
+            sendMessageToUser(root!!, "Draw a field")
+            // DRAW FIELD
+            drawNewField()
 
 
 
 
+        }
 
-            val field0 = AgriCircleBackend.fields[counter].shapeCoordinates[0]
+        fieldFAB = root!!.findViewById(R.id.fieldFloatingActionButton)
+        fieldFAB!!.setColorFilter(Color.WHITE)
+        fieldFAB!!.setOnClickListener {
+
+            toggleCrosshair(false)
+
+            val field0 = AgriCircleBackend.fields[counter].centerPoint
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(field0, zoom))
 
-            sendMessageToUser(root!!, "Counter : $counter - Field : ${AgriCircleBackend.fields[counter].name}")
+            sendMessageToUser(root!!, "Field : ${AgriCircleBackend.fields[counter].name}")
 
             var countMax = newFields.size - 1 //7 fields -> 0..6
             if (counter < countMax)
                 counter ++
             else counter = 0
 
-
-        }
-
-        val fieldFAB : FloatingActionButton = root!!.findViewById(R.id.fieldFloatingActionButton)
-        fieldFAB.setColorFilter(Color.WHITE)
-        fieldFAB.setOnClickListener {
-//            sendMessageToUser(root!!, "Not implemented")
-
-            //Test purposes
-
-
-            mMap.clear() //Ikke korrekt funktion
         }
 
 
@@ -196,7 +215,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         return root
     }
 
-    fun makeFieldList () {
+    private fun makeFieldList () {
         //Takes the fields which are from the first company of the user
         println("Making a new fields list")
         for (i in 0 until AgriCircleBackend.fields.size)
@@ -207,7 +226,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             println("Field $i : ${newFields[i]}")
     }
 
-    fun drawFields () {
+    private fun drawFields () {
         for (i in 0 until newFields.size) {
             var poly : Polygon = mMap.addPolygon(
                 PolygonOptions()
@@ -221,11 +240,11 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         }
     }
 
-    fun makePolygonClickListeners () {
+    private fun makePolygonClickListeners () {
         mMap.setOnPolygonClickListener { polygon ->
             //            if (constToggle) constLayout!!.visibility = View.GONE
 //            else
-            constLayout!!.visibility = View.VISIBLE
+            toggleTopView(true)
             constToggle = !constToggle
 
             //Update UI to field ->
@@ -245,12 +264,12 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         }
     }
 
-    fun goToCompanyLocation () {
+    private fun goToCompanyLocation () {
         val companyLocation = AgriCircleBackend.companies[0].locationCoordinates
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(companyLocation, zoom))
     }
 
-    fun startLocationUpdates() {
+    private fun startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(root!!.context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient!!.requestLocationUpdates(locationRequest, locationCallback, null)
         }
@@ -303,18 +322,94 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         mySnackbar.show()
     }
 
-    fun startActivityOne() {
+    private fun startActivityOne() {
         //Needs data with the intent start : what activity etc
         val intent = Intent (activity, DrivingActivity::class.java)
         activity!!.startActivity(intent)
     }
 
-    fun startActivityTwo() {
+    private fun startActivityTwo() {
         //Needs data with the intent start : what activity etc
         val intent = Intent (activity, DrivingActivity::class.java)
         activity!!.startActivity(intent)
     }
 
+    private fun toggleCrosshair (toggle : Boolean) {
+        if (toggle) mapCrosshair!!.visibility = View.VISIBLE
+        else mapCrosshair!!.visibility = View.GONE
+    }
+
+    private fun toggleTopView (toggle : Boolean) {
+        if (toggle) constLayout!!.visibility = View.VISIBLE
+        else constLayout!!.visibility = View.GONE
+    }
+
+    private fun toggleActionButtons (toggle : Boolean) {
+        //Show standard buttons and hide new field buttons
+        if (toggle) {
+            fieldFloatingActionButton.visibility = View.VISIBLE
+            positionFloatingActionButton.visibility = View.VISIBLE
+
+            addPointFloatingActionButton!!.visibility = View.GONE
+
+
+        }
+        //Show new field buttons and hide standard buttons
+        else {
+            fieldFloatingActionButton.visibility = View.GONE
+            positionFloatingActionButton.visibility = View.GONE
+
+        }
+    }
+
+    private fun drawNewField() {
+
+        //Draw fields
+
+        //Show crosshair
+        toggleCrosshair(true)
+
+        //Hide top layout
+        toggleTopView(false)
+
+        //Counter for nr. of points
+        var pointCounter : Int = 0
+
+        //Show 'add point' button
+
+        //On click
+
+            //Add point (little square)
+            mMap.addMarker(MarkerOptions().position(mMap.cameraPosition.target))
+
+            //Push point to array
+
+            //If point != first
+                //Draw line between points
+
+        //Add finish button
+
+        //On click
+
+            //Go to new screen to type field info -> bring array
+
+                //On new screen ->
+
+                //Input stuff from logbog
+
+                //Push to local sqlite array (implement this as well)
+
+
+
+
+
+
+
+//        sendMessageToUser(root!!, ""+mMap.cameraPosition.target)
+
+
+
+    }
 
 
 
@@ -327,7 +422,28 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
 
 
-//        val textView: TextView = root.findViewById(R.id.text_home)
-//        mapViewModel.text.observe(this, Observer {
-//            textView.text = it
-//        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
