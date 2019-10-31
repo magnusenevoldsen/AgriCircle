@@ -64,15 +64,15 @@ object LocalBackend {
     fun calculateSize (array : ArrayList<LatLng>) : Double {
         var size : Double = SphericalUtil.computeArea(array)
         size = (size / 10000)
-        size = roundOffDecimal(size)
+//        size = roundOffDecimal(size)
         return size
     }
 
-    fun roundOffDecimal(number: Double): Double {
-        val decimalFormat = DecimalFormat("#.##")
-        decimalFormat.roundingMode = RoundingMode.CEILING
-        return decimalFormat.format(number).toDouble()
-    }
+//    fun roundOffDecimal(number: Double): Double {
+//        val decimalFormat = DecimalFormat("#.##")
+//        decimalFormat.roundingMode = RoundingMode.CEILING
+//        return decimalFormat.format(number).toDouble()
+//    }
 
     fun calculateCenterpoint (array : ArrayList<LatLng>) : LatLng {
         var builder = LatLngBounds.builder()
