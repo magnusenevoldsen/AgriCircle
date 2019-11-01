@@ -121,12 +121,14 @@ class LoginActivity : AppCompatActivity() {
 
 
     fun tryToLogin () {
-//        var email : String = usernameEditText!!.editText!!.text.toString()
-//        var password : String = passwordEditText!!.editText!!.text.toString()
+        var email : String = usernameEditText!!.editText!!.text.toString()
+        var password : String = passwordEditText!!.editText!!.text.toString()
 
-        val chosenUser : Int = 2 //1 for Jacob, 2 for Magnus
-        val email : String = SensitiveInfo.returnEmail(chosenUser)
-        val password : String = SensitiveInfo.returnPassword(chosenUser)
+        if (email.isEmpty() && password.isEmpty()) {
+            val chosenUser : Int = 2 //1 for Jacob, 2 for Magnus
+            email = SensitiveInfo.returnEmail(chosenUser)
+            password = SensitiveInfo.returnPassword(chosenUser)
+        }
 
         loginButton!!.isClickable = false
         loginAndHideKeyboard()

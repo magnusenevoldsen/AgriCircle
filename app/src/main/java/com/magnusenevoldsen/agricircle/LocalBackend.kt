@@ -11,40 +11,44 @@ import java.text.DecimalFormat
 object LocalBackend {
 
 
-    private var field : Field? = null
 
     var localFields : ArrayList<Field> = ArrayList()
+    var allFields : ArrayList<Field> = ArrayList()
 
     fun loadLocalFields () {
         //TODO load fields from local db and put into localFields array
     }
 
 
-    fun uploadFieldToLocalArray() {
+
+
+    fun uploadFieldToLocalArray(field : Field) {
         //TODO Use local variable field and upload it
 
         //Push into db
 
         //Push into AgricircleBackend Array
-        field?.let { localFields.add(it) }
+        localFields.add(field)
+        println("SÅ PRINTER VI FIELD -> $field")
+        println("SÅ PRINTER VI FIELD ARRAY -> $localFields")
 
     }
 
 
-    fun prepareFieldForLocalUpload (array : ArrayList<LatLng>, fieldName : String, fieldId : Int) {
+    fun prepareFieldForLocalUpload (arrayOfLatLng : ArrayList<LatLng>, fieldName : String, fieldId : Int) {
         var companyId : Int = 999999
-        if (AgriCircleBackend.companies.isEmpty())
+        if (!AgriCircleBackend.companies.isEmpty())
             companyId = AgriCircleBackend.companies[0].id
         var layerType = "field"
 
-        var size : Double = calculateSize(array)       //Surface
+        var size : Double = calculateSize(arrayOfLatLng)       //Surface
         var activeCrop = ""
         var activeCropUrl = ""
-        var centerPoint : LatLng = calculateCenterpoint(array)
+        var centerPoint : LatLng = calculateCenterpoint(arrayOfLatLng)
 
         var shapeType = "point"
 
-        field = Field(
+        var field = Field(
             id = fieldId,
             name = fieldName,
             companyId = companyId,
@@ -56,9 +60,9 @@ object LocalBackend {
             centerPoint = centerPoint,
 
             shapeType = shapeType,
-            shapeCoordinates = array
+            shapeCoordinates = arrayOfLatLng
             )
-        uploadFieldToLocalArray()
+        uploadFieldToLocalArray(field)
     }
 
     fun calculateSize (array : ArrayList<LatLng>) : Double {

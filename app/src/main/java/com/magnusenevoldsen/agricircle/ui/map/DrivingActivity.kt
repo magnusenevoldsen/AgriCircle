@@ -9,13 +9,13 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.widget.Chronometer
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.FragmentManager
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -23,19 +23,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.shape.RoundedCornerTreatment
 import com.magnusenevoldsen.agricircle.AgriCircleBackend
-import com.magnusenevoldsen.agricircle.MainActivity
+import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.R
-import com.magnusenevoldsen.agricircle.ui.workspace.WorkspaceInfoFragment
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_workspace_info.view.*
-import java.sql.Time
-import java.time.LocalDateTime
-import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.absoluteValue
 
 class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -196,59 +188,77 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
 // -----------------------------------------------------------------------------------------------------------------------------------------
 
+                        val kmh = (location.speed * 3.6)
+                        val kmhString = kmh.toString().substring(0, 3)
+
+//                        println("SPEED mps : "+location.speed)
+//                        println("SPEED kmh : "+(location.speed * 3.6))
+//                        println("Accu = "+location.accuracy)
+
+                        if (kmh > 40 && kmh < 60)
+                            yourTractorImageView!!.setColorFilter(Color.GREEN)
+                        else
+                            yourTractorImageView!!.setColorFilter(Color.RED)
+
+
+
+
+                        yourSpeedNumberTextView!!.text = kmhString + " km/h"
+
+
 
 
                         //New test
 
                         //Set time
-                        if (newTimeSave != null) {
-                            oldTimeSave = newTimeSave
-                        }
-                        newTimeSave = location.elapsedRealtimeNanos
-
-                        //Set location
-                        if (newLocationSave != null) {
-                            oldLocationSave = newLocationSave
-                        }
-                        newLocationSave = LatLng(location.latitude, location.longitude)
-
-                        if (oldTimeSave != null) {
-                            println("----------------------------------")
-                            println("TIME")
-                            var time = calculateTime(oldTimeSave!!, newTimeSave!!)
-                            println(time)
-                            println("In seconds, that is : "+ (time / 1000000000)+ " seconds")
-                        }
-
-                        //Set location
-                        if (oldLocationSave != null) {
-                            println("----------------------------------")
-                            println("Distance")
-                            var distance = calculateDistance(oldLocationSave!!, newLocationSave!!)
-                            println(distance)
-
-
-
-                            var time = calculateTime(oldTimeSave!!, newTimeSave!!)
-
-                            println("----------------------------------")
-                            println("Speed")
-                            var speed = calculateSpeed(distance, time)
-                            println(speed)
-
-                            yourSpeedNumberTextView!!.text = ""+speed
-
-
-                        }
-
-
-
-                        println("----------------------------------")
-                        println("stats")
-                        println("old time : "+oldTimeSave)
-                        println("new time : "+newTimeSave)
-                        println("old location : "+oldLocationSave)
-                        println("new location : "+newLocationSave)
+//                        if (newTimeSave != null) {
+//                            oldTimeSave = newTimeSave
+//                        }
+//                        newTimeSave = location.elapsedRealtimeNanos
+//
+//                        //Set location
+//                        if (newLocationSave != null) {
+//                            oldLocationSave = newLocationSave
+//                        }
+//                        newLocationSave = LatLng(location.latitude, location.longitude)
+//
+//                        if (oldTimeSave != null) {
+//                            println("----------------------------------")
+//                            println("TIME")
+//                            var time = calculateTime(oldTimeSave!!, newTimeSave!!)
+//                            println(time)
+//                            println("In seconds, that is : "+ (time / 1000000000)+ " seconds")
+//                        }
+//
+//                        //Set location
+//                        if (oldLocationSave != null) {
+//                            println("----------------------------------")
+//                            println("Distance")
+//                            var distance = calculateDistance(oldLocationSave!!, newLocationSave!!)
+//                            println(distance)
+//
+//
+//
+//                            var time = calculateTime(oldTimeSave!!, newTimeSave!!)
+//
+//                            println("----------------------------------")
+//                            println("Speed")
+//                            var speed = calculateSpeed(distance, time)
+//                            println(speed)
+//
+//                            yourSpeedNumberTextView!!.text = ""+speed
+//
+//
+//                        }
+//
+//
+//
+//                        println("----------------------------------")
+//                        println("stats")
+//                        println("old time : "+oldTimeSave)
+//                        println("new time : "+newTimeSave)
+//                        println("old location : "+oldLocationSave)
+//                        println("new location : "+newLocationSave)
 
 
 
@@ -329,14 +339,19 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     fun setupUI() {
         //Update field name
-        fieldNameTextView!!.text = AgriCircleBackend.fields[AgriCircleBackend.selectedField].name
+        fieldNameTextView!!.text = LocalBackend.allFields[AgriCircleBackend.selectedField].name
         //Update workitem text
         //Update timer
         //Update speed
         //Update image
-        var imageUrl : String = AgriCircleBackend.fields[AgriCircleBackend.selectedField].activeCropImageUrl
+        var imageUrl : String = LocalBackend.allFields[AgriCircleBackend.selectedField].activeCropImageUrl
+
         if (imageUrl != null){
-            Picasso.get().load(imageUrl).into(fieldPictureImageView)
+            try {
+                Picasso.get().load(imageUrl).into(fieldPictureImageView)
+            } catch (e : IllegalArgumentException) {
+                Log.d("", e.toString())
+            }
         }
     }
 
