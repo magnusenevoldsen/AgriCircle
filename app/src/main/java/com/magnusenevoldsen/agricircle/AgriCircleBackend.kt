@@ -34,8 +34,11 @@ object AgriCircleBackend {
         var loginThread : Thread = Thread {
 
             //Request body string for login
-            val requestBodyString =
-                "[\n    {\n        \"operationName\": \"login\",\n        \"query\": \"mutation login(\$options: LoginInput!) {\\n  login(options: \$options) {\\n    token\\n    cookie\\n    __typename\\n  }\\n}\\n\",\n        \"variables\": {\n            \"options\": {\n                \"email\": \"$email\",\n                \"password\": \"$password\"\n            }\n        }\n    }\n]"
+//            val requestBodyString =
+//                "[\n    {\n        \"operationName\": \"login\",\n        \"query\": \"mutation login(\$options: LoginInput!) {\\n  login(options: \$options) {\\n    token\\n    cookie\\n    __typename\\n  }\\n}\\n\",\n        \"variables\": {\n            \"options\": {\n                \"email\": \"$email\",\n                \"password\": \"$password\"\n            }\n        }\n    }\n]"
+
+            val requestBodyString = "[\n    {\n        \"operationName\": \"login\",\n        \"query\": \"mutation login(\$options: LoginInput!) {\\n  login(options: \$options) {\\n    token\\n    cookie\\n    __typename\\n  }\\n}\\n\",\n        \"variables\": {\n            \"options\": {\n                \"email\": \"$email\",\n                \"password\": \"$password\",\n                \"locale\": \"en\"\n            }\n        }\n    }\n]"
+
 
             //Create the request body
             val body = requestBodyString.toRequestBody("application/json".toMediaTypeOrNull())
