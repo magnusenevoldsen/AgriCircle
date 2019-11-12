@@ -9,6 +9,8 @@ import org.json.JSONObject
 import okhttp3.OkHttpClient
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONException
 
@@ -31,7 +33,11 @@ object AgriCircleBackend {
 
     fun login (email : String, password : String) : Boolean {
         var succes = false
-        var loginThread : Thread = Thread {
+
+        val login = doAsync {
+
+
+//        var loginThread : Thread = Thread {
 
             //Request body string for login
 //            val requestBodyString =
@@ -92,12 +98,24 @@ object AgriCircleBackend {
                 println("We didn't get a cookie - responce code is wrong")
                 succes = false
             }
+
+            uiThread {
+                // use result here if you want to update ui
+//                updateUI(result)
+            }
         }
-        println("-----------------------------------")
-        loginThread.start()
-        loginThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
-        println("-----------------------------------")
+
+        while (!login.isDone) {
+            //Block until done.
+        }
+
         return succes
+
+//        println("-----------------------------------")
+//        loginThread.start()
+//        loginThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
+//        println("-----------------------------------")
+//        return succes
     }
 
 

@@ -37,16 +37,18 @@
 
     <ImageView
         android:id="@+id/loginLogoImageView"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/logo"
-        android:src="@drawable/agricircle_logo_temporary"
+        android:src="@drawable/fulllogo"
         app:layout_constraintBottom_toTopOf="@+id/usernameEditText"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/guidelineverticalright"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guidelineverticalleft"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/usernameEditText"
@@ -63,8 +65,8 @@
         app:boxStrokeColor="@color/colorWhite"
         app:hintTextColor="@color/colorWhite"
         app:layout_constraintBottom_toTopOf="@+id/passwordEditText"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineverticalright"
+        app:layout_constraintStart_toStartOf="@+id/guidelineverticalleft"
         app:passwordToggleTint="#00FFFFFF">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -93,9 +95,9 @@
 
         app:hintTextColor="@color/colorWhite"
         app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineverticalright"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="@+id/guidelineverticalleft"
         app:layout_constraintTop_toBottomOf="parent"
         app:passwordToggleTint="#00FFFFFF">
 
@@ -121,8 +123,8 @@
         android:textAllCaps="false"
         android:textStyle="bold"
         app:cornerRadius="@dimen/button_corner_radius"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineverticalright"
+        app:layout_constraintStart_toStartOf="@+id/guidelineverticalleft"
         app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
 
     <TextView
@@ -133,8 +135,8 @@
         android:text="@string/dont_have_an_account"
         android:textColor="@color/colorWhite"
         app:layout_constraintBottom_toTopOf="@+id/signUpButton"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineverticalright"
+        app:layout_constraintStart_toStartOf="@+id/guidelineverticalleft"
         app:layout_constraintTop_toBottomOf="@+id/loginButton"
         app:layout_constraintVertical_bias="1.0" />
 
@@ -151,23 +153,67 @@
         android:textColor="@color/colorAgricircle"
         app:cornerRadius="@dimen/small_button_corner_radius"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineverticalright"
+        app:layout_constraintStart_toStartOf="@+id/guidelineverticalleft"
         app:strokeColor="@color/colorGrey" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1" />
+    android:id="@+id/guidelineverticalleft"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline5"
+        android:id="@+id/guidelineverticalright"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.9" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelinehorizontaltop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelinehorizontalbottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/spinnerLayout"
+
+
+        app:layout_constraintBottom_toBottomOf="@id/guidelinehorizontalbottom"
+        app:layout_constraintEnd_toEndOf="@id/guidelineverticalright"
+        app:layout_constraintStart_toStartOf="@id/guidelineverticalleft"
+        app:layout_constraintTop_toTopOf="@id/guidelinehorizontaltop">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/button"
+            android:layout_alignParentBottom="true"
+            android:progressDrawable="@drawable/circle_progress_bar"
+
+            android:indeterminateTint="@color/colorOrange"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="168dp"
+            tools:layout_editor_absoluteY="328dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

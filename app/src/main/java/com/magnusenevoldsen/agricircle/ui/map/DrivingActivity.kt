@@ -1,7 +1,10 @@
 package com.magnusenevoldsen.agricircle.ui.map
 
 import android.annotation.TargetApi
+import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
@@ -10,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
+import android.view.View
 import android.widget.Chronometer
 import android.widget.ImageView
 import android.widget.TextView
@@ -43,6 +47,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     private var speedCurrently : Double = 0.0
     private var lastLocationTime : Long? = null
     private var currentLocationTime : Long? = null
+    private var context : Context? = null
 
     //Views
     var fieldPictureImageView : ImageView? = null
@@ -71,7 +76,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_driving)
 
-
+        context = this
 
 
         //Layout setup
@@ -159,9 +164,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                         mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation))
 
 
-
-                        //Replace this
-                        mMap.addMarker(MarkerOptions().position(currentLocation).title("You are here"))
 
 
 
@@ -260,10 +262,15 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun addCustomMarker(location : LatLng) {
-        mMap.addMarker(MarkerOptions().position(location))
+        var markerOverlay = bitmapDescriptorFromVector(context as DrivingActivity, R.drawable.ic_stop_red_24dp)?.let {
+            GroundOverlayOptions()
+                .image(it)
+                .clickable(true)
+                .position(location, 5f, 5f)
+        }
+        mMap.addGroundOverlay(markerOverlay)
+
     }
-
-
 
     fun finishSession () {
         //Save progress
@@ -324,6 +331,15 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun stopLocationUpdates() {
         fusedLocationClient!!.removeLocationUpdates(locationCallback)
+    }
+
+    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+        return ContextCompat.getDrawable(context, vectorResId)?.run {
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+            val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+            draw(Canvas(bitmap))
+            BitmapDescriptorFactory.fromBitmap(bitmap)
+        }
     }
 
 

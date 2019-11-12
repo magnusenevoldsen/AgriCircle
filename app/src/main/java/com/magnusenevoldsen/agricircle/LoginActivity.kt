@@ -3,26 +3,16 @@ package com.magnusenevoldsen.agricircle
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.android.synthetic.main.fragment_settings.*
-import org.json.JSONException
-import org.json.JSONObject
-import org.w3c.dom.Text
-import java.lang.Exception
-import android.view.View.OnFocusChangeListener
-import com.magnusenevoldsen.agricircle.model.User
+import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 
 class LoginActivity : AppCompatActivity() {
@@ -35,12 +25,15 @@ class LoginActivity : AppCompatActivity() {
     var view : View? = null
     var usernameEditText : TextInputLayout? = null
     var passwordEditText : TextInputLayout? = null
+    var spinnerLayout : ConstraintLayout? = null
+    var logoImageView : ImageView? = null
 
 
 
     override fun onResume() {
         super.onResume()
         resetUserDataOnlogout()
+        toggleSpinnerLayout(false)
         loginButton!!.isClickable = true
     }
 
@@ -48,6 +41,13 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         view = findViewById(R.id.activityLogin)
+
+        spinnerLayout = findViewById(R.id.spinnerLayout)
+        spinnerLayout!!.visibility = View.GONE
+
+
+        logoImageView = findViewById(R.id.loginLogoImageView)
+
 
         //Create account layout
         createNewAccountTextView = findViewById(R.id.createAccountTextView)
@@ -61,9 +61,8 @@ class LoginActivity : AppCompatActivity() {
 
         //   ---   TEMP   ---
         val image = findViewById<ImageView>(R.id.loginLogoImageView)
-        image.setOnClickListener {
-            showKeyboard()
-        }
+
+
 
         //Username edittext
         usernameEditText!!.editText!!.setOnFocusChangeListener { view, hasFocus ->
@@ -79,6 +78,7 @@ class LoginActivity : AppCompatActivity() {
 
         //Log in button
         loginButton!!.setOnClickListener {
+            toggleSpinnerLayout(true)
             tryToLogin()
         }
 
@@ -94,23 +94,32 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-    fun showCreateAccountItems (option : Boolean) {
-        if (option) {
-            createNewAccountTextView!!.visibility = View.VISIBLE
-            signUpButton!!.visibility = View.VISIBLE
-        } else {
-            createNewAccountTextView!!.visibility = View.GONE
-            signUpButton!!.visibility = View.GONE
-        }
-    }
+//    fun showCreateAccountItems (option : Boolean) {
+//        if (option) {
+//            createNewAccountTextView!!.visibility = View.VISIBLE
+//            signUpButton!!.visibility = View.VISIBLE
+//        } else {
+//            createNewAccountTextView!!.visibility = View.GONE
+//            signUpButton!!.visibility = View.GONE
+//        }
+//    }
 
     fun loginAndHideKeyboard() {
         hideKeyboard(window.decorView.findViewById(R.id.activityLogin))
-        showCreateAccountItems(true)
+//        showCreateAccountItems(true)
     }
 
     fun showKeyboard() {
-        showCreateAccountItems(false)
+//        showCreateAccountItems(false)
+    }
+
+    fun toggleSpinnerLayout (toggle : Boolean) {
+        if (!toggle) {
+            spinnerLayout!!.visibility = View.GONE
+        }
+        else {
+            spinnerLayout!!.visibility = View.VISIBLE
+        }
     }
 
 
@@ -122,11 +131,12 @@ class LoginActivity : AppCompatActivity() {
 
     fun tryToLogin () {
 
+
         var email : String = usernameEditText!!.editText!!.text.toString()
         var password : String = passwordEditText!!.editText!!.text.toString()
 
         val chosenUser : Int = 2 //1 for Jacob, 2 for Magnus
-        email  = SensitiveInfo.returnEmail(chosenUser)
+        email  = SensitiveInfo.returnEmail(chosenUser)+usernameEditText!!.editText!!.text.toString()
         password  = SensitiveInfo.returnPassword(chosenUser)
 
 
@@ -144,14 +154,29 @@ class LoginActivity : AppCompatActivity() {
 
         if (AgriCircleBackend.login(email, password)) {
             println("Login was successful!")
-            goToNextScreen()
+            loadData()
         } else {
             println("Login was not successful")
             loginButton!!.isClickable = true
             sendMessageToUser(getString(R.string.login_bad_info))
+            toggleSpinnerLayout(false)
         }
 
     }
+
+    fun loadData() {
+        doAsync {
+            AgriCircleBackend.loadUser()
+            AgriCircleBackend.loadCompanies()
+            AgriCircleBackend.loadFields()
+
+            uiThread {
+                toggleSpinnerLayout(true)
+                goToNextScreen()
+            }
+        }
+    }
+
 
     fun goToNextScreen () {
         val goToMainActivity = Intent(this, MainActivity::class.java)//.apply { putExtra(EXTRA_MESSAGE, message) }
@@ -165,13 +190,12 @@ class LoginActivity : AppCompatActivity() {
         AgriCircleBackend.companyWasLoadedCorrectly = false
     }
 
-
-
-
-
-
     fun sendMessageToUser(message: String) {
         val mySnackbar = Snackbar.make(findViewById(R.id.activityLogin), message, Snackbar.LENGTH_SHORT)
         mySnackbar.show()
     }
+
+
+
+
 }

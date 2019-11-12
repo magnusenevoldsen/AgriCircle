@@ -60,31 +60,30 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-        //Load user from DB
-        sendMessageToUser("Loading user : "+AgriCircleBackend.loadUser())
-
-        //Load companies from DB
-        sendMessageToUser("Loading companies : "+AgriCircleBackend.loadCompanies())
-
-        //Load fields from DB
-        sendMessageToUser("Loading fields : "+AgriCircleBackend.loadFields())
-
-        //Test all is working and print it to terminal
-        println("-----------------------------------"+
-                "\nUser : \n ${AgriCircleBackend.user.toString()} "+
-                "\nCompanies : \n ${AgriCircleBackend.companies.toString()} "+
-                "\nFields : \n ${AgriCircleBackend.fields.toString()} "+
-                "\n-----------------------------------")
-
-
-        println("Companies")
-        for (i in 0 until AgriCircleBackend.companies.size)
-            println(AgriCircleBackend.companies[i].toString())
-
-        println("Fields")
-        for (i in 0 until AgriCircleBackend.fields.size)
-            println(AgriCircleBackend.fields[i].toString())
+//        //Load user from DB
+//        sendMessageToUser("Loading user : "+AgriCircleBackend.loadUser())
+//
+//        //Load companies from DB
+//        sendMessageToUser("Loading companies : "+AgriCircleBackend.loadCompanies())
+//
+//        //Load fields from DB
+//        sendMessageToUser("Loading fields : "+AgriCircleBackend.loadFields())
+//
+//        //Test all is working and print it to terminal
+//        println("-----------------------------------"+
+//                "\nUser : \n ${AgriCircleBackend.user.toString()} "+
+//                "\nCompanies : \n ${AgriCircleBackend.companies.toString()} "+
+//                "\nFields : \n ${AgriCircleBackend.fields.toString()} "+
+//                "\n-----------------------------------")
+//
+//
+//        println("Companies")
+//        for (i in 0 until AgriCircleBackend.companies.size)
+//            println(AgriCircleBackend.companies[i].toString())
+//
+//        println("Fields")
+//        for (i in 0 until AgriCircleBackend.fields.size)
+//            println(AgriCircleBackend.fields[i].toString())
 
 
 
