@@ -48,6 +48,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private lateinit var mMap : GoogleMap
     private var root : View? = null
     private var constLayout : View? = null
+    private var creatingLayout : View? = null
 
     //Location
     private var fusedLocationClient : FusedLocationProviderClient? = null
@@ -111,12 +112,19 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         }
         finishFloatingActionButton!!.setOnClickListener {
             finishedAddingPointsButtonClicked()
+            toggleCreatingFieldTopView(false)
         }
 
 
         //Top layout
         constLayout = root!!.findViewById<ConstraintLayout>(R.id.mapConstraintLayout)
         toggleTopView(false)
+
+        //Creating top layout
+        creatingLayout = root!!.findViewById<ConstraintLayout>(R.id.creatingFieldConstraintLayout)
+        toggleCreatingFieldTopView(false)
+
+
 
         val actionOneImageButton = root!!.findViewById<ImageButton>(R.id.actionOneImageButton)
         actionOneImageButton.setColorFilter(R.color.colorAgricircle)
@@ -140,6 +148,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         positionFAB!!.setColorFilter(Color.WHITE)
         positionFAB!!.setOnClickListener {
             drawNewField()
+            toggleCreatingFieldTopView(true)
         }
 
         fieldFAB = root!!.findViewById(R.id.fieldFloatingActionButton)
@@ -292,7 +301,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         mMap.setOnPolygonClickListener { polygon ->
             //            if (constToggle) constLayout!!.visibility = View.GONE
 //            else
-            toggleTopView(true)
+            if (doneEditingFields)
+                toggleTopView(true)
 
             //Update UI to field ->
             val fieldId = polygon.tag.toString().toInt()
@@ -406,6 +416,11 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private fun toggleTopView (toggle : Boolean) {
         if (toggle) constLayout!!.visibility = View.VISIBLE
         else constLayout!!.visibility = View.GONE
+    }
+
+    private fun toggleCreatingFieldTopView (toggle : Boolean) {
+        if (toggle) creatingLayout!!.visibility = View.VISIBLE
+        else creatingLayout!!.visibility = View.GONE
     }
 
     private fun toggleActionButtons (toggle : Boolean) {
@@ -551,12 +566,13 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         groundOverlayArray.clear()
         polylineArray.clear()
-        doneEditingFields = false
+        doneEditingFields = true
 
 
         toggleActionButtons(true)
         toggleCrosshair(false)
         toggleTopView(false)
+        toggleCreatingFieldTopView(false)
     }
 
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {

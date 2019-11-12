@@ -17,6 +17,35 @@
 
     <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/creatingFieldConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAgricircle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/creatingFieldTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/creating_field_textview"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mapConstraintLayout"
@@ -26,7 +55,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/creatingFieldConstraintLayout">
 
 
         <androidx.constraintlayout.widget.Guideline
@@ -101,15 +130,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewDividerOne"/>
 
-<!--        <ImageView-->
-<!--            android:id="@+id/drivingIconImageView"-->
-<!--            android:layout_width="40dp"-->
-<!--            android:layout_height="40dp"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            app:layout_constraintEnd_toStartOf="@+id/guidelineTwenty"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/viewDividerOne"-->
-<!--            app:srcCompat="@drawable/agricircle_logo_temporary" />-->
+        <!--        <ImageView-->
+        <!--            android:id="@+id/drivingIconImageView"-->
+        <!--            android:layout_width="40dp"-->
+        <!--            android:layout_height="40dp"-->
+        <!--            android:layout_marginTop="8dp"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/guidelineTwenty"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/viewDividerOne"-->
+        <!--            app:srcCompat="@drawable/agricircle_logo_temporary" />-->
 
         <TextView
             android:id="@+id/drivingFieldTextView"
@@ -175,15 +204,15 @@
             app:layout_constraintTop_toBottomOf="@+id/viewDividerTwo"
             app:srcCompat="@drawable/agricircle_logo_temporary" />
 
-<!--        <ImageView-->
-<!--            android:id="@+id/actionTwoImageView"-->
-<!--            android:layout_width="40dp"-->
-<!--            android:layout_height="40dp"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            app:layout_constraintEnd_toStartOf="@+id/guidelineTwenty"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/viewDividerTwo"-->
-<!--            app:srcCompat="@drawable/agricircle_logo_temporary" />-->
+        <!--        <ImageView-->
+        <!--            android:id="@+id/actionTwoImageView"-->
+        <!--            android:layout_width="40dp"-->
+        <!--            android:layout_height="40dp"-->
+        <!--            android:layout_marginTop="8dp"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/guidelineTwenty"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/viewDividerTwo"-->
+        <!--            app:srcCompat="@drawable/agricircle_logo_temporary" />-->
 
         <TextView
             android:id="@+id/actionTwoTextView"
@@ -237,6 +266,7 @@
             app:layout_constraintTop_toBottomOf="@id/actionTwoImageView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <fragment
         android:id="@+id/mapMapView"
