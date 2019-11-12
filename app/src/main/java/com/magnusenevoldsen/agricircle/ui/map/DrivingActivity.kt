@@ -65,11 +65,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     var pauseOffset : Long = 0
     var timeTextView : Chronometer? = null
 
-    //Calculations
-    var oldLocationSave : LatLng? = null
-    var newLocationSave : LatLng? = null
-    var oldTimeSave : Long? = null
-    var newTimeSave : Long? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,22 +137,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                     //Update UI             --- Go to field 0 instead????
                     val currentLocation = LatLng(location.latitude, location.longitude)
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))   //Brug animateCamera eller moveCamera
-                    mMap.addMarker(MarkerOptions().position(currentLocation).title("You are here"))
-
-                    println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    println("Location information:")
-                    println(""+location.toString())
-
-                    println("Accuracy : "+location.accuracy)
-                    println("Time : "+location.time)
-                    println("Altitude : "+location.altitude)
-                    println("Speed : "+location.speed)
-                    println("Elapsed Realtime Nanos : "+location.elapsedRealtimeNanos)
-
-
-
-
-                    println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+//                    mMap.addMarker(MarkerOptions().position(currentLocation))
 
 
 
@@ -177,9 +157,13 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (location != null && playOrPause) {
                         val currentLocation = LatLng(location.latitude, location.longitude)
                         mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation))
-//                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))   //Brug animateCamera eller moveCamera
+
+
+
+                        //Replace this
                         mMap.addMarker(MarkerOptions().position(currentLocation).title("You are here"))
-                        println("Lat = "+currentLocation.latitude+", Lng = "+currentLocation.longitude+"")
+
+
 
 
 // -----------------------------------------------------------------------------------------------------------------------------------------
@@ -189,122 +173,17 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 // -----------------------------------------------------------------------------------------------------------------------------------------
 
                         val kmh = (location.speed * 3.6)
-                        val kmhString = kmh.toString().substring(0, 3)
+                        val kmhString = kmh.toString().substringBefore(".")
 
-//                        println("SPEED mps : "+location.speed)
-//                        println("SPEED kmh : "+(location.speed * 3.6))
-//                        println("Accu = "+location.accuracy)
-
-                        if (kmh > 40 && kmh < 60)
+                        if (kmh > 45 && kmh < 55)
                             yourTractorImageView!!.setColorFilter(Color.GREEN)
                         else
-                            yourTractorImageView!!.setColorFilter(Color.RED)
+                            yourTractorImageView!!.setColorFilter(Color.YELLOW)
 
 
 
 
                         yourSpeedNumberTextView!!.text = kmhString + " km/h"
-
-
-
-
-                        //New test
-
-                        //Set time
-//                        if (newTimeSave != null) {
-//                            oldTimeSave = newTimeSave
-//                        }
-//                        newTimeSave = location.elapsedRealtimeNanos
-//
-//                        //Set location
-//                        if (newLocationSave != null) {
-//                            oldLocationSave = newLocationSave
-//                        }
-//                        newLocationSave = LatLng(location.latitude, location.longitude)
-//
-//                        if (oldTimeSave != null) {
-//                            println("----------------------------------")
-//                            println("TIME")
-//                            var time = calculateTime(oldTimeSave!!, newTimeSave!!)
-//                            println(time)
-//                            println("In seconds, that is : "+ (time / 1000000000)+ " seconds")
-//                        }
-//
-//                        //Set location
-//                        if (oldLocationSave != null) {
-//                            println("----------------------------------")
-//                            println("Distance")
-//                            var distance = calculateDistance(oldLocationSave!!, newLocationSave!!)
-//                            println(distance)
-//
-//
-//
-//                            var time = calculateTime(oldTimeSave!!, newTimeSave!!)
-//
-//                            println("----------------------------------")
-//                            println("Speed")
-//                            var speed = calculateSpeed(distance, time)
-//                            println(speed)
-//
-//                            yourSpeedNumberTextView!!.text = ""+speed
-//
-//
-//                        }
-//
-//
-//
-//                        println("----------------------------------")
-//                        println("stats")
-//                        println("old time : "+oldTimeSave)
-//                        println("new time : "+newTimeSave)
-//                        println("old location : "+oldLocationSave)
-//                        println("new location : "+newLocationSave)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// -----------------------------------------------------------------------------------------------------------------------------------------
-                        //  Calculate speed
-
-//                        println("----------------------------------")
-//                        println("TIME")
-//                        lastLocationTime = currentLocationTime
-//                        currentLocationTime = System.currentTimeMillis()
-//                        println("Last time : $lastLocationTime")
-//                        println("Current time : $currentLocationTime")
-//
-//                        println("----------------------------------")
-//                        println("LOCATION")
-//                        speedLastLocation = speedCurrentLocation
-//                        speedCurrentLocation = currentLocation
-//                        println("Last location : $speedLastLocation")
-//                        println("Current location : $speedCurrentLocation")
-//
-//                        if (speedLastLocation != null) {
-//                            println("----------------------------------")
-//                            println("CALCULATION")
-//                            speedCurrently = Math.sqrt(
-//                                Math.pow(speedCurrentLocation!!.longitude - speedLastLocation!!.longitude, 2.0)
-//                                        +Math.pow(speedCurrentLocation!!.latitude - speedLastLocation!!.latitude, 2.0)
-//                            )
-//                            println("----------------------------------")
-////                        speedCurrently = speedCurrently / (lastLocationTime - currentLocationTime.to)
-//                        }
-
-// -----------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -376,9 +255,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
             poly.color = ContextCompat.getColor(this, R.color.colorPolygonDriving)
         }
 
-//        println("-----------------------------------------------")
-//        println("Time be like : " + SystemClock.elapsedRealtime())
-//        println("-----------------------------------------------")
+
 
     }
 
@@ -386,60 +263,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.addMarker(MarkerOptions().position(location))
     }
 
-
-    fun calculateSpeed(distanceTraveled : Float, timeTraveled : Long) : Float {
-        //We are given nano seconds and meters
-
-        var time = timeTraveled
-        var distance = distanceTraveled
-        var kmh : Float = 0f
-
-        //Nanoseconds to hours
-        time = time / (1000000000 * 60 * 60)    //1000000000 makes it seconds -> minutes -> hours
-
-
-        println("distance in meters = $distance")
-        //Meters to kms
-        distance = distance / 1000 //Makes it km
-
-
-        var mps = (distance / (timeTraveled / 1000000000))
-        println("mps = $mps")
-
-        println("time = $time")
-        println("distance = $distance")
-
-
-        // km/hour
-        kmh = distance / time
-        println("--------")
-        println("Float : $kmh")
-//        println("Double : ${kmh.toDouble()}")
-//        println("Big decimal : ${kmh.toBigDecimal()}")
-//        println("Int : ${kmh.toInt()}")
-
-        return kmh
-    }
-
-
-    fun calculateTime (oldTime : Long, newTime : Long) : Long {
-        return newTime-oldTime
-    }
-
-    fun calculateDistance (oldLocation : LatLng, newLocation : LatLng) : Float {
-        var fromLocation = Location(LocationManager.GPS_PROVIDER)
-        fromLocation.latitude = oldLocation.latitude
-        fromLocation.longitude = oldLocation.longitude
-
-        var toLocation = Location(LocationManager.GPS_PROVIDER)
-        toLocation.latitude = newLocation.latitude
-        toLocation.longitude = newLocation.longitude
-
-
-        var distance = fromLocation.distanceTo(toLocation)
-
-        return distance
-    }
 
 
     fun finishSession () {
