@@ -166,6 +166,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
             toggleCrosshair(false)
 
+            AgriCircleBackend.selectedField = counter
+
             val field0 = LocalBackend.allFields[counter].centerPoint
 
             fieldNameTextView.text = LocalBackend.allFields[counter].name

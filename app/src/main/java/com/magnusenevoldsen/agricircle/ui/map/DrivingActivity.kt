@@ -227,13 +227,20 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         //Update image
         var imageUrl : String = LocalBackend.allFields[AgriCircleBackend.selectedField].activeCropImageUrl
 
-        if (imageUrl != null){
+
+
+        fieldPictureImageView!!.setImageResource(R.drawable.stock_crop_image)
+        if (!imageUrl.equals("null")){
             try {
                 Picasso.get().load(imageUrl).into(fieldPictureImageView)
             } catch (e : IllegalArgumentException) {
                 Log.d("", e.toString())
             }
         }
+
+
+
+
     }
 
     fun drawTrack(location : LatLng) {

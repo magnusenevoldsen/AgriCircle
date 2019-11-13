@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.magnusenevoldsen.agricircle.AgriCircleBackend
@@ -48,21 +49,17 @@ class WorkspaceFragment : Fragment() {
         workspaceAdapter = WorkspaceAdapter(dummyArray)
         viewManager = LinearLayoutManager(this.context)
 
-        listView = root!!.findViewById<RecyclerView>(R.id.workspaceRecyclerListView).apply {
+        listView = root.findViewById<RecyclerView>(R.id.workspaceRecyclerListView).apply {
             setHasFixedSize(true)
             layoutManager = viewManager
             adapter = workspaceAdapter
         }
 
-
-
-        //Indsæt liste med 4 items:
-        //Billede -> Mark navn -> Aktivitet -> Play knap
-
-        //Opret dummydata
-        //Bare tag field liste fra backend -> uden local -> AgriCircleBackend.fields
-
-
+        val mDividerItemDecoration = DividerItemDecoration(
+            listView!!.getContext(),
+            1 //1 = Vertical, 0 = Horizontal
+        )
+        listView!!.addItemDecoration(mDividerItemDecoration)
 
 
 

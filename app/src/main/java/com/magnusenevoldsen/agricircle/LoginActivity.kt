@@ -188,6 +188,8 @@ class LoginActivity : AppCompatActivity() {
         AgriCircleBackend.companies.clear()
         AgriCircleBackend.userWasLoadedCorrectly = false
         AgriCircleBackend.companyWasLoadedCorrectly = false
+        LocalBackend.localFields.clear()
+        LocalBackend.allFields.clear()
     }
 
     fun sendMessageToUser(message: String) {

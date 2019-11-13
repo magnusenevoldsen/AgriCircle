@@ -4,6 +4,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.SphericalUtil
 import com.magnusenevoldsen.agricircle.model.Field
+import java.lang.Math.round
+import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -68,15 +70,9 @@ object LocalBackend {
     fun calculateSize (array : ArrayList<LatLng>) : Double {
         var size : Double = SphericalUtil.computeArea(array)
         size = (size / 10000)
-//        size = roundOffDecimal(size)
+        size = BigDecimal(size).setScale(2, RoundingMode.HALF_EVEN).toDouble()
         return size
     }
-
-//    fun roundOffDecimal(number: Double): Double {
-//        val decimalFormat = DecimalFormat("#.##")
-//        decimalFormat.roundingMode = RoundingMode.CEILING
-//        return decimalFormat.format(number).toDouble()
-//    }
 
     fun calculateCenterpoint (array : ArrayList<LatLng>) : LatLng {
         var builder = LatLngBounds.builder()
