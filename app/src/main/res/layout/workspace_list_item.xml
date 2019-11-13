@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/workspaceLinearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineEighty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineFifty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTwenty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" />
+
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/workspaceImageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="8dp"
+        app:civ_border="false"
+        app:civ_circle_color="@color/colorAgricircle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guidelineTwenty"
+        android:src="@drawable/stock_crop_image"/>
+
+    <TextView
+        android:id="@+id/workspaceFieldTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/workspaceImageView"
+        app:layout_constraintBottom_toBottomOf="@id/workspaceImageView"
+        app:layout_constraintStart_toEndOf="@id/guidelineTwenty"
+        app:layout_constraintEnd_toStartOf="@id/guidelineFifty"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/workspaceActivityTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/workspaceImageView"
+        app:layout_constraintBottom_toBottomOf="@id/workspaceImageView"
+        app:layout_constraintStart_toEndOf="@id/guidelineFifty"
+        app:layout_constraintEnd_toStartOf="@id/guidelineEighty"
+        android:text="TextView" />
+
+´
+    <ImageButton
+        android:id="@+id/workspaceImageButton"
+        android:background="@drawable/imagebutton_rounded_green"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toTopOf="@id/workspaceImageView"
+        app:layout_constraintBottom_toBottomOf="@id/workspaceImageView"
+        app:layout_constraintStart_toEndOf="@id/guidelineEighty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_play_arrow_white_24dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

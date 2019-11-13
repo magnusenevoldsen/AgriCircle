@@ -12,6 +12,7 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +38,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.magnusenevoldsen.agricircle.AgriCircleBackend
 import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.model.Field
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_map.*
 
 class MapFragment : Fragment(), OnMapReadyCallback{
@@ -73,13 +75,17 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     //Add fields
     private var editingFields : Boolean = false
-    private var doneEditingFields : Boolean = false
+    private var doneEditingFields : Boolean = true
     private var newFieldLocations : ArrayList<LatLng> = ArrayList()
     private var groundOverlayArray : ArrayList<GroundOverlay> = ArrayList()
     private var polylineArray : ArrayList<Polyline> = ArrayList()
     private var mapCrosshair : ImageView? = null
     private var addPointFloatingActionButton : ExtendedFloatingActionButton? = null
     private var finishFloatingActionButton : ExtendedFloatingActionButton? = null
+
+    //Top Layout Images
+    private var topTopImageView : ImageView? = null
+    private var topBottomImageView : ImageView? = null
 
 
 
@@ -124,6 +130,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         creatingLayout = root!!.findViewById<ConstraintLayout>(R.id.creatingFieldConstraintLayout)
         toggleCreatingFieldTopView(false)
 
+        topTopImageView = root!!.findViewById(R.id.drivingIconImageView)
+        topBottomImageView = root!!.findViewById(R.id.actionTwoImageView)
+
 
 
         val actionOneImageButton = root!!.findViewById<ImageButton>(R.id.actionOneImageButton)
@@ -161,6 +170,20 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
             fieldNameTextView.text = LocalBackend.allFields[counter].name
             fieldSizeTextView.text = LocalBackend.allFields[counter].surface.toString()+" ha"
+            topTopImageView!!.setImageResource(R.drawable.stock_crop_image)
+            topBottomImageView!!.setImageResource(R.drawable.stock_crop_image)
+
+            val imageUrl = LocalBackend.allFields[counter].activeCropImageUrl
+
+            if (!imageUrl.equals("null")){
+                try {
+                    Picasso.get().load(imageUrl).into(topTopImageView)
+                    Picasso.get().load(imageUrl).into(topBottomImageView)
+                } catch (e : IllegalArgumentException) {
+                    Log.d("", e.toString())
+                }
+            }
+
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(field0, zoom))
 
 
@@ -314,6 +337,19 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             AgriCircleBackend.selectedField = fieldNumber
             fieldNameTextView.text = array[fieldNumber].name
             fieldSizeTextView.text = array[fieldNumber].surface.toString()+" ha"
+
+            var imageUrl : String = array[fieldNumber].activeCropImageUrl
+
+            topTopImageView!!.setImageResource(R.drawable.stock_crop_image)
+            topBottomImageView!!.setImageResource(R.drawable.stock_crop_image)
+            if (!imageUrl.equals("null")){
+                try {
+                    Picasso.get().load(imageUrl).into(topTopImageView)
+                    Picasso.get().load(imageUrl).into(topBottomImageView)
+                } catch (e : IllegalArgumentException) {
+                    Log.d("", e.toString())
+                }
+            }
 
             println("You clicked on field:")
             println(array[fieldNumber].toString())

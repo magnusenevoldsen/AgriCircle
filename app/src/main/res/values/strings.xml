@@ -46,6 +46,10 @@
     <string name="confirm">Confirm</string>
 
 
+    <!-- Workspace screen-->
+    <string name="workspace">Workspace</string>
+
+
     <!-- Sort later -->
     <string name="logo">logo</string>
 

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "119199999006",
+    "firebase_url": "https://agricircle.firebaseio.com",
+    "project_id": "agricircle",
+    "storage_bucket": "agricircle.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119199999006:android:caecf822f9819a4d913a0f",
+        "android_client_info": {
+          "package_name": "com.magnusenevoldsen.agricircle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "119199999006-peeg9520nehukajjvlknr9pd5dgg175p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.magnusenevoldsen.agricircle",
+            "certificate_hash": "02b78f4ff4fbec45edd9847b6c4a89c62cc172a0"
+          }
+        },
+        {
+          "client_id": "119199999006-566rv97s1a4qjuigm3944cf5mpibe8j7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWzFwpdVwErpG8jNJt7fsITXTue1zv4kU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "119199999006-566rv97s1a4qjuigm3944cf5mpibe8j7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
