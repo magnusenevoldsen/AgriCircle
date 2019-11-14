@@ -3,6 +3,7 @@ package com.magnusenevoldsen.agricircle
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -19,14 +20,15 @@ class LoginActivity : AppCompatActivity() {
 
 
     //Layout
-    var loginButton : Button? = null
-    var createNewAccountTextView : TextView? = null
-    var signUpButton : Button? = null
-    var view : View? = null
-    var usernameEditText : TextInputLayout? = null
-    var passwordEditText : TextInputLayout? = null
-    var spinnerLayout : ConstraintLayout? = null
-    var logoImageView : ImageView? = null
+    private var loginButton : Button? = null
+    private var createNewAccountTextView : TextView? = null
+    private var signUpButton : Button? = null
+    private var view : View? = null
+    private var usernameEditText : TextInputLayout? = null
+    private var passwordEditText : TextInputLayout? = null
+    private var spinnerLayout : ConstraintLayout? = null
+    private var logoImageView : ImageView? = null
+    private var blurryView : View? = null
 
 
 
@@ -34,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
         super.onResume()
         resetUserDataOnlogout()
         toggleSpinnerLayout(false)
-        loginButton!!.isClickable = true
+        toggleClickablity(true)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +50,11 @@ class LoginActivity : AppCompatActivity() {
 
 
         logoImageView = findViewById(R.id.loginLogoImageView)
+
+
+        blurryView = findViewById(R.id.blurryView)
+        blurryView!!.visibility = View.GONE
+        blurryView!!.bringToFront()
 
 
         //Create account layout
@@ -149,7 +156,7 @@ class LoginActivity : AppCompatActivity() {
 //            password = SensitiveInfo.returnPassword(chosenUser)
 //        }
 
-        loginButton!!.isClickable = false
+        toggleClickablity(false)
         hideKeyboard()
 
         if (AgriCircleBackend.login(email, password)) {
@@ -157,7 +164,7 @@ class LoginActivity : AppCompatActivity() {
             loadData()
         } else {
             println("Login was not successful")
-            loginButton!!.isClickable = true
+            toggleClickablity(true)
             sendMessageToUser(getString(R.string.login_bad_info))
             toggleSpinnerLayout(false)
         }
@@ -174,6 +181,19 @@ class LoginActivity : AppCompatActivity() {
                 toggleSpinnerLayout(true)
                 goToNextScreen()
             }
+        }
+    }
+
+    fun toggleClickablity (toggle : Boolean) {
+        if (toggle) {
+            loginButton!!.isClickable = true
+            signUpButton!!.isClickable = true
+            blurryView!!.visibility = View.GONE
+        }
+        else {
+            loginButton!!.isClickable = false
+            signUpButton!!.isClickable = false
+            blurryView!!.visibility = View.VISIBLE
         }
     }
 

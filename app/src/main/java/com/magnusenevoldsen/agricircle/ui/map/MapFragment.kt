@@ -389,8 +389,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     private fun makePolygonClickListeners (array : ArrayList<Field>) {
         mMap.setOnPolygonClickListener { polygon ->
-            //            if (constToggle) constLayout!!.visibility = View.GONE
-//            else
+
+            fabSpeedDial!!.close()
+
             if (doneEditingFields)
                 toggleTopView(true)
 
