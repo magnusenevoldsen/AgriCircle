@@ -277,29 +277,59 @@
         app:layout_constraintTop_toBottomOf="@id/mapConstraintLayout"
         tools:layout_editor_absoluteX="-1dp" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fieldFloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        app:backgroundTint="@color/colorOrange"
-        app:layout_constraintBottom_toBottomOf="@+id/mapMapView"
-        app:layout_constraintEnd_toEndOf="@+id/mapMapView"
-        app:srcCompat="@drawable/ic_field_dashboard_white_24dp" />
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/fieldFloatingActionButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:layout_marginBottom="8dp"-->
+<!--        android:clickable="true"-->
+<!--        app:backgroundTint="@color/colorOrange"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/mapMapView"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/mapMapView"-->
+<!--        app:srcCompat="@drawable/ic_field_dashboard_white_24dp" />-->
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/positionFloatingActionButton"
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/positionFloatingActionButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:layout_marginBottom="8dp"-->
+<!--        android:clickable="true"-->
+<!--        app:backgroundTint="@color/colorOrange"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/fieldFloatingActionButton"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:srcCompat="@drawable/ic_gps_fixed_white_24dp" />-->
+
+<!--    <io.github.yavski.fabspeeddial.FabSpeedDial-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/fabSpeedDial"-->
+<!--        app:fabGravity="bottom_end"-->
+<!--        app:fabMenu="@menu/fab_menu"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        android:layout_marginBottom="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        app:fabBackgroundTint="@color/colorOrange"-->
+<!--        app:miniFabBackgroundTint="@color/colorOrange"-->
+<!--        app:miniFabDrawableTint="@color/colorWhite"-->
+<!--        app:miniFabTitleTextColor="@color/colorWhite"-->
+<!--        app:miniFabTitleBackgroundTint="@color/colorOrange"/>-->
+
+    <com.leinardi.android.speeddial.SpeedDialView
+        android:id="@+id/fabSpeedDial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        app:backgroundTint="@color/colorOrange"
-        app:layout_constraintBottom_toTopOf="@+id/fieldFloatingActionButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_gps_fixed_white_24dp" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        app:sdMainFabClosedIconColor="@color/colorWhite"
+        app:sdMainFabOpenedIconColor="@color/colorWhite"
+        app:sdMainFabClosedBackgroundColor="@color/colorOrange"
+        app:sdMainFabOpenedBackgroundColor="@color/colorOrange"
+        app:sdMainFabClosedSrc="@drawable/ic_add_black_24dp" />
 
     <ImageView
         android:id="@+id/mapCrosshair"

@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -23,6 +24,7 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.*
 import com.magnusenevoldsen.agricircle.R
@@ -34,7 +36,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.internal.NavigationMenu
 import com.google.android.material.snackbar.Snackbar
+import com.leinardi.android.speeddial.SpeedDialActionItem
+import com.leinardi.android.speeddial.SpeedDialView
 import com.magnusenevoldsen.agricircle.AgriCircleBackend
 import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.model.Field
@@ -69,8 +74,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private var constToggle : Boolean = false           //Not used??????
 
     //Standard Action Buttons
-    private var positionFAB : FloatingActionButton? = null
-    private var fieldFAB : FloatingActionButton? = null
+//    private var positionFAB : FloatingActionButton? = null
+//    private var fieldFAB : FloatingActionButton? = null
+    private var fabSpeedDial : SpeedDialView? = null
 
 
     //Add fields
@@ -86,6 +92,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     //Top Layout Images
     private var topTopImageView : ImageView? = null
     private var topBottomImageView : ImageView? = null
+
 
 
 
@@ -149,53 +156,68 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         }
 
 
-        var counter : Int = 0
+        fabSpeedDial = root!!.findViewById<SpeedDialView>(R.id.fabSpeedDial)
 
-        //Buttons
+        //Find field
+        fabSpeedDial!!.addActionItem(SpeedDialActionItem.Builder(R.id.findFieldFloatingActionButton, R.drawable.ic_field_dashboard_white_24dp)
+            .setFabBackgroundColor(resources.getColor(R.color.colorOrange))
+            .setFabImageTintColor(resources.getColor(R.color.colorWhite))
+            .setLabel(getString(R.string.menu_item_find_field))
+            .setLabelColor(Color.GRAY)
+            .setLabelBackgroundColor(resources.getColor(R.color.colorWhite))
+            .setLabelClickable(false)
+            .create())
 
-        positionFAB = root!!.findViewById(R.id.positionFloatingActionButton)
-        positionFAB!!.setColorFilter(Color.WHITE)
-        positionFAB!!.setOnClickListener {
-            drawNewField()
-            toggleCreatingFieldTopView(true)
-        }
+        //Create field
+        fabSpeedDial!!.addActionItem(SpeedDialActionItem.Builder(R.id.createFieldFloatingActionButton, R.drawable.ic_add_black_24dp)
+            .setFabBackgroundColor(resources.getColor(R.color.colorOrange))
+            .setFabImageTintColor(resources.getColor(R.color.colorWhite))
+            .setLabel(getString(R.string.menu_item_create_field))
+            .setLabelColor(Color.GRAY)
+            .setLabelBackgroundColor(resources.getColor(R.color.colorWhite))
+            .setLabelClickable(false)
+            .create())
 
-        fieldFAB = root!!.findViewById(R.id.fieldFloatingActionButton)
-        fieldFAB!!.setColorFilter(Color.WHITE)
-        fieldFAB!!.setOnClickListener {
+        //Go to position
+        fabSpeedDial!!.addActionItem(SpeedDialActionItem.Builder(R.id.positionFloatingActionButton, R.drawable.ic_gps_fixed_white_24dp)
+            .setFabBackgroundColor(resources.getColor(R.color.colorOrange))
+            .setFabImageTintColor(resources.getColor(R.color.colorWhite))
+            .setLabel(getString(R.string.menu_item_position))
+            .setLabelColor(Color.GRAY)
+            .setLabelBackgroundColor(resources.getColor(R.color.colorWhite))
+            .setLabelClickable(false)
+            .create())
 
-            toggleCrosshair(false)
 
-            AgriCircleBackend.selectedField = counter
 
-            val field0 = LocalBackend.allFields[counter].centerPoint
 
-            fieldNameTextView.text = LocalBackend.allFields[counter].name
-            fieldSizeTextView.text = LocalBackend.allFields[counter].surface.toString()+" ha"
-            topTopImageView!!.setImageResource(R.drawable.stock_crop_image)
-            topBottomImageView!!.setImageResource(R.drawable.stock_crop_image)
 
-            val imageUrl = LocalBackend.allFields[counter].activeCropImageUrl
 
-            if (!imageUrl.equals("null")){
-                try {
-                    Picasso.get().load(imageUrl).into(topTopImageView)
-                    Picasso.get().load(imageUrl).into(topBottomImageView)
-                } catch (e : IllegalArgumentException) {
-                    Log.d("", e.toString())
+        fabSpeedDial!!.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
+            when (actionItem.id) {
+                R.id.positionFloatingActionButton -> {
+                    goToCurrentPosition()
+                    fabSpeedDial!!.close() // To close the Speed Dial with animation
+                    return@OnActionSelectedListener true // false will close it without animation
+                }
+                R.id.createFieldFloatingActionButton -> {
+                    newFieldButton()
+                    fabSpeedDial!!.close() // To close the Speed Dial with animation
+                    return@OnActionSelectedListener true // false will close it without animation
+                }
+                R.id.findFieldFloatingActionButton -> {
+                    findFieldButton()
+//                    fabSpeedDial.close() // To close the Speed Dial with animation
+                    return@OnActionSelectedListener true // false will close it without animation
                 }
             }
+            false
+        })
 
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(field0, zoom))
 
 
 
-            var countMax = LocalBackend.allFields.size - 1 //7 fields -> 0..6
-            if (counter < countMax)
-                counter ++
-            else counter = 0
 
-        }
 
 
 
@@ -225,11 +247,14 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                     if (location != null && updatesOn) {
                         val currentLocation = LatLng(location.latitude, location.longitude)
                         mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation))
-//                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))   //Brug animateCamera eller moveCamera
-                        mMap.addMarker(MarkerOptions().position(currentLocation).title("You are here"))
-                        sendMessageToUser(root!!, ""+counter+" : Lat = "+currentLocation.latitude+", Lng = "+currentLocation.longitude)
-                        println("Lat = "+currentLocation.latitude+", Lng = "+currentLocation.longitude+"")
-                        counter++
+//                        mMap.addMarker(MarkerOptions().position(currentLocation).title("You are here"))
+                        updatesOn = false
+                        stopLocationUpdates()
+
+
+//                        sendMessageToUser(root!!, ""+counter+" : Lat = "+currentLocation.latitude+", Lng = "+currentLocation.longitude)
+//                        println("Lat = "+currentLocation.latitude+", Lng = "+currentLocation.longitude+"")
+//                        counter++
                     }
                 }
             }
@@ -242,6 +267,46 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
 
         return root
+    }
+
+
+    private fun newFieldButton() {
+        drawNewField()
+        toggleCreatingFieldTopView(true)
+    }
+
+    private fun goToCurrentPosition() {
+        updatesOn = true
+        startLocationUpdates()
+    }
+
+    private fun findFieldButton() {
+        toggleCrosshair(false)
+        AgriCircleBackend.selectedField = counter
+
+        val field0 = LocalBackend.allFields[counter].centerPoint
+
+        fieldNameTextView.text = LocalBackend.allFields[counter].name
+        fieldSizeTextView.text = LocalBackend.allFields[counter].surface.toString()+" ha"
+        topTopImageView!!.setImageResource(R.drawable.stock_crop_image)
+        topBottomImageView!!.setImageResource(R.drawable.stock_crop_image)
+
+        val imageUrl = LocalBackend.allFields[counter].activeCropImageUrl
+
+        if (!imageUrl.equals("null")){
+            try {
+                Picasso.get().load(imageUrl).into(topTopImageView)
+                Picasso.get().load(imageUrl).into(topBottomImageView)
+            } catch (e : IllegalArgumentException) {
+                Log.d("", e.toString())
+            }
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(field0, zoom))
+        var countMax = LocalBackend.allFields.size - 1 //7 fields -> 0..6
+        if (counter < countMax)
+            counter ++
+        else counter = 0
     }
 
 
@@ -415,6 +480,11 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         redrawFields()
 
+        mMap.setOnMapClickListener {
+            fabSpeedDial!!.close()
+            toggleTopView(false)
+        }
+
 
 //        Current location
 //        Lat = 55.5756983, Lng = 11.5702983
@@ -461,11 +531,11 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         else creatingLayout!!.visibility = View.GONE
     }
 
+
     private fun toggleActionButtons (toggle : Boolean) {
         //Show standard buttons and hide new field buttons
         if (toggle) {
-            fieldFAB!!.visibility = View.VISIBLE
-            positionFAB!!.visibility = View.VISIBLE
+            fabSpeedDial!!.visibility = View.VISIBLE
 
             addPointFloatingActionButton!!.visibility = View.GONE
             finishFloatingActionButton!!.visibility = View.GONE
@@ -474,8 +544,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         }
         //Show new field buttons and hide standard buttons
         else {
-            fieldFAB!!.visibility = View.GONE
-            positionFAB!!.visibility = View.GONE
+            fabSpeedDial!!.visibility = View.GONE
 
             addPointFloatingActionButton!!.visibility = View.VISIBLE
             finishFloatingActionButton!!.visibility = View.VISIBLE

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/positionFloatingActionButton"
+        android:icon="@drawable/ic_gps_fixed_white_24dp"
+        android:orderInCategory="2"
+        android:title="@string/menu_item_position" />
+    <item
+        android:id="@+id/createFieldFloatingActionButton"
+        android:icon="@drawable/ic_add_black_24dp"
+        android:orderInCategory="1"
+        android:title="@string/menu_item_create_field"/>
+    <item
+        android:id="@+id/findFieldFloatingActionButton"
+        android:icon="@drawable/ic_field_dashboard_white_24dp"
+        android:orderInCategory="0"
+        android:title="@string/menu_item_find_field" />
+</menu>
+
+    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--        android:id="@+id/fieldFloatingActionButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginEnd="8dp"-->
+    <!--        android:layout_marginBottom="8dp"-->
+    <!--        android:clickable="true"-->
+    <!--        app:backgroundTint="@color/colorOrange"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@+id/mapMapView"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/mapMapView"-->
+    <!--        app:srcCompat="@drawable/ic_field_dashboard_white_24dp" />-->
+
+    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--        android:id="@+id/positionFloatingActionButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginEnd="8dp"-->
+    <!--        android:layout_marginBottom="8dp"-->
+    <!--        android:clickable="true"-->
+    <!--        app:backgroundTint="@color/colorOrange"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/fieldFloatingActionButton"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:srcCompat="@drawable/ic_gps_fixed_white_24dp" />-->

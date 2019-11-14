@@ -42,6 +42,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         view = findViewById(R.id.activityLogin)
 
+
         spinnerLayout = findViewById(R.id.spinnerLayout)
         spinnerLayout!!.visibility = View.GONE
 
@@ -59,22 +60,21 @@ class LoginActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.loginButton)
 
 
-        //   ---   TEMP   ---
         val image = findViewById<ImageView>(R.id.loginLogoImageView)
 
 
 
         //Username edittext
-        usernameEditText!!.editText!!.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus)
-                showKeyboard()
-        }
-
-        //Password edittext
-        passwordEditText!!.editText!!.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus)
-                showKeyboard()
-        }
+//        usernameEditText!!.editText!!.setOnFocusChangeListener { view, hasFocus ->
+//            if (hasFocus)
+//                showKeyboard()
+//        }
+//
+//        //Password edittext
+//        passwordEditText!!.editText!!.setOnFocusChangeListener { view, hasFocus ->
+//            if (hasFocus)
+//                showKeyboard()
+//        }
 
         //Log in button
         loginButton!!.setOnClickListener {
@@ -104,7 +104,7 @@ class LoginActivity : AppCompatActivity() {
 //        }
 //    }
 
-    fun loginAndHideKeyboard() {
+    fun hideKeyboard() {
         hideKeyboard(window.decorView.findViewById(R.id.activityLogin))
 //        showCreateAccountItems(true)
     }
@@ -150,7 +150,7 @@ class LoginActivity : AppCompatActivity() {
 //        }
 
         loginButton!!.isClickable = false
-        loginAndHideKeyboard()
+        hideKeyboard()
 
         if (AgriCircleBackend.login(email, password)) {
             println("Login was successful!")

@@ -72,6 +72,13 @@
     <string name="map_type_none">maptypenone</string>
 
 
+
+    <!-- FAB Menu -->
+    <string name="menu_item_position">My position</string>
+    <string name="menu_item_create_field">Create field</string>
+    <string name="menu_item_find_field">Find field</string>
+
+
     <!-- Inside code -->
     <string name="backend_data">data</string>
     <string name="backend_user">user</string>
