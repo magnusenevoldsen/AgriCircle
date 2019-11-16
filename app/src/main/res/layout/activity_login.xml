@@ -5,6 +5,7 @@
     android:id="@+id/activityLogin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     android:background="@color/colorAgricircle"
     tools:context=".LoginActivity">
 
@@ -214,7 +215,6 @@
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/button"
             android:layout_alignParentBottom="true"
             android:progressDrawable="@drawable/circle_progress_bar"
 

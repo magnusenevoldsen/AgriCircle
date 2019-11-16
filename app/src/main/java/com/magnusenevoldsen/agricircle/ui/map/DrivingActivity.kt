@@ -42,33 +42,31 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     private var fusedLocationClient : FusedLocationProviderClient? = null
     private var locationCallback : LocationCallback? = null
     private val MY_PERMISSION_FINE_LOCATION = 101
-    private var speedCurrentLocation : LatLng? = null
-    private var speedLastLocation : LatLng? = null
-    private var speedCurrently : Double = 0.0
-    private var lastLocationTime : Long? = null
-    private var currentLocationTime : Long? = null
     private var context : Context? = null
 
     //Views
-    var fieldPictureImageView : ImageView? = null
-    var fieldNameTextView : TextView? = null
-    var fieldWorkTextView : TextView? = null
-    var yourSpeedTextView : TextView? = null
-    var yourSpeedNumberTextView : TextView? = null
-    var suggestedSpeedTextView : TextView? = null
-    var yourTractorImageView : ImageView? = null
-    var suggestedSpeedNumberTextView : TextView? = null
-    var suggestedTractorImageView : ImageView? = null
-    var finishFAB : ExtendedFloatingActionButton? = null
-    var pauseFAB : ExtendedFloatingActionButton? = null
+    private var fieldPictureImageView : ImageView? = null
+    private var fieldNameTextView : TextView? = null
+    private var fieldWorkTextView : TextView? = null
+    private var yourSpeedTextView : TextView? = null
+    private var yourSpeedNumberTextView : TextView? = null
+    private var suggestedSpeedTextView : TextView? = null
+    private var yourTractorImageView : ImageView? = null
+    private var suggestedSpeedNumberTextView : TextView? = null
+    private var suggestedTractorImageView : ImageView? = null
+    private var finishFAB : ExtendedFloatingActionButton? = null
+    private var pauseFAB : ExtendedFloatingActionButton? = null
 
     //Track
-    var trackArray : ArrayList<LatLng> = ArrayList()
+    private var trackArray : ArrayList<LatLng> = ArrayList()
 
     //Time
     private var playOrPause : Boolean = false
-    var pauseOffset : Long = 0
-    var timeTextView : Chronometer? = null
+    private var pauseOffset : Long = 0
+    private var timeTextView : Chronometer? = null
+
+    //Suggested speed
+    private var suggestedSpeedNumber : Int = 0
 
 
 
@@ -177,15 +175,17 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                         val kmh = (location.speed * 3.6)
                         val kmhString = kmh.toString().substringBefore(".")
 
-                        if (kmh > 45 && kmh < 55)
-                            yourTractorImageView!!.setColorFilter(Color.GREEN)
-                        else
-                            yourTractorImageView!!.setColorFilter(Color.YELLOW)
+                        updateTractors(kmh)
+
+//                        if (kmh > 45 && kmh < 55)
+//                            yourTractorImageView!!.setColorFilter(Color.GREEN)
+//                        else
+//                            yourTractorImageView!!.setColorFilter(Color.YELLOW)
 
 
 
 
-                        yourSpeedNumberTextView!!.text = kmhString + " km/h"
+                        yourSpeedNumberTextView!!.text = kmhString + getString(R.string.kilometerhour)
 
 
 
@@ -219,16 +219,9 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun setupUI() {
-        //Update field name
+        //Update UI with field info
         fieldNameTextView!!.text = LocalBackend.allFields[AgriCircleBackend.selectedField].name
-        //Update workitem text
-        //Update timer
-        //Update speed
-        //Update image
         var imageUrl : String = LocalBackend.allFields[AgriCircleBackend.selectedField].activeCropImageUrl
-
-
-
         fieldPictureImageView!!.setImageResource(R.drawable.stock_crop_image)
         if (!imageUrl.equals("null")){
             try {
@@ -238,9 +231,24 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
+        //Set suggested speed (Currently just a preset value. Should be changed to be variable in a later version)
+        suggestedSpeedNumber = 11
+        suggestedSpeedNumberTextView!!.text = "$suggestedSpeedNumber ${getString(R.string.kilometerhour)}"
 
+        //Update tracker part of view
+        yourTractorImageView!!.setColorFilter(Color.GREEN)
+        suggestedTractorImageView!!.setColorFilter(Color.GREEN)
+    }
 
-
+    private fun updateTractors (currentKmh : Double) {
+        var smallVariationAmount : Int = 5
+        var largeVariationAmount : Int = 10
+        if (suggestedSpeedNumber - currentKmh < smallVariationAmount && currentKmh - suggestedSpeedNumber < smallVariationAmount)
+            yourTractorImageView!!.setColorFilter(Color.GREEN)
+        else if (suggestedSpeedNumber - currentKmh < largeVariationAmount && currentKmh - suggestedSpeedNumber < largeVariationAmount)
+            yourTractorImageView!!.setColorFilter(Color.YELLOW)
+        else
+            yourTractorImageView!!.setColorFilter(Color.RED)
     }
 
     fun drawTrack(location : LatLng) {

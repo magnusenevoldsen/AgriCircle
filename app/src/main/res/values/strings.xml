@@ -46,6 +46,15 @@
     <string name="confirm">Confirm</string>
 
 
+    <!-- Driving screen -->
+    <string name="kilometerhour">km/h</string>
+    <string name="placeholder_time">-- TIME --</string>
+    <string name="placeholder_your_speed">your speed</string>
+    <string name="placeholder_1_km_h">-1 km/h</string>
+    <string name="placeholder_suggested_speed">suggested speed</string>
+    <string name="placeholder_100_km_h">100 km/h</string>
+
+
     <!-- Workspace screen-->
     <string name="workspace">Workspace</string>
 
@@ -58,11 +67,6 @@
     <string name="placeholder_Fertilization">Fertilization</string>
     <string name="placeholder_product_x">Product X</string>
     <string name="placeholder_product_y">Product Y</string>
-    <string name="placeholder_time">-- TIME --</string>
-    <string name="placeholder_your_speed">your speed</string>
-    <string name="placeholder_1_km_h">-1 km/h</string>
-    <string name="placeholder_suggested_speed">suggested speed</string>
-    <string name="placeholder_100_km_h">100 km/h</string>
 
     <!-- Shared Prefs -->
     <string name="settings_map_type_preference">settingsmaptypepreference</string>

@@ -7,6 +7,7 @@ import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
@@ -47,6 +48,9 @@ class LoginActivity : AppCompatActivity() {
 
         spinnerLayout = findViewById(R.id.spinnerLayout)
         spinnerLayout!!.visibility = View.GONE
+
+        //Hide keyboard initially
+        this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
 
 
         logoImageView = findViewById(R.id.loginLogoImageView)
@@ -136,25 +140,26 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
+
     fun tryToLogin () {
+
+
+//        var email : String = usernameEditText!!.editText!!.text.toString()
+//        var password : String = passwordEditText!!.editText!!.text.toString()
+//
+//        val chosenUser : Int = 2 //1 for Jacob, 2 for Magnus
+//        email  = SensitiveInfo.returnEmail(chosenUser)+usernameEditText!!.editText!!.text.toString()
+//        password  = SensitiveInfo.returnPassword(chosenUser)
 
 
         var email : String = usernameEditText!!.editText!!.text.toString()
         var password : String = passwordEditText!!.editText!!.text.toString()
 
-        val chosenUser : Int = 2 //1 for Jacob, 2 for Magnus
-        email  = SensitiveInfo.returnEmail(chosenUser)+usernameEditText!!.editText!!.text.toString()
-        password  = SensitiveInfo.returnPassword(chosenUser)
-
-
-//        var email : String = usernameEditText!!.editText!!.text.toString()
-//        var password : String = passwordEditText!!.editText!!.text.toString()
-
-//        if (email.equals("") && password.equals("")) {
-//            val chosenUser : Int = 2 //1 for Jacob, 2 for Magnus
-//            email = SensitiveInfo.returnEmail(chosenUser)
-//            password = SensitiveInfo.returnPassword(chosenUser)
-//        }
+        if (email.equals("") && password.equals("")) {
+            val chosenUser : Int = 1 //1 for Jacob, 2 for Magnus
+            email = SensitiveInfo.returnEmail(chosenUser)
+            password = SensitiveInfo.returnPassword(chosenUser)
+        }
 
         toggleClickablity(false)
         hideKeyboard()

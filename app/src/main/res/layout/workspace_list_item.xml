@@ -42,18 +42,28 @@
 
     <TextView
         android:id="@+id/workspaceFieldTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/workspaceImageView"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAlignment="viewStart"
+        android:text="TextView"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@id/workspaceImageView"
-        app:layout_constraintStart_toEndOf="@id/guidelineTwenty"
         app:layout_constraintEnd_toStartOf="@id/guidelineFifty"
-        android:text="TextView" />
+        app:layout_constraintStart_toEndOf="@id/guidelineTwenty"
+        app:layout_constraintTop_toTopOf="@id/workspaceImageView" />
 
     <TextView
         android:id="@+id/workspaceActivityTextView"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAlignment="viewStart"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintTop_toTopOf="@id/workspaceImageView"
         app:layout_constraintBottom_toBottomOf="@id/workspaceImageView"
         app:layout_constraintStart_toEndOf="@id/guidelineFifty"
