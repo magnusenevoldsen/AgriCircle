@@ -48,13 +48,13 @@ class SamplingFragment : Fragment(), OnMapReadyCallback {
         val positionFAB : FloatingActionButton = root!!.findViewById(R.id.samplingPositionFloatingActionButton)
         positionFAB.setColorFilter(Color.WHITE)
         positionFAB.setOnClickListener {
-            sendMessageToUser(root!!, "You clicked on Position")
+            sendMessageToUser(root!!, getString(R.string.sampling_position_clicked))
         }
 
         val fieldFAB : FloatingActionButton = root!!.findViewById(R.id.samplingFieldFloatingActionButton)
         fieldFAB.setColorFilter(Color.WHITE)
         fieldFAB.setOnClickListener {
-            sendMessageToUser(root!!, "You clicked on Field")
+            sendMessageToUser(root!!, getString(R.string.sampling_field_clicked))
         }
 
         val samplingFAB : FloatingActionButton = root!!.findViewById(R.id.samplingFloatingActionButton)
@@ -83,7 +83,7 @@ class SamplingFragment : Fragment(), OnMapReadyCallback {
 
         //Delete later ---------
         val campusBallerup = LatLng(55.730975, 12.396752)
-        mMap.addMarker(MarkerOptions().position(campusBallerup).title("Campus Ballerup"))
+        mMap.addMarker(MarkerOptions().position(campusBallerup).title(getString(R.string.sampling_campus_ballerup)))
         var zoom = 15.0f
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(campusBallerup, zoom))
     }

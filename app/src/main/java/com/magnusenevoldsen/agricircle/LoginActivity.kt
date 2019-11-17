@@ -95,7 +95,7 @@ class LoginActivity : AppCompatActivity() {
 
         //Sign in button
         signUpButton!!.setOnClickListener {
-            sendMessageToUser(getString(R.string.not_implemented_yet))
+            sendMessageToUser(getString(R.string.sign_up_button_go_to_website))
         }
 
 
@@ -165,10 +165,10 @@ class LoginActivity : AppCompatActivity() {
         hideKeyboard()
 
         if (AgriCircleBackend.login(email, password)) {
-            println("Login was successful!")
+//            println("Login was successful!")
             loadData()
         } else {
-            println("Login was not successful")
+//            println("Login was not successful")
             toggleClickablity(true)
             sendMessageToUser(getString(R.string.login_bad_info))
             toggleSpinnerLayout(false)
@@ -218,7 +218,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun sendMessageToUser(message: String) {
-        val mySnackbar = Snackbar.make(findViewById(R.id.activityLogin), message, Snackbar.LENGTH_SHORT)
+        val mySnackbar = Snackbar.make(findViewById(R.id.activityLogin), message, Snackbar.LENGTH_LONG)
         mySnackbar.show()
     }
 

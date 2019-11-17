@@ -37,13 +37,30 @@
     <string name="field_name_textview">Field Name</string>
     <string name="field_size_textview">Field size (ha)</string>
     <string name="creating_field_textview">Creating Field</string>
+    <string name="map_fab_cancel">Cancel</string>
+    <string name="map_fab_add_point">Add point</string>
+    <string name="map_hectare">ha</string>
+    <string name="map_dialog_title">Field properties</string>
+    <string name="map_dialog_hint_name">Field name</string>
+    <string name="map_dialog_hint_id">Field ID</string>
+    <string name="map_dialog_field_name_preset">Newly created field</string>
 
 
-    <!-- Sampling Parameters screen-->
+    <!-- Sampling screen-->
+    <string name="sampling_position_clicked">You clicked on Position</string>
+    <string name="sampling_field_clicked">You clicked on Field</string>
+    <string name="sampling_campus_ballerup">Campus Ballerup</string>
+
+
+    <!-- Sampling Parameters screen -->
     <string name="min_zone_size">Min. zone size</string>
     <string name="samples_per_zone">Samples per zone</string>
     <string name="zones_to_sample">Zones to sample</string>
     <string name="confirm">Confirm</string>
+    <string name="sampling_sampling_parameters">Sampling parameters</string>
+    <string name="sampling_0">0</string>
+    <string name="sampling_20">20</string>
+    <string name="sampling_5">5</string>
 
 
     <!-- Driving screen -->
@@ -53,10 +70,17 @@
     <string name="placeholder_1_km_h">-1 km/h</string>
     <string name="placeholder_suggested_speed">suggested speed</string>
     <string name="placeholder_100_km_h">100 km/h</string>
+    <string name="driving_start">Start</string>
+    <string name="driving_pause">Pause</string>
 
 
     <!-- Workspace screen-->
     <string name="workspace">Workspace</string>
+
+
+    <!-- Workspace list item-->
+    <string name="placeholder_field_name">field name</string>
+    <string name="placeholder_field_activity">field activity</string>
 
 
     <!-- Sort later -->
@@ -100,6 +124,7 @@
 
     <!-- Error Messages -->
     <string name="not_implemented_yet">Not implemented yet.</string>
+    <string name="sign_up_button_go_to_website">To sign up, please visit:\nhttps://www.AgriCircle.com</string>
 
     <!-- Spinner arrays -->
     <string-array name="map_pref_array">
@@ -113,8 +138,6 @@
         <item>Imperial</item>
     </string-array>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

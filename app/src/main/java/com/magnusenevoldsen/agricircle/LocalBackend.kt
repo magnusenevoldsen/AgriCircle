@@ -31,8 +31,8 @@ object LocalBackend {
 
         //Push into AgricircleBackend Array
         localFields.add(field)
-        println("SÅ PRINTER VI FIELD -> $field")
-        println("SÅ PRINTER VI FIELD ARRAY -> $localFields")
+//        println("SÅ PRINTER VI FIELD -> $field")
+//        println("SÅ PRINTER VI FIELD ARRAY -> $localFields")
 
     }
 

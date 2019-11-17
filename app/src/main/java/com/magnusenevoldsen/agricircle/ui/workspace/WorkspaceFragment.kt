@@ -37,9 +37,9 @@ class WorkspaceFragment : Fragment() {
             for (j in 0..1) {
                 var activityString : String = ""
                 if (j == 0)
-                    activityString = "Fertilization"
+                    activityString = getString(R.string.placeholder_Fertilization)
                 if (j == 1)
-                    activityString = "Sowing"
+                    activityString = getString(R.string.placeholder_sowing)
                 val dummyItem = DummyField(AgriCircleBackend.fields[i], activityString)
                 dummyArray.add(dummyItem)
             }

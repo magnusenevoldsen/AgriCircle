@@ -65,6 +65,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private var locationCallback : LocationCallback? = null
     private val zoom : Float = 17.0f
     private var counter : Int = 0
+    private var presetInterval : Long = 2000
+    private var presetFastestInterval : Long = 1000
 
 
     //Shared prefs
@@ -107,8 +109,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 //        mapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
         root = inflater.inflate(R.layout.fragment_map, container, false)
         locationRequest = LocationRequest()
-        locationRequest!!.interval = 2000 // Find ud af hvor ofte der bør opdateres. pt 1 sek for test formål
-        locationRequest!!.fastestInterval = 1000 //1 sec
+        locationRequest!!.interval = presetInterval // Find ud af hvor ofte der bør opdateres. pt 1 sek for test formål
+        locationRequest!!.fastestInterval = presetFastestInterval //1 sec
         locationRequest!!.priority = LocationRequest.PRIORITY_HIGH_ACCURACY //Overvej at bruge HIGH ACCURACY istedet. / BALANCED
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapMapView) as SupportMapFragment
@@ -262,10 +264,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
 
 
-
-
-
-
         return root
     }
 
@@ -287,7 +285,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         val field0 = LocalBackend.allFields[counter].centerPoint
 
         fieldNameTextView.text = LocalBackend.allFields[counter].name
-        fieldSizeTextView.text = LocalBackend.allFields[counter].surface.toString()+" ha"
+        fieldSizeTextView.text = LocalBackend.allFields[counter].surface.toString() + getString(R.string.map_hectare)
         topTopImageView!!.setImageResource(R.drawable.stock_crop_image)
         topBottomImageView!!.setImageResource(R.drawable.stock_crop_image)
 
@@ -312,27 +310,26 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     private fun makeFieldList () {
         //Takes the fields which are from the first company of the user
-        println("Making a new fields list")
+//        println("Making a new fields list")
         for (i in 0 until AgriCircleBackend.fields.size)
             LocalBackend.allFields.add(AgriCircleBackend.fields[i])
 
         for (i in 0 until LocalBackend.localFields.size)
             LocalBackend.allFields.add(LocalBackend.localFields[i])
 
-        println("Fields : ")
-        for (i in 0 until LocalBackend.allFields.size)
-            println("Field $i : ${LocalBackend.allFields[i]}")
+//        println("Fields : ")
+//        for (i in 0 until LocalBackend.allFields.size)
+//            println("Field $i : ${LocalBackend.allFields[i]}")
     }
 
 
 
 
     private fun drawFields () {
-        println(" - - - - -   - -- - - - -SE HER - - -  -- - - - - - - - -  ")
         for (i in 0 until LocalBackend.allFields.size) {
-            println("Field : "+LocalBackend.allFields[i].id)
-            println("Field : "+LocalBackend.allFields[i])
-            println("Field latlng : "+LocalBackend.allFields[i].shapeCoordinates.toString())
+//            println("Field : "+LocalBackend.allFields[i].id)
+//            println("Field : "+LocalBackend.allFields[i])
+//            println("Field latlng : "+LocalBackend.allFields[i].shapeCoordinates.toString())
             var poly : Polygon = mMap.addPolygon(
                 PolygonOptions()
                     .clickable(true)
@@ -343,7 +340,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             poly.strokeColor = ContextCompat.getColor(activity!!, R.color.colorPolygonBorder)
             poly.fillColor = ContextCompat.getColor(activity!!, R.color.colorPolygonFill)
         }
-        println(" - - - - -   - -- - - - -SE HER - - -  -- - - - - - - - -  ")
     }
 
 //    private fun drawLocalFields () {
@@ -419,8 +415,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                 }
             }
 
-            println("You clicked on field:")
-            println(array[fieldNumber].toString())
+//            println("You clicked on field:")
+//            println(array[fieldNumber].toString())
 
         }
     }
@@ -439,15 +435,15 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     override fun onResume() {
         super.onResume()
 
-        for (i in 0 until 10)
-            println("VI PRINTER HER $i")
-
-        for (i in 0 until LocalBackend.allFields.size)
-            println("VI PRINTER HER " + LocalBackend.allFields[i].toString())
-
-        println("SIZE = "+LocalBackend.allFields.size)
-        for (i in 0 until 10)
-            println("VI PRINTER HER $i")
+//        for (i in 0 until 10)
+//            println("VI PRINTER HER $i")
+//
+//        for (i in 0 until LocalBackend.allFields.size)
+//            println("VI PRINTER HER " + LocalBackend.allFields[i].toString())
+//
+//        println("SIZE = "+LocalBackend.allFields.size)
+//        for (i in 0 until 10)
+//            println("VI PRINTER HER $i")
 
         toggleActionButtons(true)
         toggleCrosshair(false)
@@ -576,12 +572,12 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     fun addPointButtonClicked() {
 
 
-        println("!!!!!!!!!!------- SE MIG -----!!!!!!!!!!!!!!!")
+//        println("!!!!!!!!!!------- SE MIG -----!!!!!!!!!!!!!!!")
 
         var location : LatLng = mMap.cameraPosition.target
 
 
-        println("New location was found $location")
+//        println("New location was found $location")
 
         //Add point (little square)
 
@@ -602,13 +598,13 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         //Push point to array
         newFieldLocations.add(location)
-        println("New location was pushed to the array $newFieldLocations")
+//        println("New location was pushed to the array $newFieldLocations")
 
         //Get nr. of tracks
         var amountOfTracks = newFieldLocations.size
 
 
-        println("Amount of tracks -> $amountOfTracks")
+//        println("Amount of tracks -> $amountOfTracks")
 
         // calc dist
         if (amountOfTracks >= 2) {
@@ -623,7 +619,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             if (firstLocation.distanceTo(newestLocation) < 5.0) {
                 doneEditingFields = true
 
-                println("-> -> -> You are now done editing")
+//                println("-> -> -> You are now done editing")
             }
         }
 
@@ -632,7 +628,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             newFieldLocations.removeAt(newFieldLocations.size - 1)
             newFieldLocations.add(newFieldLocations[0])
             enterFieldInfoDialog()
-            println("Array was fixed to make sure its connected -> $newFieldLocations")
+//            println("Array was fixed to make sure its connected -> $newFieldLocations")
 
         }
 
@@ -695,7 +691,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     private fun enterFieldInfoDialog () {
         var builder = AlertDialog.Builder(root!!.context)
-        builder.setTitle("Field properties")
+        builder.setTitle(getString(R.string.map_dialog_title))
 
         var layout = LinearLayout(root!!.context)
         layout.orientation = LinearLayout.VERTICAL
@@ -703,27 +699,27 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         var fieldNameInput = EditText(root!!.context)
         fieldNameInput.inputType = InputType.TYPE_CLASS_TEXT
-        fieldNameInput.hint = "Field name"
+        fieldNameInput.hint = getString(R.string.map_dialog_hint_name)
         layout.addView(fieldNameInput)
 
         var fieldIdInput = EditText(root!!.context)
         fieldIdInput.inputType = InputType.TYPE_CLASS_NUMBER
-        fieldIdInput.hint = "Field ID"
+        fieldIdInput.hint = getString(R.string.map_dialog_hint_id)
 
 
         layout.addView(fieldIdInput)
 
         builder.setView(layout)
 
-        println("LOCATIONS 1 : "+newFieldLocations)
+//        println("LOCATIONS 1 : "+newFieldLocations)
 
         builder.setPositiveButton(android.R.string.yes) {dialog, which ->
             //Upload
             var fieldName = fieldNameInput.text.toString()
             if (fieldName.equals(""))
-                fieldName = "Newly created field"
+                fieldName = getString(R.string.map_dialog_field_name_preset)
 
-            var fieldId = 102030
+            var fieldId = (100000..999999).random() //Returns a random number between 100000 and 999999
             try {
                 var fieldId = fieldIdInput.text.toString().toInt()
             } catch (e : NumberFormatException) {
@@ -738,12 +734,12 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                 fieldId = fieldId
             )
 
-            println("LOCATIONS 2 : "+newFieldLocations)
+//            println("LOCATIONS 2 : "+newFieldLocations)
             redrawFields()
-            println("LOCATIONS 3 : "+newFieldLocations)
+//            println("LOCATIONS 3 : "+newFieldLocations)
 
             finishedAddingPointsButtonClicked()
-            println("LOCATIONS 4 : "+newFieldLocations)
+//            println("LOCATIONS 4 : "+newFieldLocations)
         }
 
         builder.setNegativeButton(android.R.string.no) {dialog, which ->

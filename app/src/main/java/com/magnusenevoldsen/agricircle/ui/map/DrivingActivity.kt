@@ -76,7 +76,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
         context = this
 
-
         //Layout setup
 
         //Map setup
@@ -96,12 +95,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //Time
         timeTextView = findViewById(R.id.drivingTimeTextView)
-//        timeTextView!!.format = "Time: %s"
-
-//        timeTextView!!.setOnChronometerTickListener {
-//            timeTextView!!.base = SystemClock.elapsedRealtime()
-//        }
-
         //Tractors
         yourTractorImageView = findViewById(R.id.drivingCurrentTractorImageView)
         suggestedTractorImageView = findViewById(R.id.drivingSuggestedTractorImageView)
@@ -133,17 +126,13 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         locationRequest!!.priority = LocationRequest.PRIORITY_HIGH_ACCURACY //Overvej at bruge HIGH ACCURACY istedet. / BALANCED
 
         //Location -> Hent den 1 gang når view åbner
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this) // ????????????
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient!!.lastLocation.addOnSuccessListener {location ->
                 if (location != null) {
                     //Update UI             --- Go to field 0 instead????
                     val currentLocation = LatLng(location.latitude, location.longitude)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))   //Brug animateCamera eller moveCamera
-//                    mMap.addMarker(MarkerOptions().position(currentLocation))
-
-
-
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))
                 }
             }
         } else {
@@ -160,36 +149,14 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (location != null && playOrPause) {
                         val currentLocation = LatLng(location.latitude, location.longitude)
                         mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation))
-
-
-
-
-
-
-// -----------------------------------------------------------------------------------------------------------------------------------------
                         // Draw line
                         drawTrack(currentLocation)
-
-// -----------------------------------------------------------------------------------------------------------------------------------------
-
+                        //Calculate speed
                         val kmh = (location.speed * 3.6)
                         val kmhString = kmh.toString().substringBefore(".")
-
+                        //Update UI
                         updateTractors(kmh)
-
-//                        if (kmh > 45 && kmh < 55)
-//                            yourTractorImageView!!.setColorFilter(Color.GREEN)
-//                        else
-//                            yourTractorImageView!!.setColorFilter(Color.YELLOW)
-
-
-
-
                         yourSpeedNumberTextView!!.text = kmhString + getString(R.string.kilometerhour)
-
-
-
-
 
                     }
                 }
@@ -198,15 +165,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         setupUI()
-
-
-
-        
-
-
-
-
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -306,10 +264,10 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     fun switchPlayPause() {
         if (playOrPause) {  //Started
             pauseFAB!!.setIconResource(R.drawable.ic_pause_circle_outline_black_24dp)
-            pauseFAB!!.text = "Pause"
+            pauseFAB!!.text = getString(R.string.driving_pause)
         } else { //Stopped
             pauseFAB!!.setIconResource(R.drawable.ic_play_circle_outline_black_24dp)
-            pauseFAB!!.text = "Start"
+            pauseFAB!!.text = getString(R.string.driving_start)
         }
     }
 
