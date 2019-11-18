@@ -27,7 +27,6 @@ import com.magnusenevoldsen.agricircle.R
 class SamplingFragment : Fragment(), OnMapReadyCallback {
 
 
-    private lateinit var samplingViewModel: SamplingViewModel
     private lateinit var mMap : GoogleMap
     private var root : View? = null
 

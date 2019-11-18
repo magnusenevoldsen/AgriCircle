@@ -16,7 +16,6 @@ import com.magnusenevoldsen.agricircle.model.Field
 
 class WorkspaceFragment : Fragment() {
 
-    private lateinit var workspaceViewModel: WorkspaceViewModel
     private var listView : RecyclerView? = null
     private var headerTextView : TextView? = null
     private lateinit var workspaceAdapter : WorkspaceAdapter

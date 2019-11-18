@@ -21,7 +21,6 @@ import com.squareup.picasso.Picasso
 
 class SettingsFragment : Fragment() {
 
-    private lateinit var settingsViewModel: SettingsViewModel
     var userImageView : ImageView? = null
     var userWebView : WebView? = null
     var logOutButton : Button? = null
@@ -33,9 +32,6 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-
-        settingsViewModel =
-            ViewModelProviders.of(this).get(SettingsViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_settings, container, false)
 
         userImageView = root.findViewById(R.id.userImageView)

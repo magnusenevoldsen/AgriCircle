@@ -51,7 +51,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
 
 
-    private lateinit var mapViewModel: MapViewModel
     private lateinit var mMap : GoogleMap
     private var root : View? = null
     private var constLayout : View? = null

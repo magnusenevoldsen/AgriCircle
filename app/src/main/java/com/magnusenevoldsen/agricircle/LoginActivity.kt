@@ -156,7 +156,7 @@ class LoginActivity : AppCompatActivity() {
         var password : String = passwordEditText!!.editText!!.text.toString()
 
         if (email.equals("") && password.equals("")) {
-            val chosenUser : Int = 1 //1 for Jacob, 2 for Magnus
+            val chosenUser : Int = 2 //1 for Jacob, 2 for Magnus
             email = SensitiveInfo.returnEmail(chosenUser)
             password = SensitiveInfo.returnPassword(chosenUser)
         }
