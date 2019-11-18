@@ -148,7 +148,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                     //Update UI
                     if (location != null && playOrPause) {
                         val currentLocation = LatLng(location.latitude, location.longitude)
-                        mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation))
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))
                         // Draw line
                         drawTrack(currentLocation)
                         //Calculate speed
@@ -171,6 +171,8 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = false
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+        mMap.isMyLocationEnabled = true
+
 //        val campusLyngby = LatLng(55.785558, 12.521564)
 //        mMap.addMarker(MarkerOptions().position(campusLyngby).title("Campus Lyngby"))
 //        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(campusLyngby, zoom))

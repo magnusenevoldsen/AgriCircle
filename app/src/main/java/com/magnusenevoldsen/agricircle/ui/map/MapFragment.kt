@@ -464,6 +464,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = false
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+        mMap.isMyLocationEnabled = true
 
 
         toggleActionButtons(true)
