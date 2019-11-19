@@ -56,7 +56,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/logo"
-        android:src="@drawable/fulllogo"
+        android:src="@drawable/fulllogov2"
         app:layout_constraintBottom_toTopOf="@+id/usernameEditText"
         app:layout_constraintEnd_toStartOf="@+id/guidelineverticalright"
         app:layout_constraintHorizontal_bias="0.0"
