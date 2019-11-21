@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.magnusenevoldsen.agricircle.AgriCircleBackend
 import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.R
@@ -20,6 +21,7 @@ import com.squareup.picasso.Picasso
 
 
 class WorkspaceAdapter(val fields : ArrayList<DummyField>) : RecyclerView.Adapter<WorkspaceAdapter.ViewHolder>() {
+    private var context : Context? = null
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -27,6 +29,7 @@ class WorkspaceAdapter(val fields : ArrayList<DummyField>) : RecyclerView.Adapte
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        context = parent?.context
         val view = LayoutInflater.from(parent?.context).inflate(R.layout.workspace_list_item, parent, false)
         return ViewHolder(view)
     }
@@ -67,12 +70,37 @@ class WorkspaceAdapter(val fields : ArrayList<DummyField>) : RecyclerView.Adapte
                 for (i in 0 until LocalBackend.allFields.size)
                     if (LocalBackend.allFields[i].name.equals(field.field.name))
                         fieldid = i
-                val intent = Intent (itemView.context, DrivingActivity::class.java)
+                val intent = Intent (context, DrivingActivity::class.java)
                 intent.putExtra(itemView.context.resources.getString(R.string.intent_extra_field_id), fieldid)
                 intent.putExtra(itemView.context.resources.getString(R.string.intent_extra_field_activity), field.activity)
-                itemView.context!!.startActivity(intent)
+                context!!.startActivity(intent)
+            }
+
+            fieldName!!.setOnClickListener {
+
             }
 
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
