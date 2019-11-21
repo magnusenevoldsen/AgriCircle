@@ -66,9 +66,9 @@
     <!-- Driving screen -->
     <string name="kilometerhour">km/h</string>
     <string name="placeholder_time">-- TIME --</string>
-    <string name="placeholder_your_speed">your speed</string>
-    <string name="placeholder_1_km_h">-1 km/h</string>
-    <string name="placeholder_suggested_speed">suggested speed</string>
+    <string name="placeholder_your_speed">Your speed</string>
+    <string name="placeholder_0_km_h">0 km/h</string>
+    <string name="placeholder_suggested_speed">Suggested speed</string>
     <string name="placeholder_100_km_h">100 km/h</string>
     <string name="driving_start">Start</string>
     <string name="driving_pause">Pause</string>

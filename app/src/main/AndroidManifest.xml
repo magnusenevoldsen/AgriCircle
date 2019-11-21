@@ -18,17 +18,28 @@
         android:supportsRtl="true"
         android:largeHeap="true"
         android:hardwareAccelerated="false"
+
         android:theme="@style/AppTheme.NoActionBar">
 
-        <activity android:name=".ui.map.DrivingActivity"></activity>
+        <activity
+            android:name=".ui.map.DrivingActivity"
+            android:screenOrientation="portrait"
+            />
 
-        <activity android:name=".ui.sampling.SamplingParametersActivity" />
+
+        <activity
+            android:name=".ui.sampling.SamplingParametersActivity"
+            android:screenOrientation="portrait"
+            />
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main" />
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".LoginActivity"
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
