@@ -94,6 +94,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private var topTopImageView : ImageView? = null
     private var topBottomImageView : ImageView? = null
 
+    //Selected field
+    private var currentlySelectedField : Int? = null
+
 
 
 
@@ -279,7 +282,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     private fun findFieldButton() {
         toggleCrosshair(false)
-        AgriCircleBackend.selectedField = counter
+        currentlySelectedField = counter
 
         val field0 = LocalBackend.allFields[counter].centerPoint
 
@@ -397,7 +400,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                 if (array[i].id == fieldId)
                     fieldNumber = i
 
-            AgriCircleBackend.selectedField = fieldNumber
+            currentlySelectedField = fieldNumber
             fieldNameTextView.text = array[fieldNumber].name
             fieldSizeTextView.text = array[fieldNumber].surface.toString()+" ha"
 
@@ -504,12 +507,16 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private fun startActivityOne() {
         //Needs data with the intent start : what activity etc
         val intent = Intent (activity, DrivingActivity::class.java)
+        intent.putExtra(getString(R.string.intent_extra_field_id), currentlySelectedField)
+        intent.putExtra(getString(R.string.intent_extra_field_activity), getString(R.string.placeholder_sowing))
         activity!!.startActivity(intent)
     }
 
     private fun startActivityTwo() {
         //Needs data with the intent start : what activity etc
         val intent = Intent (activity, DrivingActivity::class.java)
+        intent.putExtra(getString(R.string.intent_extra_field_id), currentlySelectedField)
+        intent.putExtra(getString(R.string.intent_extra_field_activity), getString(R.string.placeholder_Fertilization))
         activity!!.startActivity(intent)
     }
 

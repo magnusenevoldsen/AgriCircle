@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.magnusenevoldsen.agricircle.AgriCircleBackend
+import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.R
 import com.magnusenevoldsen.agricircle.model.DummyField
 import com.magnusenevoldsen.agricircle.model.Field
@@ -32,14 +33,14 @@ class WorkspaceFragment : Fragment() {
 
         //Create dummydata
         var dummyArray : ArrayList<DummyField> = ArrayList()
-        for (i in 0 until AgriCircleBackend.fields.size) {
+        for (i in 0 until LocalBackend.allFields.size) {
             for (j in 0..1) {
                 var activityString : String = ""
                 when (j) {
                     0 -> activityString = getString(R.string.placeholder_Fertilization)
                     1 -> activityString = getString(R.string.placeholder_sowing)
                 }
-                val dummyItem = DummyField(AgriCircleBackend.fields[i], activityString)
+                val dummyItem = DummyField(LocalBackend.allFields[i], activityString)
                 dummyArray.add(dummyItem)
             }
         }

@@ -121,6 +121,8 @@
     <string name="backend_slug">slug</string>
     <string name="backend_features">features</string>
     <string name="backend_typename">__typename</string>
+    <string name="intent_extra_field_activity">fieldactivity</string>
+    <string name="intent_extra_field_id">fieldid</string>
 
     <!-- Error Messages -->
     <string name="not_implemented_yet">Not implemented yet.</string>

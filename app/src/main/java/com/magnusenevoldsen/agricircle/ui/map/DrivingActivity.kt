@@ -179,10 +179,21 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun setupUI() {
+
+        //Get field
+        val extraDataFromIntent= intent.extras
+        var fieldID : Int? = null
+        if(extraDataFromIntent != null) {
+            fieldWorkTextView!!.text = extraDataFromIntent.getString(getString(R.string.intent_extra_field_activity)).toString()
+            fieldID = extraDataFromIntent.getInt(getString(R.string.intent_extra_field_id))
+        }
+
         //Update UI with field info
-        fieldNameTextView!!.text = LocalBackend.allFields[AgriCircleBackend.selectedField].name
-        var imageUrl : String = LocalBackend.allFields[AgriCircleBackend.selectedField].activeCropImageUrl
+        fieldNameTextView!!.text = LocalBackend.allFields[fieldID!!].name
+        var imageUrl : String = LocalBackend.allFields[fieldID!!].activeCropImageUrl
         fieldPictureImageView!!.setImageResource(R.drawable.stock_crop_image)
+
+
         if (!imageUrl.equals("null")){
             try {
                 Picasso.get().load(imageUrl).into(fieldPictureImageView)
