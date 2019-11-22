@@ -20,7 +20,10 @@
     <color name="colorPolygonBorder">#BF1F6DB9</color>
     <color name="colorPolygonFill">#4D1F6DB9</color>
 
-    <color name="colorPolygonDriving">#800040FF</color>
+    <color name="drivingColorPolygonBorder">#1FB94B</color>
+    <color name="drivingColorPolygonFill">#801FB94B</color>
+
+    <color name="colorPolygonDriving">#FD9209</color>
 
 
 

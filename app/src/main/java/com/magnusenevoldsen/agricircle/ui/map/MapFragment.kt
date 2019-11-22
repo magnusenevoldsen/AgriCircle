@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -24,7 +23,6 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.*
 import com.magnusenevoldsen.agricircle.R
@@ -35,8 +33,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.internal.NavigationMenu
 import com.google.android.material.snackbar.Snackbar
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.leinardi.android.speeddial.SpeedDialView
@@ -284,6 +280,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         toggleCrosshair(false)
         currentlySelectedField = counter
 
+        toggleTopView(true)
+
         val field0 = LocalBackend.allFields[counter].centerPoint
 
         fieldNameTextView.text = LocalBackend.allFields[counter].name
@@ -344,46 +342,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         }
     }
 
-//    private fun drawLocalFields () {
-//
-//        //Remove
-//
-//        for (i in 0 until LocalBackend.localFields.size) {
-//            var poly : Polygon = mMap.addPolygon(
-//                PolygonOptions()
-//                    .clickable(true)
-//                    .addAll(LocalBackend.localFields[i].shapeCoordinates)
-//            )
-//
-//            poly.tag = LocalBackend.localFields[i].id
-//            poly.strokeColor = ContextCompat.getColor(activity!!, R.color.colorPolygonBorder)
-//            poly.fillColor = ContextCompat.getColor(activity!!, R.color.colorPolygonFill)
-//        }
-//    }
 
-//    private fun makePolygonClickListeners () {
-//        mMap.setOnPolygonClickListener { polygon ->
-//            //            if (constToggle) constLayout!!.visibility = View.GONE
-////            else
-//            toggleTopView(true)
-//            constToggle = !constToggle
-//
-//            //Update UI to field ->
-//            val fieldId = polygon.tag.toString().toInt()
-//            var fieldNumber : Int = -1
-//            for (i in 0 until allFields.size)
-//                if (allFields[i].id == fieldId)
-//                    fieldNumber = i
-//
-//            AgriCircleBackend.selectedField = fieldNumber
-//            fieldNameTextView.text = allFields[fieldNumber].name
-//            fieldSizeTextView.text = allFields[fieldNumber].surface.toString()+" ha"
-//
-//            println("You clicked on field:")
-//            println(allFields[fieldNumber].toString())
-//
-//        }
-//    }
 
     private fun makePolygonClickListeners (array : ArrayList<Field>) {
         mMap.setOnPolygonClickListener { polygon ->
@@ -593,7 +552,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         //Test with new array ->
 
 //
-        var markerOverlay = bitmapDescriptorFromVector(root!!.context, R.drawable.ic_stop_red_24dp)?.let {
+        var markerOverlay = bitmapDescriptorFromVector(root!!.context, R.drawable.ic_stop_blue_24dp)?.let {
             GroundOverlayOptions()
                 .image(it)
                 .clickable(true)

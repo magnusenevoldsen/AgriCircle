@@ -6,14 +6,11 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import android.location.Location
-import android.location.LocationManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
-import android.view.View
 import android.widget.Chronometer
 import android.widget.ImageView
 import android.widget.TextView
@@ -27,7 +24,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.magnusenevoldsen.agricircle.AgriCircleBackend
 import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.R
 import com.squareup.picasso.Picasso
@@ -67,6 +63,8 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //Suggested speed
     private var suggestedSpeedNumber : Int = 0
+
+    private var fieldID : Int? = null
 
 
 
@@ -130,9 +128,9 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient!!.lastLocation.addOnSuccessListener {location ->
                 if (location != null) {
-                    //Update UI             --- Go to field 0 instead????
-                    val currentLocation = LatLng(location.latitude, location.longitude)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))
+                    //Update UI
+//                    val currentLocation = LatLng(location.latitude, location.longitude)
+//                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))
                 }
             }
         } else {
@@ -164,7 +162,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
 
-        setupUI()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -173,16 +170,29 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
         mMap.isMyLocationEnabled = true
 
-//        val campusLyngby = LatLng(55.785558, 12.521564)
-//        mMap.addMarker(MarkerOptions().position(campusLyngby).title("Campus Lyngby"))
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(campusLyngby, zoom))
+
+        setupUI()
+
+        //Draw field
+        var poly : Polygon = mMap.addPolygon(
+            PolygonOptions()
+                .clickable(true)
+                .addAll(LocalBackend.allFields[fieldID!!].shapeCoordinates)
+        )
+
+        poly.tag = LocalBackend.allFields[fieldID!!].id
+        poly.strokeColor = ContextCompat.getColor(this, R.color.drivingColorPolygonBorder)
+        poly.fillColor = ContextCompat.getColor(this, R.color.drivingColorPolygonFill)
+
+        //Move camera to center of field
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LocalBackend.allFields[fieldID!!].centerPoint, zoom))
     }
 
     fun setupUI() {
 
         //Get field
         val extraDataFromIntent= intent.extras
-        var fieldID : Int? = null
+
         if(extraDataFromIntent != null) {
             fieldWorkTextView!!.text = extraDataFromIntent.getString(getString(R.string.intent_extra_field_activity)).toString()
             fieldID = extraDataFromIntent.getInt(getString(R.string.intent_extra_field_id))
@@ -209,6 +219,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         //Update tracker part of view
         yourTractorImageView!!.setColorFilter(Color.GREEN)
         suggestedTractorImageView!!.setColorFilter(Color.GREEN)
+        
     }
 
     private fun updateTractors (currentKmh : Double) {
@@ -248,7 +259,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun addCustomMarker(location : LatLng) {
-        var markerOverlay = bitmapDescriptorFromVector(context as DrivingActivity, R.drawable.ic_stop_red_24dp)?.let {
+        var markerOverlay = bitmapDescriptorFromVector(context as DrivingActivity, R.drawable.ic_stop_orange_24dp)?.let {
             GroundOverlayOptions()
                 .image(it)
                 .clickable(true)
