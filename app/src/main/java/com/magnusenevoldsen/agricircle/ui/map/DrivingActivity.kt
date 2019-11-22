@@ -146,7 +146,8 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                     //Update UI
                     if (location != null && playOrPause) {
                         val currentLocation = LatLng(location.latitude, location.longitude)
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))
+                        mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation))
+//                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))
                         // Draw line
                         drawTrack(currentLocation)
                         //Calculate speed
@@ -219,7 +220,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         //Update tracker part of view
         yourTractorImageView!!.setColorFilter(Color.GREEN)
         suggestedTractorImageView!!.setColorFilter(Color.GREEN)
-        
+
     }
 
     private fun updateTractors (currentKmh : Double) {
