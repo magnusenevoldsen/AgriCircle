@@ -41,6 +41,7 @@ import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.model.Field
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_map.*
+import java.security.Permission
 
 class MapFragment : Fragment(), OnMapReadyCallback{
 
@@ -262,7 +263,38 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
 
 
+
+
+
+
         return root
+    }
+
+//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+//        when (requestCode) {
+//            MY_PERMISSION_FINE_LOCATION -> {
+//
+//                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+//
+//                } else {
+//                }
+//
+//            }
+//        }
+//    }﻿
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            MY_PERMISSION_FINE_LOCATION ->{
+                if((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)){
+                    mMap.isMyLocationEnabled = true
+                }
+                else{
+                    sendMessageToUser(root!!, getString(R.string.user_declined_location_permission))
+                }
+                return
+            }
+        }
     }
 
 
@@ -426,7 +458,10 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = false
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
-        mMap.isMyLocationEnabled = true
+//        mMap.isMyLocationEnabled = true //This crashes the app
+
+
+
 
 
         toggleActionButtons(true)
@@ -459,7 +494,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
 
     fun sendMessageToUser(view : View,  message: String) {
-        val mySnackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
+        val mySnackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
         mySnackbar.show()
     }
 

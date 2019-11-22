@@ -127,6 +127,7 @@
     <!-- Error Messages -->
     <string name="not_implemented_yet">Not implemented yet.</string>
     <string name="sign_up_button_go_to_website">To sign up, please visit:\nhttps://www.AgriCircle.com</string>
+    <string name="user_declined_location_permission">In order to fully utilize this application, permission to read your location is required.</string>
 
     <!-- Spinner arrays -->
     <string-array name="map_pref_array">

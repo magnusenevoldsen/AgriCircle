@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
+import android.view.View
 import android.widget.Chronometer
 import android.widget.ImageView
 import android.widget.TextView
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.R
 import com.squareup.picasso.Picasso
@@ -165,11 +167,25 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            MY_PERMISSION_FINE_LOCATION ->{
+                if((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)){
+                    mMap.isMyLocationEnabled = true
+                }
+                else{
+                    sendMessageToUser(getString(R.string.user_declined_location_permission))
+                }
+                return
+            }
+        }
+    }
+
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = false
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
-        mMap.isMyLocationEnabled = true
 
 
         setupUI()
@@ -340,6 +356,10 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    fun sendMessageToUser(message: String) {
+        val mySnackbar = Snackbar.make(findViewById(R.id.activityDriving), message, Snackbar.LENGTH_LONG)
+        mySnackbar.show()
+    }
 
 
 
