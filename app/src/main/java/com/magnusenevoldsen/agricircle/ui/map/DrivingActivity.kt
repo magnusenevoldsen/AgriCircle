@@ -58,6 +58,9 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     //Track
     private var trackArray : ArrayList<LatLng> = ArrayList()
 
+    //Permission
+    private var locationPermissionGranted : Boolean = false
+
     //Time
     private var playOrPause : Boolean = false
     private var pauseOffset : Long = 0
@@ -128,6 +131,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         //Location -> Hent den 1 gang når view åbner
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true
             fusedLocationClient!!.lastLocation.addOnSuccessListener {location ->
                 if (location != null) {
                     //Update UI
@@ -186,6 +190,9 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = false
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+
+        if (locationPermissionGranted)
+            mMap.isMyLocationEnabled = true
 
 
         setupUI()

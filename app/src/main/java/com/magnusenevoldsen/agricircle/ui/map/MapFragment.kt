@@ -64,6 +64,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private var presetInterval : Long = 2000
     private var presetFastestInterval : Long = 1000
 
+    //Permission
+    private var locationPermissionGranted : Boolean = false
+
 
     //Shared prefs
     var myPref : SharedPreferences? = null
@@ -225,6 +228,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         //Location -> Hent den 1 gang når view åbner
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(root!!.context) // ????????????
         if (ActivityCompat.checkSelfPermission(root!!.context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true
             fusedLocationClient!!.lastLocation.addOnSuccessListener {location ->
                 if (location != null) {
                     //Update UI             --- Go to field 0 instead????
@@ -459,7 +463,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         mMap.uiSettings.isZoomControlsEnabled = false
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
 //        mMap.isMyLocationEnabled = true //This crashes the app
-
+        if (locationPermissionGranted)
+            mMap.isMyLocationEnabled = true
 
 
 
