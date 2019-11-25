@@ -10,12 +10,8 @@ import okhttp3.OkHttpClient
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONException
-
-
-
 
 object AgriCircleBackend {
 
@@ -31,19 +27,11 @@ object AgriCircleBackend {
     private val client = OkHttpClient()
 
     fun login (email : String, password : String) : Boolean {
-        var succes = false
+        var success = false
 
         val login = doAsync {
 
-
-//        var loginThread : Thread = Thread {
-
-            //Request body string for login
-//            val requestBodyString =
-//                "[\n    {\n        \"operationName\": \"login\",\n        \"query\": \"mutation login(\$options: LoginInput!) {\\n  login(options: \$options) {\\n    token\\n    cookie\\n    __typename\\n  }\\n}\\n\",\n        \"variables\": {\n            \"options\": {\n                \"email\": \"$email\",\n                \"password\": \"$password\"\n            }\n        }\n    }\n]"
-
             val requestBodyString = "[\n    {\n        \"operationName\": \"login\",\n        \"query\": \"mutation login(\$options: LoginInput!) {\\n  login(options: \$options) {\\n    token\\n    cookie\\n    __typename\\n  }\\n}\\n\",\n        \"variables\": {\n            \"options\": {\n                \"email\": \"$email\",\n                \"password\": \"$password\",\n                \"locale\": \"en\"\n            }\n        }\n    }\n]"
-
 
             //Create the request body
             val body = requestBodyString.toRequestBody("application/json".toMediaTypeOrNull())
@@ -59,24 +47,17 @@ object AgriCircleBackend {
             //Executing the request
             val response = client.newCall(request).execute()
 
-            //Testing purposes
-//            println("Getting the response code, should be 200 for a successful login : ")
             val responseCode = response.code
-//            println("CODE : $responseCode")
 
             if (responseCode == successfulResponse) { //Hvis denne rammer er request gået igennem - login er enten rigtig eller forkert
-//                println("Getting the response : ")
                 val bodyString = response.body!!.string()
-//                println("Response : $bodyString")
 
-//                println("Removing \"[]\" : ")
+
                 var str = bodyString.substring(1, bodyString.length - 1) //Fjerner [] så det ligner array
-//                println("So it becomes : $str")
 
-//                println("Attempting to get the cookie")
+              //Attempting to get the cookie")
                 try {
                     cookie = JSONObject(str).getJSONObject("data").getJSONObject("login").getJSONArray("cookie")
-//                    println("We got a cookie : $cookie")
 
                     //Get the real cookie for further requests
                     for (i in 0 until cookie!!.length()) {
@@ -87,20 +68,13 @@ object AgriCircleBackend {
                         }
                     }
                     userWasLoadedCorrectly = true
-                    succes = true
+                    success = true
                 } catch (e: JSONException) { //If the jsonobject cant be found eg. bad login -> go here
-//                    println("We didn't get a cookie - login is wrong")
-                    succes = false
+                    success = false
                 }
             }
             else {
-//                println("We didn't get a cookie - responce code is wrong")
-                succes = false
-            }
-
-            uiThread {
-                // use result here if you want to update ui
-//                updateUI(result)
+                success = false
             }
         }
 
@@ -108,18 +82,12 @@ object AgriCircleBackend {
             //Block until done.
         }
 
-        return succes
-
-//        println("-----------------------------------")
-//        loginThread.start()
-//        loginThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
-//        println("-----------------------------------")
-//        return succes
+        return success
     }
 
 
     fun loadUser () : Boolean {
-        var succes = false
+        var success = false
         var loadUserThread : Thread = Thread {
             val client = OkHttpClient()
 
@@ -144,16 +112,16 @@ object AgriCircleBackend {
             val response = client.newCall(request).execute()
 
             if (response.code == successfulResponse) { //Hvis denne rammer er request gået igennem - login er enten rigtig eller forkert
-//                println("Getting the response : ")
+
                 val bodyString = response.body!!.string()
-//                println("Response : $bodyString")
+
                 val bodyUserPath : JSONObject = JSONObject(bodyString).getJSONObject("data").getJSONObject("user")
 
-//                println("Attempting to get the user")
                 try {
                     val nameFromJSON : String = bodyUserPath.getString("name")
                     val languageFromJSON : String = bodyUserPath.getString("language")
                     val avatarUrlFromJSON : String = bodyUserPath.getString("avatarUrl")
+
                     //Get JSONarray and make it an ArrayList
                     val planningYearsFromJSON : JSONArray = bodyUserPath.getJSONArray("planningYears")
                     var planningYearsArrayList : ArrayList<Int> = ArrayList()
@@ -161,6 +129,7 @@ object AgriCircleBackend {
                     val decimalSeparatorFromJSON : String = bodyUserPath.getString("decimalSeparator")
                     val dateFormatFromJSON : String = bodyUserPath.getString("dateFormat")
                     val slugFromJSON : String = bodyUserPath.getString("slug")
+
                     //Get JSONarray and make it an ArrayList
                     val featuresFromJSON : JSONArray = bodyUserPath.getJSONArray("features")
                     var featuresArrayList : ArrayList<String> = ArrayList()
@@ -178,29 +147,24 @@ object AgriCircleBackend {
                         features = featuresArrayList,        //String array
                         typename = typenameFromJSON
                         )
-                    succes = true
+                    success = true
                 } catch (e: JSONException) { //If the jsonobject cant be found eg. bad login -> go here
-//                    println("We didn't get a user")
-                    succes = false
+                    success = false
                 }
             }
             else {
-//                println("Error loading user")
+                //Error
             }
         }
-//        println("-----------------------------------")
         if (userWasLoadedCorrectly) {
             loadUserThread.start()
-            loadUserThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
+            loadUserThread.join() //Wait for thread to finish
         }
-//        println("-----------------------------------")
-        return succes
-
+        return success
     }
 
-
     fun loadFields () : Boolean {
-        var succes = false
+        var success = false
 
         var companyIdList : ArrayList<Int> = ArrayList()
         for (i in 0 until companies.size)
@@ -234,12 +198,9 @@ object AgriCircleBackend {
                 val response = client.newCall(request).execute()
 
                 if (response.code == successfulResponse) { //Hvis denne rammer er request gået igennem - login er enten rigtig eller forkert
-//                    println("Getting the response : ")
-                    val bodyString = response.body!!.string()
-//                    println("Response : $bodyString")
-//                val bodyUserPath : JSONObject = JSONObject(bodyString).getJSONObject("data").getJSONObject("user")
 
-//                    println("Attempting to get the fields")
+                    val bodyString = response.body!!.string()
+
                     try {
                         val bodyUserPath : JSONArray = JSONObject(bodyString).getJSONObject("data").getJSONArray("fields")
 
@@ -284,31 +245,26 @@ object AgriCircleBackend {
                             )
                             fields.add(field)
                         }
-                        succes = true
+                        success = true
                     } catch (e: JSONException) { //If the jsonobject cant be found eg. bad login -> go here
-//                        println("We didn't get any fields")
-                        succes = false
+                        success = false
                     }
                 }
                 else {
-//                    println("Error loading fields")
                 }
             }
-//            println("-----------------------------------")
             if (companyWasLoadedCorrectly) {
                 loadUserThread.start()
-                loadUserThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
+                loadUserThread.join() //Wait for thread to finish
             }
         }
 
-
-//        println("-----------------------------------")
-        return succes
+        return success
 
     }
 
     fun loadCompanies () : Boolean {
-        var succes = false
+        var success = false
         var loadUserThread : Thread = Thread {
             val client = OkHttpClient()
 
@@ -333,16 +289,11 @@ object AgriCircleBackend {
             val response = client.newCall(request).execute()
 
             if (response.code == successfulResponse) { //Hvis denne rammer er request gået igennem
-//                println("Getting the response : ")
+
                 val bodyString = response.body!!.string()
-//                println("Response : $bodyString")
 
-//                println("Removing \"[]\" : ")
                 var str = bodyString.substring(1, bodyString.length - 1) //Fjerner [] så det ligner array
-//                println("So it becomes : $str")
 
-
-//                println("Attempting to get the companies")
                 try {
                     val bodyUserPath : JSONArray = JSONObject(str).getJSONObject("data").getJSONArray("companies")
 
@@ -350,6 +301,7 @@ object AgriCircleBackend {
                         val idFromJSON : Int = bodyUserPath.getJSONObject(i).getInt("id")
                         val nameFromJSON : String = bodyUserPath.getJSONObject(i).getString("name")
                         val locationTypeFromJSON : String = bodyUserPath.getJSONObject(i).getJSONObject("location").getString("type")
+
                         //Get coordinates
                         val locationCoordinatesFromJSON = bodyUserPath.getJSONObject(i).getJSONObject("location").getJSONArray("coordinates")
                         val lat = locationCoordinatesFromJSON.getDouble(0)
@@ -358,6 +310,7 @@ object AgriCircleBackend {
                         val defaultFromJSON : Boolean = bodyUserPath.getJSONObject(i).getBoolean("default")
                         val ownerPhotoUrlFromJSON : String = bodyUserPath.getJSONObject(i).getString("owner_photo_url")
                         val accessFromJSON : String = bodyUserPath.getJSONObject(i).getString("access")
+
                         //Load into companies
                         var company = Company(
                             id = idFromJSON,
@@ -372,29 +325,21 @@ object AgriCircleBackend {
 
                     }
                     companyWasLoadedCorrectly = true
-                    succes = true
+                    success = true
                 } catch (e: JSONException) { //If the jsonobject cant be found eg. bad login -> go here
-//                    println("We didn't get any company")
-                    succes = false
+                    success = false
                 }
             }
             else {
-//                println("Error loading company")
             }
         }
 
-//        println("-----------------------------------")
         if (userWasLoadedCorrectly) {
             loadUserThread.start()
-            loadUserThread.join() //Apparently used to wait on a thread - see if a better way can be found - I think this affects the main thread
+            loadUserThread.join() //Wait for thread to finish
         }
-//        println("-----------------------------------")
-        return succes
-
+        return success
     }
-
-
-
 
 }
 

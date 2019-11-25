@@ -41,12 +41,8 @@ import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.model.Field
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_map.*
-import java.security.Permission
 
 class MapFragment : Fragment(), OnMapReadyCallback{
-
-
-
 
     private lateinit var mMap : GoogleMap
     private var root : View? = null
@@ -63,22 +59,16 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private var counter : Int = 0
     private var presetInterval : Long = 2000
     private var presetFastestInterval : Long = 1000
+    private var presetPrecision : Int = LocationRequest.PRIORITY_HIGH_ACCURACY
 
     //Permission
     private var locationPermissionGranted : Boolean = false
-
-
+    
     //Shared prefs
     var myPref : SharedPreferences? = null
 
-    //Test purposes
-    private var constToggle : Boolean = false           //Not used??????
-
     //Standard Action Buttons
-//    private var positionFAB : FloatingActionButton? = null
-//    private var fieldFAB : FloatingActionButton? = null
     private var fabSpeedDial : SpeedDialView? = null
-
 
     //Add fields
     private var editingFields : Boolean = false
@@ -97,23 +87,16 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     //Selected field
     private var currentlySelectedField : Int? = null
 
-
-
-
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        mapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
         root = inflater.inflate(R.layout.fragment_map, container, false)
         locationRequest = LocationRequest()
         locationRequest!!.interval = presetInterval // Find ud af hvor ofte der bør opdateres. pt 1 sek for test formål
         locationRequest!!.fastestInterval = presetFastestInterval //1 sec
-        locationRequest!!.priority = LocationRequest.PRIORITY_HIGH_ACCURACY //Overvej at bruge HIGH ACCURACY istedet. / BALANCED
+        locationRequest!!.priority = presetPrecision //Overvej at bruge HIGH ACCURACY istedet. / BALANCED
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapMapView) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -131,7 +114,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             finishedAddingPointsButtonClicked()
             toggleCreatingFieldTopView(false)
         }
-
 
         //Top layout
         constLayout = root!!.findViewById<ConstraintLayout>(R.id.mapConstraintLayout)
@@ -159,8 +141,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             startActivityTwo()
         }
 
-
-        fabSpeedDial = root!!.findViewById<SpeedDialView>(R.id.fabSpeedDial)
+        fabSpeedDial = root!!.findViewById(R.id.fabSpeedDial)
 
         //Find field
         fabSpeedDial!!.addActionItem(SpeedDialActionItem.Builder(R.id.findFieldFloatingActionButton, R.drawable.ic_field_dashboard_white_24dp)
@@ -192,11 +173,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             .setLabelClickable(false)
             .create())
 
-
-
-
-
-
         fabSpeedDial!!.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
             when (actionItem.id) {
                 R.id.positionFloatingActionButton -> {
@@ -218,31 +194,19 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             false
         })
 
-
-
-
-
-
-
-
         //Location -> Hent den 1 gang når view åbner
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(root!!.context) // ????????????
         if (ActivityCompat.checkSelfPermission(root!!.context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true
             fusedLocationClient!!.lastLocation.addOnSuccessListener {location ->
                 if (location != null) {
-                    //Update UI             --- Go to field 0 instead????
-//                    val currentLocation = LatLng(location.latitude, location.longitude)
-//                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))   //Brug animateCamera eller moveCamera
-//                    mMap.addMarker(MarkerOptions().position(currentLocation).title("You are here"))
+                    //Not used currently, view is moved to company location.
                 }
             }
         } else {
             //Request permission
             requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), MY_PERMISSION_FINE_LOCATION)
         }
-
-
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult?) {
@@ -252,40 +216,15 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                     if (location != null && updatesOn) {
                         val currentLocation = LatLng(location.latitude, location.longitude)
                         mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation))
-//                        mMap.addMarker(MarkerOptions().position(currentLocation).title("You are here"))
                         updatesOn = false
                         stopLocationUpdates()
-
-
-//                        sendMessageToUser(root!!, ""+counter+" : Lat = "+currentLocation.latitude+", Lng = "+currentLocation.longitude)
-//                        println("Lat = "+currentLocation.latitude+", Lng = "+currentLocation.longitude+"")
-//                        counter++
                     }
                 }
             }
         }
 
-
-
-
-
-
-
         return root
     }
-
-//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-//        when (requestCode) {
-//            MY_PERMISSION_FINE_LOCATION -> {
-//
-//                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-//
-//                } else {
-//                }
-//
-//            }
-//        }
-//    }﻿
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
@@ -300,7 +239,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             }
         }
     }
-
 
     private fun newFieldButton() {
         drawNewField()
@@ -321,7 +259,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         val field0 = LocalBackend.allFields[counter].centerPoint
 
         fieldNameTextView.text = LocalBackend.allFields[counter].name
-        fieldSizeTextView.text = LocalBackend.allFields[counter].surface.toString() + getString(R.string.map_hectare)
+        fieldSizeTextView.text = LocalBackend.allFields[counter].surface.toString() +" "+ getString(R.string.map_hectare)
         topTopImageView!!.setImageResource(R.drawable.stock_crop_image)
         topBottomImageView!!.setImageResource(R.drawable.stock_crop_image)
 
@@ -346,14 +284,13 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     private fun makeFieldList () {
         //Takes the fields which are from the first company of the user
-//        println("Making a new fields list")
         for (i in 0 until AgriCircleBackend.fields.size)
             LocalBackend.allFields.add(AgriCircleBackend.fields[i])
 
         for (i in 0 until LocalBackend.localFields.size)
             LocalBackend.allFields.add(LocalBackend.localFields[i])
 
-//        println("Fields : ")
+//        println("TEST - Fields : ")
 //        for (i in 0 until LocalBackend.allFields.size)
 //            println("Field $i : ${LocalBackend.allFields[i]}")
     }
@@ -363,15 +300,11 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     private fun drawFields () {
         for (i in 0 until LocalBackend.allFields.size) {
-//            println("Field : "+LocalBackend.allFields[i].id)
-//            println("Field : "+LocalBackend.allFields[i])
-//            println("Field latlng : "+LocalBackend.allFields[i].shapeCoordinates.toString())
             var poly : Polygon = mMap.addPolygon(
                 PolygonOptions()
                     .clickable(true)
                     .addAll(LocalBackend.allFields[i].shapeCoordinates)
             )
-
             poly.tag = LocalBackend.allFields[i].id
             poly.strokeColor = ContextCompat.getColor(activity!!, R.color.colorPolygonBorder)
             poly.fillColor = ContextCompat.getColor(activity!!, R.color.colorPolygonFill)
@@ -411,10 +344,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                     Log.d("", e.toString())
                 }
             }
-
-//            println("You clicked on field:")
-//            println(array[fieldNumber].toString())
-
         }
     }
 
@@ -431,22 +360,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     override fun onResume() {
         super.onResume()
-
-//        for (i in 0 until 10)
-//            println("VI PRINTER HER $i")
-//
-//        for (i in 0 until LocalBackend.allFields.size)
-//            println("VI PRINTER HER " + LocalBackend.allFields[i].toString())
-//
-//        println("SIZE = "+LocalBackend.allFields.size)
-//        for (i in 0 until 10)
-//            println("VI PRINTER HER $i")
-
         toggleActionButtons(true)
         toggleCrosshair(false)
         toggleTopView(false)
-//        if (updatesOn)
-//            startLocationUpdates()
     }
 
     override fun onPause() {
@@ -462,20 +378,13 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = false
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
-//        mMap.isMyLocationEnabled = true //This crashes the app
+
         if (locationPermissionGranted)
             mMap.isMyLocationEnabled = true
 
-
-
-
         toggleActionButtons(true)
 
-        goToCompanyLocation()           //Move map to company location
-//        makeFieldList()                 //Sort field list to only include from one company
-//        drawFields()                    //Draw fields on the map
-//        drawLocalFields()               //Draw locally stored fields on the map
-//        makePolygonClickListeners(AgriCircleBackend.fields)     //Add click listeners to the fields
+        goToCompanyLocation()
 
         redrawFields()
 
@@ -483,18 +392,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             fabSpeedDial!!.close()
             toggleTopView(false)
         }
-
-
-//        Current location
-//        Lat = 55.5756983, Lng = 11.5702983
-
-
-
-
-        //Delete later ---------
-//        val campusLyngby = LatLng(55.785558, 12.521564)
-//        mMap.addMarker(MarkerOptions().position(campusLyngby).title("Campus Lyngby"))
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(campusLyngby, zoom))
     }
 
 
@@ -504,7 +401,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     }
 
     private fun startActivityOne() {
-        //Needs data with the intent start : what activity etc
         val intent = Intent (activity, DrivingActivity::class.java)
         intent.putExtra(getString(R.string.intent_extra_field_id), currentlySelectedField)
         intent.putExtra(getString(R.string.intent_extra_field_activity), getString(R.string.placeholder_sowing))
@@ -512,7 +408,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     }
 
     private fun startActivityTwo() {
-        //Needs data with the intent start : what activity etc
         val intent = Intent (activity, DrivingActivity::class.java)
         intent.putExtra(getString(R.string.intent_extra_field_id), currentlySelectedField)
         intent.putExtra(getString(R.string.intent_extra_field_activity), getString(R.string.placeholder_Fertilization))
@@ -534,7 +429,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         else creatingLayout!!.visibility = View.GONE
     }
 
-
     private fun toggleActionButtons (toggle : Boolean) {
         //Show standard buttons and hide new field buttons
         if (toggle) {
@@ -542,8 +436,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
             addPointFloatingActionButton!!.visibility = View.GONE
             finishFloatingActionButton!!.visibility = View.GONE
-
-
         }
         //Show new field buttons and hide standard buttons
         else {
@@ -576,23 +468,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     }
 
     fun addPointButtonClicked() {
-
-
-//        println("!!!!!!!!!!------- SE MIG -----!!!!!!!!!!!!!!!")
-
         var location : LatLng = mMap.cameraPosition.target
 
-
-//        println("New location was found $location")
-
-        //Add point (little square)
-
-
-
-        //Test with new array ->
-
-//
-        var markerOverlay = bitmapDescriptorFromVector(root!!.context, R.drawable.ic_stop_blue_24dp)?.let {
+        var markerOverlay = bitmapDescriptorFromVector(root!!.context, R.drawable.ic_stop_orange_24dp)?.let {
             GroundOverlayOptions()
                 .image(it)
                 .clickable(true)
@@ -601,18 +479,13 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         var overlay : GroundOverlay = mMap.addGroundOverlay(markerOverlay)
         groundOverlayArray.add(overlay)
 
-
         //Push point to array
         newFieldLocations.add(location)
-//        println("New location was pushed to the array $newFieldLocations")
 
         //Get nr. of tracks
         var amountOfTracks = newFieldLocations.size
 
-
-//        println("Amount of tracks -> $amountOfTracks")
-
-        // calc dist
+        //Calculate Distance
         if (amountOfTracks >= 2) {
             var firstLocation = Location(LocationManager.GPS_PROVIDER)
             firstLocation.latitude = newFieldLocations[0].latitude
@@ -624,18 +497,14 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
             if (firstLocation.distanceTo(newestLocation) < 5.0) {
                 doneEditingFields = true
-
-//                println("-> -> -> You are now done editing")
             }
         }
 
-        //Push first LatLng to the array to make sure its all connected
+        //Push first LatLng to the array, and remove last, to make sure its all connected
         if (doneEditingFields) {
             newFieldLocations.removeAt(newFieldLocations.size - 1)
             newFieldLocations.add(newFieldLocations[0])
             enterFieldInfoDialog()
-//            println("Array was fixed to make sure its connected -> $newFieldLocations")
-
         }
 
         //Draw the track
@@ -649,9 +518,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             )
             poly.color = ContextCompat.getColor(this.context!!, R.color.colorPolygonDriving)
             polylineArray.add(poly)
-
         }
-
     }
 
     fun redrawFields() {
@@ -661,9 +528,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         mMap.clear()                            //Clear the map
         drawFields()                            //Draw fields on map
         makePolygonClickListeners(LocalBackend.allFields)    //Set click listeners
-
-
-
     }
 
 
@@ -717,8 +581,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         builder.setView(layout)
 
-//        println("LOCATIONS 1 : "+newFieldLocations)
-
         builder.setPositiveButton(android.R.string.yes) {dialog, which ->
             //Upload
             var fieldName = fieldNameInput.text.toString()
@@ -740,12 +602,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                 fieldId = fieldId
             )
 
-//            println("LOCATIONS 2 : "+newFieldLocations)
             redrawFields()
-//            println("LOCATIONS 3 : "+newFieldLocations)
 
             finishedAddingPointsButtonClicked()
-//            println("LOCATIONS 4 : "+newFieldLocations)
         }
 
         builder.setNegativeButton(android.R.string.no) {dialog, which ->
@@ -758,12 +617,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         builder.show()
     }
-
-
-
-
-
-
 
 }
 

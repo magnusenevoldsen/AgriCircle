@@ -4,15 +4,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.SphericalUtil
 import com.magnusenevoldsen.agricircle.model.Field
-import java.lang.Math.round
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.DecimalFormat
-
 
 object LocalBackend {
-
-
 
     var localFields : ArrayList<Field> = ArrayList()
     var allFields : ArrayList<Field> = ArrayList()
@@ -21,21 +16,13 @@ object LocalBackend {
         //TODO load fields from local db and put into localFields array
     }
 
-
-
-
     fun uploadFieldToLocalArray(field : Field) {
         //TODO Use local variable field and upload it
 
-        //Push into db
-
-        //Push into AgricircleBackend Array
+        //Push into localFields Array
         localFields.add(field)
-//        println("SÅ PRINTER VI FIELD -> $field")
-//        println("SÅ PRINTER VI FIELD ARRAY -> $localFields")
 
     }
-
 
     fun prepareFieldForLocalUpload (arrayOfLatLng : ArrayList<LatLng>, fieldName : String, fieldId : Int) {
         var companyId : Int = 999999
@@ -83,31 +70,5 @@ object LocalBackend {
         return center
     }
 
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

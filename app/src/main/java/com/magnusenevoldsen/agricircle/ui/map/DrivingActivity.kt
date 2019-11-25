@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
-import android.view.View
 import android.widget.Chronometer
 import android.widget.ImageView
 import android.widget.TextView
@@ -33,7 +32,6 @@ import kotlin.collections.ArrayList
 
 class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
-
     private lateinit var mMap : GoogleMap
     private val zoom : Float = 18.0f
     private var locationRequest : LocationRequest? = null
@@ -41,6 +39,11 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     private var locationCallback : LocationCallback? = null
     private val MY_PERMISSION_FINE_LOCATION = 101
     private var context : Context? = null
+
+    //Lcation
+    private var presetInterval : Long = 2000
+    private var presetFastestInterval : Long = 1000
+    private var presetPrecision : Int = LocationRequest.PRIORITY_HIGH_ACCURACY
 
     //Views
     private var fieldPictureImageView : ImageView? = null
@@ -68,7 +71,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //Suggested speed
     private var suggestedSpeedNumber : Int = 0
-
     private var fieldID : Int? = null
 
 
@@ -76,10 +78,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_driving)
-
         context = this
-
-        //Layout setup
 
         //Map setup
         val mapFragment = supportFragmentManager.findFragmentById(R.id.drivingMapView) as SupportMapFragment
@@ -98,6 +97,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //Time
         timeTextView = findViewById(R.id.drivingTimeTextView)
+
         //Tractors
         yourTractorImageView = findViewById(R.id.drivingCurrentTractorImageView)
         suggestedTractorImageView = findViewById(R.id.drivingSuggestedTractorImageView)
@@ -112,7 +112,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         finishFAB = findViewById(R.id.finishFloatingActionButton)
         pauseFAB = findViewById(R.id.pauseFloatingActionButton)
 
-
         //Click Listeners
         finishFAB!!.setOnClickListener {
             finishSession()
@@ -124,9 +123,10 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //Get location
         locationRequest = LocationRequest()
-        locationRequest!!.interval = 2000 // Find ud af hvor ofte der bør opdateres. pt 1 sek for test formål
-        locationRequest!!.fastestInterval = 1000 //1 sec
-        locationRequest!!.priority = LocationRequest.PRIORITY_HIGH_ACCURACY //Overvej at bruge HIGH ACCURACY istedet. / BALANCED
+        locationRequest!!.interval = presetInterval // Find ud af hvor ofte der bør opdateres. pt 1 sek for test formål
+        locationRequest!!.fastestInterval = presetFastestInterval //1 sec
+        locationRequest!!.priority = presetPrecision //Overvej at bruge HIGH ACCURACY istedet. / BALANCED
+
 
         //Location -> Hent den 1 gang når view åbner
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -134,9 +134,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
             locationPermissionGranted = true
             fusedLocationClient!!.lastLocation.addOnSuccessListener {location ->
                 if (location != null) {
-                    //Update UI
-//                    val currentLocation = LatLng(location.latitude, location.longitude)
-//                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))
+                    //Not used currently, map is moved to field instead
                 }
             }
         } else {
@@ -153,12 +151,15 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (location != null && playOrPause) {
                         val currentLocation = LatLng(location.latitude, location.longitude)
                         mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation))
-//                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))
+//                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))  //Disabled to keep user zoom
+
                         // Draw line
                         drawTrack(currentLocation)
+
                         //Calculate speed
                         val kmh = (location.speed * 3.6)
                         val kmhString = kmh.toString().substringBefore(".")
+
                         //Update UI
                         updateTractors(kmh)
                         yourSpeedNumberTextView!!.text = kmhString + getString(R.string.kilometerhour)
@@ -167,8 +168,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
-
-
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -193,7 +192,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
         if (locationPermissionGranted)
             mMap.isMyLocationEnabled = true
-
 
         setupUI()
 
@@ -277,9 +275,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
             )
             poly.color = ContextCompat.getColor(this, R.color.colorPolygonDriving)
         }
-
-
-
     }
 
     fun addCustomMarker(location : LatLng) {
@@ -290,7 +285,6 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
                 .position(location, 5f, 5f)
         }
         mMap.addGroundOverlay(markerOverlay)
-
     }
 
     fun finishSession () {
@@ -298,7 +292,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         //Go to workspace view with info about the session
 
         //Currently just goes back
-        super.onBackPressed() //Remove this
+        super.onBackPressed() //Remove this later
     }
 
     fun pauseSession () {
@@ -367,7 +361,4 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         val mySnackbar = Snackbar.make(findViewById(R.id.activityDriving), message, Snackbar.LENGTH_LONG)
         mySnackbar.show()
     }
-
-
-
 }

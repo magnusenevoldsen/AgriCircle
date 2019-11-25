@@ -10,19 +10,15 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.magnusenevoldsen.agricircle.AgriCircleBackend
 import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.R
 import com.magnusenevoldsen.agricircle.model.DummyField
-import com.magnusenevoldsen.agricircle.model.Field
 import com.magnusenevoldsen.agricircle.ui.map.DrivingActivity
 import com.squareup.picasso.Picasso
 
 
 class WorkspaceAdapter(val fields : ArrayList<DummyField>) : RecyclerView.Adapter<WorkspaceAdapter.ViewHolder>() {
     private var context : Context? = null
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder?.bindField(fields[position])
@@ -34,21 +30,16 @@ class WorkspaceAdapter(val fields : ArrayList<DummyField>) : RecyclerView.Adapte
         return ViewHolder(view)
     }
 
-
     override fun getItemCount(): Int {
         return fields.count()
     }
 
-
     inner class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-
 
         val cropImageView = itemView?.findViewById<ImageView>(R.id.workspaceImageView)
         val fieldName = itemView?.findViewById<TextView>(R.id.workspaceFieldTextView)
         val fieldActivity = itemView?.findViewById<TextView>(R.id.workspaceActivityTextView)
         val playButton = itemView?.findViewById<ImageButton>(R.id.workspaceImageButton)
-
-
 
         fun bindField(field: DummyField) {
 

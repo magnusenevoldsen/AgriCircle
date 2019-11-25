@@ -6,14 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -26,7 +19,6 @@ import com.magnusenevoldsen.agricircle.R
 
 class SamplingFragment : Fragment(), OnMapReadyCallback {
 
-
     private lateinit var mMap : GoogleMap
     private var root : View? = null
 
@@ -36,7 +28,6 @@ class SamplingFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        samplingViewModel =ViewModelProviders.of(this).get(SamplingViewModel::class.java)
         root = inflater.inflate(R.layout.fragment_sampling, container, false)
 
 
@@ -64,14 +55,6 @@ class SamplingFragment : Fragment(), OnMapReadyCallback {
 
 
         }
-
-
-
-
-
-
-
-
         return root
     }
 

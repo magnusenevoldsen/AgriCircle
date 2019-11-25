@@ -9,11 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.magnusenevoldsen.agricircle.AgriCircleBackend
 import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.R
 import com.magnusenevoldsen.agricircle.model.DummyField
-import com.magnusenevoldsen.agricircle.model.Field
 
 class WorkspaceFragment : Fragment() {
 
@@ -61,9 +59,6 @@ class WorkspaceFragment : Fragment() {
         )
         listView!!.addItemDecoration(mDividerItemDecoration)
         
-
-
-
 
         return root
     }
