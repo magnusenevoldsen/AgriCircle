@@ -57,12 +57,12 @@ class WorkspaceAdapter(val fields : ArrayList<DummyField>) : RecyclerView.Adapte
             fieldActivity?.text = field.activity
 
             playButton?.setOnClickListener {
-                var fieldid : Int? = null
+                var fieldArrayPlacement : Int? = null
                 for (i in 0 until LocalBackend.allFields.size)
-                    if (LocalBackend.allFields[i].name.equals(field.field.name))
-                        fieldid = i
+                    if (field.field.id == LocalBackend.allFields[i].id)
+                        fieldArrayPlacement = i
                 val intent = Intent (context, DrivingActivity::class.java)
-                intent.putExtra(itemView.context.resources.getString(R.string.intent_extra_field_id), fieldid)
+                intent.putExtra(itemView.context.resources.getString(R.string.intent_extra_field_id), fieldArrayPlacement)
                 intent.putExtra(itemView.context.resources.getString(R.string.intent_extra_field_activity), field.activity)
                 context!!.startActivity(intent)
             }

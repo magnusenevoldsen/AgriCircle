@@ -283,6 +283,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
 
     private fun makeFieldList () {
+
         //Takes the fields which are from the first company of the user
         for (i in 0 until AgriCircleBackend.fields.size)
             LocalBackend.allFields.add(AgriCircleBackend.fields[i])
@@ -449,7 +450,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private fun drawNewField() {
 
         //Draw fields
-        newFieldLocations.clear()
+        newFieldLocations = ArrayList()
 
         //Toggle done editing
         doneEditingFields = false
@@ -504,12 +505,14 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         if (doneEditingFields) {
             newFieldLocations.removeAt(newFieldLocations.size - 1)
             newFieldLocations.add(newFieldLocations[0])
-            enterFieldInfoDialog()
+
+            val actualNewFieldLocationList : ArrayList<LatLng> = newFieldLocations
+
+            enterFieldInfoDialog(actualNewFieldLocationList)
         }
 
         //Draw the track
         if (amountOfTracks >= 2) {
-
             var poly : Polyline = mMap.addPolyline(
                 PolylineOptions()
                     .clickable(false)
@@ -559,9 +562,10 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     }
 
 
-    private fun enterFieldInfoDialog () {
+    private fun enterFieldInfoDialog (array : ArrayList<LatLng>) {
         var builder = AlertDialog.Builder(root!!.context)
         builder.setTitle(getString(R.string.map_dialog_title))
+
 
         var layout = LinearLayout(root!!.context)
         layout.orientation = LinearLayout.VERTICAL
@@ -594,10 +598,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                 println("ERROR : No input in field id -> $e")
             }
 
-
-
             LocalBackend.prepareFieldForLocalUpload(
-                arrayOfLatLng = newFieldLocations,
+                arrayOfLatLng = array,
                 fieldName = fieldName,
                 fieldId = fieldId
             )
