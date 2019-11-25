@@ -599,6 +599,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             }
 
             LocalBackend.prepareFieldForLocalUpload(
+                context!!,
                 arrayOfLatLng = array,
                 fieldName = fieldName,
                 fieldId = fieldId

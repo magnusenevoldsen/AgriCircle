@@ -1,6 +1,5 @@
 <resources>
 
-
     <!-- General -->
     <string name="app_name">AgriCircle</string>
 
@@ -72,6 +71,8 @@
     <string name="placeholder_100_km_h">100 km/h</string>
     <string name="driving_start">Start</string>
     <string name="driving_pause">Pause</string>
+    <string name="intent_extra_field_activity">fieldactivity</string>
+    <string name="intent_extra_field_id">fieldid</string>
 
 
     <!-- Workspace screen-->
@@ -86,11 +87,13 @@
     <!-- Sort later -->
     <string name="logo">logo</string>
 
+
     <!-- Placeholders -->
     <string name="placeholder_sowing">Sowing</string>
     <string name="placeholder_Fertilization">Fertilization</string>
     <string name="placeholder_product_x">Product X</string>
     <string name="placeholder_product_y">Product Y</string>
+
 
     <!-- Shared Prefs -->
     <string name="settings_map_type_preference">settingsmaptypepreference</string>
@@ -100,14 +103,13 @@
     <string name="map_type_none">maptypenone</string>
 
 
-
     <!-- FAB Menu -->
     <string name="menu_item_position">My position</string>
     <string name="menu_item_create_field">Create field</string>
     <string name="menu_item_find_field">Find field</string>
 
 
-    <!-- Inside code -->
+    <!-- Inside code (Backend) -->
     <string name="backend_data">data</string>
     <string name="backend_user">user</string>
     <string name="backend_login">login</string>
@@ -121,13 +123,41 @@
     <string name="backend_slug">slug</string>
     <string name="backend_features">features</string>
     <string name="backend_typename">__typename</string>
-    <string name="intent_extra_field_activity">fieldactivity</string>
-    <string name="intent_extra_field_id">fieldid</string>
+    <string name="backend_agricircle_subdomain_session">_AgriCircle_subdomain_session</string>
+    <string name="backend_header_x_cookie">x-cookie</string>
+    <string name="backend_field">fields</string>
+    <string name="backend_id">id</string>
+    <string name="backend_company_id">company_id</string>
+    <string name="backend_layer_type">layer_type</string>
+    <string name="backend_shape">shape</string>
+    <string name="backend_type">type</string>
+    <string name="backend_coordinates">coordinates</string>
+    <string name="backend_surface">surface</string>
+    <string name="backend_active_crop_name">active_crop_name</string>
+    <string name="backend_active_crop_image_url">active_crop_image_url</string>
+    <string name="backend_center_point">center_point</string>
+    <string name="backend_companies">companies</string>
+    <string name="backend_location">location</string>
+    <string name="backend_default">default</string>
+    <string name="backend_owner_photo_url">owner_photo_url</string>
+    <string name="backend_access">access</string>
+
+    <string name="http_header_content_type">Content-Type</string>
+    <string name="http_header_content_type_value_application_json">application/json</string>
+    <string name="http_header_accept">Accept</string>
+    <string name="http_header_accept_value_star">*/*</string>
+
+    <string name="localbackend_upload_field_preset_layertype">field</string>
+    <string name="localbackend_upload_field_preset_shapetype">point</string>
+    <string name="localbackend_upload_field_preset_activecrop"></string>
+    <string name="localbackend_upload_field_preset_activecrop_url"></string>
+
 
     <!-- Error Messages -->
     <string name="not_implemented_yet">Not implemented yet.</string>
     <string name="sign_up_button_go_to_website">To sign up, please visit:\nhttps://www.AgriCircle.com</string>
     <string name="user_declined_location_permission">In order to fully utilize this application, permission to read your location is required.</string>
+
 
     <!-- Spinner arrays -->
     <string-array name="map_pref_array">
@@ -140,7 +170,5 @@
         <item>Metric</item>
         <item>Imperial</item>
     </string-array>
-
-
 
 </resources>

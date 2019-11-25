@@ -1,5 +1,6 @@
 package com.magnusenevoldsen.agricircle
 
+import android.content.Context
 import com.google.android.gms.maps.model.LatLng
 import com.magnusenevoldsen.agricircle.model.Company
 import com.magnusenevoldsen.agricircle.model.Field
@@ -25,23 +26,25 @@ object AgriCircleBackend {
     var userWasLoadedCorrectly : Boolean = false
     var companyWasLoadedCorrectly : Boolean = false
     private val client = OkHttpClient()
+    private var context : Context? = null
 
-    fun login (email : String, password : String) : Boolean {
+    fun login (contextFromLogin : Context, email : String, password : String) : Boolean {
         var success = false
+        context = contextFromLogin
 
         val login = doAsync {
 
             val requestBodyString = "[\n    {\n        \"operationName\": \"login\",\n        \"query\": \"mutation login(\$options: LoginInput!) {\\n  login(options: \$options) {\\n    token\\n    cookie\\n    __typename\\n  }\\n}\\n\",\n        \"variables\": {\n            \"options\": {\n                \"email\": \"$email\",\n                \"password\": \"$password\",\n                \"locale\": \"en\"\n            }\n        }\n    }\n]"
 
             //Create the request body
-            val body = requestBodyString.toRequestBody("application/json".toMediaTypeOrNull())
+            val body = requestBodyString.toRequestBody(context!!.getString(R.string.http_header_content_type_value_application_json).toMediaTypeOrNull())
 
             //Create the request
             val request = Request.Builder()
                 .url(url)
                 .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "*/*")
+                .addHeader(context!!.getString(R.string.http_header_content_type), context!!.getString(R.string.http_header_content_type_value_application_json))
+                .addHeader(context!!.getString(R.string.http_header_accept), context!!.getString(R.string.http_header_accept_value_star))
                 .build()
 
             //Executing the request
@@ -57,12 +60,12 @@ object AgriCircleBackend {
 
               //Attempting to get the cookie")
                 try {
-                    cookie = JSONObject(str).getJSONObject("data").getJSONObject("login").getJSONArray("cookie")
+                    cookie = JSONObject(str).getJSONObject(context!!.getString(R.string.backend_data)).getJSONObject(context!!.getString(R.string.backend_login)).getJSONArray(context!!.getString(R.string.backend_cookie))
 
                     //Get the real cookie for further requests
                     for (i in 0 until cookie!!.length()) {
                         for (item in cookie!!.getString(i).split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-                            if (item.startsWith("_AgriCircle_subdomain_session")) {
+                            if (item.startsWith(context!!.getString(R.string.backend_agricircle_subdomain_session))) {
                                 cookieString = item
                             }
                         }
@@ -95,15 +98,15 @@ object AgriCircleBackend {
             val requestBodyString = "{\n    \"operationName\": \"user\",\n    \"variables\": {},\n    \"query\": \"query user {\\n  user {\\n    name\\n    language\\n    avatarUrl\\n planningYears\\n    decimalSeparator\\n    dateFormat\\n    slug\\n    features\\n    avatarUrl\\n    __typename\\n  }\\n}\\n\"\n}"
 
             //Create the request body
-            val body = requestBodyString.toRequestBody("application/json".toMediaTypeOrNull())
+            val body = requestBodyString.toRequestBody(context!!.getString(R.string.http_header_content_type_value_application_json).toMediaTypeOrNull())
 
             //Create the request
             val request = Request.Builder()
                 .url(url)
                 .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "*/*").addHeader(
-                    "x-cookie",
+                .addHeader(context!!.getString(R.string.http_header_content_type), context!!.getString(R.string.http_header_content_type_value_application_json))
+                .addHeader(context!!.getString(R.string.http_header_accept), context!!.getString(R.string.http_header_accept_value_star)).addHeader(
+                    context!!.getString(R.string.backend_header_x_cookie),
                     cookieString!!
                 )
                 .build()
@@ -115,26 +118,26 @@ object AgriCircleBackend {
 
                 val bodyString = response.body!!.string()
 
-                val bodyUserPath : JSONObject = JSONObject(bodyString).getJSONObject("data").getJSONObject("user")
+                val bodyUserPath : JSONObject = JSONObject(bodyString).getJSONObject(context!!.getString(R.string.backend_data)).getJSONObject(context!!.getString(R.string.backend_user))
 
                 try {
-                    val nameFromJSON : String = bodyUserPath.getString("name")
-                    val languageFromJSON : String = bodyUserPath.getString("language")
-                    val avatarUrlFromJSON : String = bodyUserPath.getString("avatarUrl")
+                    val nameFromJSON : String = bodyUserPath.getString(context!!.getString(R.string.backend_name))
+                    val languageFromJSON : String = bodyUserPath.getString(context!!.getString(R.string.backend_language))
+                    val avatarUrlFromJSON : String = bodyUserPath.getString(context!!.getString(R.string.backend_avatar_url))
 
                     //Get JSONarray and make it an ArrayList
-                    val planningYearsFromJSON : JSONArray = bodyUserPath.getJSONArray("planningYears")
+                    val planningYearsFromJSON : JSONArray = bodyUserPath.getJSONArray(context!!.getString(R.string.backend_planning_years))
                     var planningYearsArrayList : ArrayList<Int> = ArrayList()
                     for (i in 0 until planningYearsFromJSON.length()) { planningYearsArrayList.add(planningYearsFromJSON.getInt(i)) }
-                    val decimalSeparatorFromJSON : String = bodyUserPath.getString("decimalSeparator")
-                    val dateFormatFromJSON : String = bodyUserPath.getString("dateFormat")
-                    val slugFromJSON : String = bodyUserPath.getString("slug")
+                    val decimalSeparatorFromJSON : String = bodyUserPath.getString(context!!.getString(R.string.backend_decimal_separator))
+                    val dateFormatFromJSON : String = bodyUserPath.getString(context!!.getString(R.string.backend_date_format))
+                    val slugFromJSON : String = bodyUserPath.getString(context!!.getString(R.string.backend_slug))
 
                     //Get JSONarray and make it an ArrayList
-                    val featuresFromJSON : JSONArray = bodyUserPath.getJSONArray("features")
+                    val featuresFromJSON : JSONArray = bodyUserPath.getJSONArray(context!!.getString(R.string.backend_features))
                     var featuresArrayList : ArrayList<String> = ArrayList()
                     for (i in 0 until featuresFromJSON.length()) { featuresArrayList.add(featuresFromJSON.getString(i)) }
-                    val typenameFromJSON : String = bodyUserPath.getString("__typename")
+                    val typenameFromJSON : String = bodyUserPath.getString(context!!.getString(R.string.backend_typename))
 
                     //Load user into user
                     user = User(name = nameFromJSON,
@@ -181,15 +184,15 @@ object AgriCircleBackend {
                 val requestBodyString = "{\n    \"operationName\": \"fields\",\n    \"variables\": {\n    \t\"options\":\n    \t{\n        \t\"companyId\": $companyId,\n        \t\"year\": $year\n    \t}\n    },\n    \"query\": \"query fields(\$options: LayersInput!) {\\n  fields(options: \$options) {\\n   surface\\n   id\\n   active_crop_name\\n   active_crop_image_url\\n   center_point\\n   company_id\\n   layer_type\\n   name\\n   shape\\n    __typename\\n  }\\n}\\n\"\n}"
 
                 //Create the request body
-                val body = requestBodyString.toRequestBody("application/json".toMediaTypeOrNull())
+                val body = requestBodyString.toRequestBody(context!!.getString(R.string.http_header_content_type_value_application_json).toMediaTypeOrNull())
 
                 //Create the request
                 val request = Request.Builder()
                     .url(url)
                     .post(body)
-                    .addHeader("Content-Type", "application/json")
-                    .addHeader("Accept", "*/*").addHeader(
-                        "x-cookie",
+                    .addHeader(context!!.getString(R.string.http_header_content_type), context!!.getString(R.string.http_header_content_type_value_application_json))
+                    .addHeader(context!!.getString(R.string.http_header_accept), context!!.getString(R.string.http_header_accept_value_star)).addHeader(
+                        context!!.getString(R.string.backend_header_x_cookie),
                         cookieString!!
                     )
                     .build()
@@ -202,18 +205,19 @@ object AgriCircleBackend {
                     val bodyString = response.body!!.string()
 
                     try {
-                        val bodyUserPath : JSONArray = JSONObject(bodyString).getJSONObject("data").getJSONArray("fields")
+                        val bodyUserPath : JSONArray = JSONObject(bodyString).getJSONObject(context!!.getString(R.string.backend_data)).getJSONArray(context!!.getString(R.string.backend_field))
 
                         for (i in 0 until bodyUserPath!!.length()) {
-                            var idFromJSON : Int = bodyUserPath.getJSONObject(i).getInt("id")
-                            var companyIdFromJSON : Int = bodyUserPath.getJSONObject(i).getInt("company_id")
-                            var layerTypeFromJSON : String = bodyUserPath.getJSONObject(i).getString("layer_type")
-                            var nameFromJSON : String = bodyUserPath.getJSONObject(i).getString("name")
-                            var shapeTypeFromJSON : String = bodyUserPath.getJSONObject(i).getJSONObject("shape").getString("type")
+                            var idFromJSON : Int = bodyUserPath.getJSONObject(i).getInt(context!!.getString(R.string.backend_id))
+                            var companyIdFromJSON : Int = bodyUserPath.getJSONObject(i).getInt(context!!.getString(R.string.backend_company_id))
+                            var layerTypeFromJSON : String = bodyUserPath.getJSONObject(i).getString(context!!.getString(R.string.backend_layer_type))
+                            var nameFromJSON : String = bodyUserPath.getJSONObject(i).getString(context!!.getString(R.string.backend_name))
+                            var shapeTypeFromJSON : String = bodyUserPath.getJSONObject(i).getJSONObject(context!!.getString(R.string.backend_shape)).getString(context!!.getString(R.string.backend_type))
 
                             //Hent coordinater til array
                             var shapeCoordinatesFromJSON : ArrayList<LatLng> = ArrayList()
-                            var shapeCoordinatesPath = bodyUserPath.getJSONObject(i).getJSONObject("shape").getJSONArray("coordinates").getJSONArray(0)
+                            var shapeCoordinatesPath = bodyUserPath.getJSONObject(i).getJSONObject(context!!.getString(R.string.backend_shape)).getJSONArray(context!!.getString(
+                                                            R.string.backend_coordinates)).getJSONArray(0)
 
                             for (j in 0 until shapeCoordinatesPath.length()) {  //Lat og Lng ligger som Lng -> Lat i DB, så de er byttet om her.
                                 val lat = shapeCoordinatesPath.getJSONArray(j).getDouble(1)
@@ -224,10 +228,10 @@ object AgriCircleBackend {
 
 
                             //Nye tilføjelser
-                            var surfaceFromJSON = bodyUserPath.getJSONObject(i).getDouble("surface")
-                            var activeCropNameFromJSON = bodyUserPath.getJSONObject(i).getString("active_crop_name")
-                            var activeCropImageUrlFromJSON = bodyUserPath.getJSONObject(i).getString("active_crop_image_url")
-                            var centerPointFromPath = bodyUserPath.getJSONObject(i).getJSONObject("center_point").getJSONArray("coordinates")
+                            var surfaceFromJSON = bodyUserPath.getJSONObject(i).getDouble(context!!.getString(R.string.backend_surface))
+                            var activeCropNameFromJSON = bodyUserPath.getJSONObject(i).getString(context!!.getString(R.string.backend_active_crop_name))
+                            var activeCropImageUrlFromJSON = bodyUserPath.getJSONObject(i).getString(context!!.getString(R.string.backend_active_crop_image_url))
+                            var centerPointFromPath = bodyUserPath.getJSONObject(i).getJSONObject(context!!.getString(R.string.backend_center_point)).getJSONArray(context!!.getString(R.string.backend_coordinates))
                             var centerPointFromJSON = LatLng(centerPointFromPath.getDouble(1), centerPointFromPath.getDouble(0))
 
                             //Load into fields
@@ -272,15 +276,15 @@ object AgriCircleBackend {
             val requestBodyString = "[\n    {\n        \"operationName\": \"companies\",\n        \"variables\": {},\n        \"query\": \"query companies {\\n  companies {\\n    id\\n    name\\n    owner_photo_url\\n    access\\n    default\\n    location {\\n      type\\n      coordinates\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\n    }\n]"
 
             //Create the request body
-            val body = requestBodyString.toRequestBody("application/json".toMediaTypeOrNull())
+            val body = requestBodyString.toRequestBody(context!!.getString(R.string.http_header_content_type_value_application_json).toMediaTypeOrNull())
 
             //Create the request
             val request = Request.Builder()
                 .url(url)
                 .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "*/*").addHeader(
-                    "x-cookie",
+                .addHeader(context!!.getString(R.string.http_header_content_type), context!!.getString(R.string.http_header_content_type_value_application_json))
+                .addHeader(context!!.getString(R.string.http_header_accept), context!!.getString(R.string.http_header_accept_value_star)).addHeader(
+                    context!!.getString(R.string.backend_header_x_cookie),
                     cookieString!!
                 )
                 .build()
@@ -295,21 +299,21 @@ object AgriCircleBackend {
                 var str = bodyString.substring(1, bodyString.length - 1) //Fjerner [] så det ligner array
 
                 try {
-                    val bodyUserPath : JSONArray = JSONObject(str).getJSONObject("data").getJSONArray("companies")
+                    val bodyUserPath : JSONArray = JSONObject(str).getJSONObject(context!!.getString(R.string.backend_data)).getJSONArray(context!!.getString(R.string.backend_companies))
 
                     for (i in 0 until bodyUserPath!!.length()) {
-                        val idFromJSON : Int = bodyUserPath.getJSONObject(i).getInt("id")
-                        val nameFromJSON : String = bodyUserPath.getJSONObject(i).getString("name")
-                        val locationTypeFromJSON : String = bodyUserPath.getJSONObject(i).getJSONObject("location").getString("type")
+                        val idFromJSON : Int = bodyUserPath.getJSONObject(i).getInt(context!!.getString(R.string.backend_id))
+                        val nameFromJSON : String = bodyUserPath.getJSONObject(i).getString(context!!.getString(R.string.backend_name))
+                        val locationTypeFromJSON : String = bodyUserPath.getJSONObject(i).getJSONObject(context!!.getString(R.string.backend_location)).getString(context!!.getString(R.string.backend_type))
 
                         //Get coordinates
-                        val locationCoordinatesFromJSON = bodyUserPath.getJSONObject(i).getJSONObject("location").getJSONArray("coordinates")
+                        val locationCoordinatesFromJSON = bodyUserPath.getJSONObject(i).getJSONObject(context!!.getString(R.string.backend_location)).getJSONArray(context!!.getString(R.string.backend_coordinates))
                         val lat = locationCoordinatesFromJSON.getDouble(0)
                         val lng = locationCoordinatesFromJSON.getDouble(1)
                         val finishedLocationCoordinatesFromJSON : LatLng = LatLng(lat, lng)
-                        val defaultFromJSON : Boolean = bodyUserPath.getJSONObject(i).getBoolean("default")
-                        val ownerPhotoUrlFromJSON : String = bodyUserPath.getJSONObject(i).getString("owner_photo_url")
-                        val accessFromJSON : String = bodyUserPath.getJSONObject(i).getString("access")
+                        val defaultFromJSON : Boolean = bodyUserPath.getJSONObject(i).getBoolean(context!!.getString(R.string.backend_default))
+                        val ownerPhotoUrlFromJSON : String = bodyUserPath.getJSONObject(i).getString(context!!.getString(R.string.backend_owner_photo_url))
+                        val accessFromJSON : String = bodyUserPath.getJSONObject(i).getString(context!!.getString(R.string.backend_access))
 
                         //Load into companies
                         var company = Company(

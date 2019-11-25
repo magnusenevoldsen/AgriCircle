@@ -108,7 +108,7 @@ class LoginActivity : AppCompatActivity() {
         toggleClickablity(false)
         hideKeyboard()
 
-        if (AgriCircleBackend.login(email, password)) {
+        if (AgriCircleBackend.login(this, email, password)) {
             loadData()
         } else {
             toggleClickablity(true)

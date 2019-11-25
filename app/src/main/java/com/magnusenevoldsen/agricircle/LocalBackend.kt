@@ -1,5 +1,6 @@
 package com.magnusenevoldsen.agricircle
 
+import android.content.Context
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.SphericalUtil
@@ -24,18 +25,18 @@ object LocalBackend {
 
     }
 
-    fun prepareFieldForLocalUpload (arrayOfLatLng : ArrayList<LatLng>, fieldName : String, fieldId : Int) {
+    fun prepareFieldForLocalUpload (context : Context, arrayOfLatLng : ArrayList<LatLng>, fieldName : String, fieldId : Int) {
         var companyId : Int = 999999
         if (!AgriCircleBackend.companies.isEmpty())
             companyId = AgriCircleBackend.companies[0].id
-        var layerType = "field"
+        var layerType = context.getString(R.string.localbackend_upload_field_preset_layertype)
 
         var size : Double = calculateSize(arrayOfLatLng)       //Surface
-        var activeCrop = ""
-        var activeCropUrl = ""
+        var activeCrop = context.getString(R.string.localbackend_upload_field_preset_activecrop)
+        var activeCropUrl = context.getString(R.string.localbackend_upload_field_preset_activecrop_url)
         var centerPoint : LatLng = calculateCenterpoint(arrayOfLatLng)
 
-        var shapeType = "point"
+        var shapeType = context.getString(R.string.localbackend_upload_field_preset_shapetype)
 
         var field = Field(
             id = fieldId,
