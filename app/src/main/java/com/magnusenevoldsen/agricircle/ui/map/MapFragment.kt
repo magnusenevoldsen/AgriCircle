@@ -1,7 +1,9 @@
 package com.magnusenevoldsen.agricircle.ui.map
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -16,10 +18,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -32,6 +31,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.leinardi.android.speeddial.SpeedDialActionItem
@@ -41,6 +41,8 @@ import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.model.Field
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_map.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MapFragment : Fragment(), OnMapReadyCallback{
 
@@ -60,6 +62,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private var presetInterval : Long = 2000
     private var presetFastestInterval : Long = 1000
     private var presetPrecision : Int = LocationRequest.PRIORITY_HIGH_ACCURACY
+    private var myLocation : Location? = null
 
     //Permission
     private var locationPermissionGranted : Boolean = false
@@ -186,8 +189,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                     return@OnActionSelectedListener true // false will close it without animation
                 }
                 R.id.findFieldFloatingActionButton -> {
-                    findFieldButton()
-//                    fabSpeedDial.close() // To close the Speed Dial with animation
+//                    findFieldButton()
+                    findFieldDialog()
+                    fabSpeedDial!!.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
                 }
             }
@@ -200,6 +204,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             locationPermissionGranted = true
             fusedLocationClient!!.lastLocation.addOnSuccessListener {location ->
                 if (location != null) {
+                    myLocation = location
                     //Not used currently, view is moved to company location.
                 }
             }
@@ -215,7 +220,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                     //Update UI
                     if (location != null && updatesOn) {
                         val currentLocation = LatLng(location.latitude, location.longitude)
-                        mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLocation))
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, zoom))
                         updatesOn = false
                         stopLocationUpdates()
                     }
@@ -248,6 +253,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private fun goToCurrentPosition() {
         updatesOn = true
         startLocationUpdates()
+
     }
 
     private fun findFieldButton() {
@@ -312,6 +318,25 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         }
     }
 
+    private fun updateTopView(fieldNumber : Int) {
+        currentlySelectedField = fieldNumber
+        fieldNameTextView.text = LocalBackend.allFields[fieldNumber].name
+        fieldSizeTextView.text = LocalBackend.allFields[fieldNumber].surface.toString()+" ha"
+
+        topTopImageView!!.setImageResource(R.drawable.stock_crop_image)
+        topBottomImageView!!.setImageResource(R.drawable.stock_crop_image)
+
+        var imageUrl : String = LocalBackend.allFields[fieldNumber].activeCropImageUrl
+        if (!imageUrl.equals("null")){
+            try {
+                Picasso.get().load(imageUrl).into(topTopImageView)
+                Picasso.get().load(imageUrl).into(topBottomImageView)
+            } catch (e : IllegalArgumentException) {
+                Log.d("", e.toString())
+            }
+        }
+    }
+
 
 
     private fun makePolygonClickListeners (array : ArrayList<Field>) {
@@ -329,22 +354,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                 if (array[i].id == fieldId)
                     fieldNumber = i
 
-            currentlySelectedField = fieldNumber
-            fieldNameTextView.text = array[fieldNumber].name
-            fieldSizeTextView.text = array[fieldNumber].surface.toString()+" ha"
+            updateTopView(fieldNumber)
 
-            var imageUrl : String = array[fieldNumber].activeCropImageUrl
-
-            topTopImageView!!.setImageResource(R.drawable.stock_crop_image)
-            topBottomImageView!!.setImageResource(R.drawable.stock_crop_image)
-            if (!imageUrl.equals("null")){
-                try {
-                    Picasso.get().load(imageUrl).into(topTopImageView)
-                    Picasso.get().load(imageUrl).into(topBottomImageView)
-                } catch (e : IllegalArgumentException) {
-                    Log.d("", e.toString())
-                }
-            }
         }
     }
 
@@ -562,66 +573,195 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     }
 
 
+    private fun arraySortSelector(sortedField : SortedField): Float = sortedField.distance
+
+    private fun makeSortedFieldList (array : ArrayList<Field>) : ArrayList<SortedField> {
+        var sortedArray : ArrayList<SortedField> = ArrayList()
+
+        //Make the array
+        for (i in 0 until array.size) {
+            var loc = Location(LocationManager.GPS_PROVIDER)
+            loc.latitude = array[i].centerPoint.latitude
+            loc.longitude = array[i].centerPoint.longitude
+            sortedArray.add(SortedField(
+                array[i].name,
+                array[i].id,
+                myLocation!!.distanceTo(loc)
+            ))
+        }
+
+        sortedArray.sortBy { arraySortSelector(it) }
+
+        return sortedArray
+    }
+
+
+
+    private fun findFieldDialog () {
+
+        val sortedArrayList = makeSortedFieldList(LocalBackend.allFields)
+
+        //Convert to just a string array
+        var arrayList : ArrayList<String> = ArrayList()
+        for (i in 0 until sortedArrayList.size)
+            arrayList.add(sortedArrayList[i].name)
+
+        val adapter = ArrayAdapter<String>(context!!, R.layout.dialog_field_list_item, arrayList)
+
+        val alertDialog: androidx.appcompat.app.AlertDialog? = root!!.context?.let {
+            val builder = androidx.appcompat.app.AlertDialog.Builder(it)
+            val inflater = requireActivity().layoutInflater
+            val dialogView : View = inflater.inflate(R.layout.dialog_field_list, null)
+
+            builder.setView(dialogView)
+                .setTitle("Find field")
+                .setAdapter(adapter) { dialog, which ->
+                    goToField(sortedArrayList[which].id)
+                }
+            builder.create()
+        }
+        alertDialog!!.show()
+
+
+    }
+
+    private fun goToField(id : Int) {
+        toggleCrosshair(false)
+        toggleTopView(true)
+
+        var fieldID: Int = 0
+        for (i in 0 until LocalBackend.allFields.size)
+            if (LocalBackend.allFields[i].id == id)
+                fieldID = i
+
+        updateTopView(fieldID)
+
+        var builder = LatLngBounds.builder()
+        for (i in 0 until LocalBackend.allFields[fieldID!!].shapeCoordinates.size)
+            builder.include(LocalBackend.allFields[fieldID!!].shapeCoordinates[i])
+        val polyBounds = builder.build()
+        val padding : Int = 100
+        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(polyBounds, padding)
+
+
+        //Option 1 -> Map is zoomed wrong 
+//        mMap.moveCamera(cameraUpdate)
+        
+        //Option 2 -> Map is loaded twice first time, but always correct
+        mMap.setOnMapLoadedCallback {
+            mMap.moveCamera(cameraUpdate)
+        }
+
+    }
+
     private fun enterFieldInfoDialog (array : ArrayList<LatLng>) {
-        var builder = AlertDialog.Builder(root!!.context)
-        builder.setTitle(getString(R.string.map_dialog_title))
+        val alertDialog: androidx.appcompat.app.AlertDialog? = root!!.context?.let {
+            val builder = androidx.appcompat.app.AlertDialog.Builder(it)
+            val inflater = requireActivity().layoutInflater
+            val dialogView : View = inflater.inflate(R.layout.dialog_create_field, null)
+            val fieldNameInput : EditText = dialogView.findViewById(R.id.dialog_field_name)
+            val fieldIdInput : EditText = dialogView.findViewById(R.id.dialog_field_id)
 
+            builder.setView(dialogView)
+                // Add action buttons
+                .setPositiveButton("Done",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        //Upload
+                        var fieldName = fieldNameInput.text.toString()
+                        if (fieldName.equals(""))
+                            fieldName = getString(R.string.map_dialog_field_name_preset)
+                        var fieldId = (100000..999999).random() //Returns a random number between 100000 and 999999
+                        try {
+                            var fieldId = fieldIdInput.text.toString().toInt()
+                        } catch (e : NumberFormatException) {
+                            println("ERROR : No input in field id -> $e")
+                        }
 
-        var layout = LinearLayout(root!!.context)
-        layout.orientation = LinearLayout.VERTICAL
-
-
-        var fieldNameInput = EditText(root!!.context)
-        fieldNameInput.inputType = InputType.TYPE_CLASS_TEXT
-        fieldNameInput.hint = getString(R.string.map_dialog_hint_name)
-        layout.addView(fieldNameInput)
-
-        var fieldIdInput = EditText(root!!.context)
-        fieldIdInput.inputType = InputType.TYPE_CLASS_NUMBER
-        fieldIdInput.hint = getString(R.string.map_dialog_hint_id)
-
-
-        layout.addView(fieldIdInput)
-
-        builder.setView(layout)
-
-        builder.setPositiveButton(android.R.string.yes) {dialog, which ->
-            //Upload
-            var fieldName = fieldNameInput.text.toString()
-            if (fieldName.equals(""))
-                fieldName = getString(R.string.map_dialog_field_name_preset)
-
-            var fieldId = (100000..999999).random() //Returns a random number between 100000 and 999999
-            try {
-                var fieldId = fieldIdInput.text.toString().toInt()
-            } catch (e : NumberFormatException) {
-                println("ERROR : No input in field id -> $e")
-            }
-
-            LocalBackend.prepareFieldForLocalUpload(
-                context!!,
-                arrayOfLatLng = array,
-                fieldName = fieldName,
-                fieldId = fieldId
-            )
-
-            redrawFields()
-
-            finishedAddingPointsButtonClicked()
+                        LocalBackend.prepareFieldForLocalUpload(
+                            context!!,
+                            arrayOfLatLng = array,
+                            fieldName = fieldName,
+                            fieldId = fieldId
+                        )
+                        redrawFields()
+                        finishedAddingPointsButtonClicked()
+                })
+                .setNegativeButton("Cancel",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        finishedAddingPointsButtonClicked()
+                })
+                .setOnCancelListener {
+                    finishedAddingPointsButtonClicked()
+                }
+            builder.create()
         }
 
-        builder.setNegativeButton(android.R.string.no) {dialog, which ->
-            finishedAddingPointsButtonClicked()
-        }
+        alertDialog!!.show()
 
-        builder.setOnCancelListener {
-            finishedAddingPointsButtonClicked()
-        }
 
-        builder.show()
+//        var builder = AlertDialog.Builder(root!!.context)
+//        builder.setTitle(getString(R.string.map_dialog_title))
+//
+//
+//        var layout = LinearLayout(root!!.context)
+//        layout.orientation = LinearLayout.VERTICAL
+//
+//
+//        var fieldNameInput = EditText(root!!.context)
+//        fieldNameInput.inputType = InputType.TYPE_CLASS_TEXT
+//        fieldNameInput.hint = getString(R.string.map_dialog_hint_name)
+//        layout.addView(fieldNameInput)
+//
+//        var fieldIdInput = EditText(root!!.context)
+//        fieldIdInput.inputType = InputType.TYPE_CLASS_NUMBER
+//        fieldIdInput.hint = getString(R.string.map_dialog_hint_id)
+//
+//
+//        layout.addView(fieldIdInput)
+//
+//        builder.setView(layout)
+//
+//        builder.setPositiveButton(android.R.string.yes) {dialog, which ->
+//            //Upload
+//            var fieldName = fieldNameInput.text.toString()
+//            if (fieldName.equals(""))
+//                fieldName = getString(R.string.map_dialog_field_name_preset)
+//
+//            var fieldId = (100000..999999).random() //Returns a random number between 100000 and 999999
+//            try {
+//                var fieldId = fieldIdInput.text.toString().toInt()
+//            } catch (e : NumberFormatException) {
+//                println("ERROR : No input in field id -> $e")
+//            }
+//
+//            LocalBackend.prepareFieldForLocalUpload(
+//                context!!,
+//                arrayOfLatLng = array,
+//                fieldName = fieldName,
+//                fieldId = fieldId
+//            )
+//
+//            redrawFields()
+//
+//            finishedAddingPointsButtonClicked()
+//        }
+//
+//        builder.setNegativeButton(android.R.string.no) {dialog, which ->
+//            finishedAddingPointsButtonClicked()
+//        }
+//
+//        builder.setOnCancelListener {
+//            finishedAddingPointsButtonClicked()
+//        }
+//
+//        builder.show()
     }
 
 }
+
+data class SortedField(var name : String,
+                       var id : Int,
+                       var distance : Float)
 
 
 

@@ -2,18 +2,22 @@ package com.magnusenevoldsen.agricircle.ui.map
 
 import android.annotation.TargetApi
 import android.content.Context
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Camera
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
+import android.text.InputType
 import android.util.Log
-import android.widget.Chronometer
-import android.widget.ImageView
-import android.widget.TextView
+import android.util.TypedValue
+import android.view.View
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -23,6 +27,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.magnusenevoldsen.agricircle.LocalBackend
@@ -185,6 +190,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = false
@@ -206,8 +212,25 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         poly.strokeColor = ContextCompat.getColor(this, R.color.drivingColorPolygonBorder)
         poly.fillColor = ContextCompat.getColor(this, R.color.drivingColorPolygonFill)
 
+        //Set bounds based on field size
+        var builder = LatLngBounds.builder()
+        for (i in 0 until LocalBackend.allFields[fieldID!!].shapeCoordinates.size)
+            builder.include(LocalBackend.allFields[fieldID!!].shapeCoordinates[i])
+        val polyBounds = builder.build()
+        val padding : Int = 100
+        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(polyBounds, padding)
+
+        //App will crash without this.
+        mMap.setOnMapLoadedCallback {
+            mMap.moveCamera(cameraUpdate)
+        }
+
+
+
+
+
         //Move camera to center of field
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LocalBackend.allFields[fieldID!!].centerPoint, zoom))
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LocalBackend.allFields[fieldID!!].centerPoint, zoom))
     }
 
     fun setupUI() {
@@ -291,8 +314,26 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         //Save progress
         //Go to workspace view with info about the session
 
-        //Currently just goes back
-        super.onBackPressed() //Remove this later
+        val alertDialog: AlertDialog? = this?.let {
+            val builder = AlertDialog.Builder(it)
+            builder.apply {
+                setTitle("Are you sure you want to finish?")
+                setPositiveButton("Yes",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        //Currently just goes back
+                        super.onBackPressed() //Remove this later
+                    })
+                setNegativeButton("No",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        // User cancelled the dialog
+                    })
+            }
+            // Create the AlertDialog
+            builder.create()
+        }
+        alertDialog!!.show()
+
+
     }
 
     fun pauseSession () {

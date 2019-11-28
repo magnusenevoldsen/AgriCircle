@@ -2,7 +2,9 @@ package com.magnusenevoldsen.agricircle
 
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -11,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -69,7 +72,8 @@ class LoginActivity : AppCompatActivity() {
 
         //Sign in button
         signUpButton!!.setOnClickListener {
-            sendMessageToUser(getString(R.string.sign_up_button_go_to_website))
+//            sendMessageToUser(getString(R.string.sign_up_button_go_to_website))
+            goToWebsiteToSignUp()
         }
 
     }
@@ -142,6 +146,32 @@ class LoginActivity : AppCompatActivity() {
             signUpButton!!.isClickable = false
             blurryView!!.visibility = View.VISIBLE
         }
+    }
+
+    fun goToWebsiteToSignUp() {
+
+        val alertDialog: AlertDialog? = this?.let {
+            val builder = AlertDialog.Builder(it)
+            builder.apply {
+                setTitle("Open in web browser?")
+                setPositiveButton("Yes",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        val openURL = Intent(Intent.ACTION_VIEW)
+                        openURL.data = Uri.parse("https://react.agricircle.com/register")
+                        startActivity(openURL)
+                    })
+                setNegativeButton("No",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        // User cancelled the dialog
+                    })
+            }
+            // Create the AlertDialog
+            builder.create()
+        }
+        alertDialog!!.show()
+
+
+
     }
 
 
