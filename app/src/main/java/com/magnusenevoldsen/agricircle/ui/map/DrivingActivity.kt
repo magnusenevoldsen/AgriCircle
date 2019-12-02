@@ -180,6 +180,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
             MY_PERMISSION_FINE_LOCATION ->{
                 if((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)){
                     mMap.isMyLocationEnabled = true
+                    mMap.uiSettings.isMyLocationButtonEnabled = false
                 }
                 else{
                     sendMessageToUser(getString(R.string.user_declined_location_permission))
@@ -196,8 +197,10 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.uiSettings.isZoomControlsEnabled = false
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
 
-        if (locationPermissionGranted)
+        if (locationPermissionGranted){
             mMap.isMyLocationEnabled = true
+            mMap.uiSettings.isMyLocationButtonEnabled = false
+        }
 
         setupUI()
 

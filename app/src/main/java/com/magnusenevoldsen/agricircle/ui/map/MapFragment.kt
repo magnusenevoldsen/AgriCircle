@@ -236,6 +236,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             MY_PERMISSION_FINE_LOCATION ->{
                 if((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)){
                     mMap.isMyLocationEnabled = true
+                    mMap.uiSettings.isMyLocationButtonEnabled = false
                 }
                 else{
                     sendMessageToUser(root!!, getString(R.string.user_declined_location_permission))
@@ -391,8 +392,10 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         mMap.uiSettings.isZoomControlsEnabled = false
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
 
-        if (locationPermissionGranted)
+        if (locationPermissionGranted){
             mMap.isMyLocationEnabled = true
+            mMap.uiSettings.isMyLocationButtonEnabled = false
+        }
 
         toggleActionButtons(true)
 
@@ -618,8 +621,12 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                 .setAdapter(adapter) { dialog, which ->
                     goToField(sortedArrayList[which].id)
                 }
+
             builder.create()
+
+
         }
+
         alertDialog!!.show()
 
 
