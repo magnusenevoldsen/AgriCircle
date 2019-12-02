@@ -45,7 +45,7 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     private val MY_PERMISSION_FINE_LOCATION = 101
     private var context : Context? = null
 
-    //Lcation
+    //Location
     private var presetInterval : Long = 2000
     private var presetFastestInterval : Long = 1000
     private var presetPrecision : Int = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -77,6 +77,8 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
     //Suggested speed
     private var suggestedSpeedNumber : Int = 0
     private var fieldID : Int? = null
+
+    private var activityText : String? = null
 
 
 
@@ -242,7 +244,8 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         val extraDataFromIntent= intent.extras
 
         if(extraDataFromIntent != null) {
-            fieldWorkTextView!!.text = extraDataFromIntent.getString(getString(R.string.intent_extra_field_activity)).toString()
+            activityText = extraDataFromIntent.getString(getString(R.string.intent_extra_field_activity)).toString()
+            fieldWorkTextView!!.text = activityText
             fieldID = extraDataFromIntent.getInt(getString(R.string.intent_extra_field_id))
         }
 
@@ -320,13 +323,13 @@ class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
         val alertDialog: AlertDialog? = this?.let {
             val builder = AlertDialog.Builder(it)
             builder.apply {
-                setTitle("Are you sure you want to finish?")
-                setPositiveButton("Yes",
+                setTitle("Finish "+ (activityText?.toLowerCase() ?: "activity") +"?")
+                setPositiveButton("Finish",
                     DialogInterface.OnClickListener { dialog, id ->
                         //Currently just goes back
                         super.onBackPressed() //Remove this later
                     })
-                setNegativeButton("No",
+                setNegativeButton("Cancel",
                     DialogInterface.OnClickListener { dialog, id ->
                         // User cancelled the dialog
                     })

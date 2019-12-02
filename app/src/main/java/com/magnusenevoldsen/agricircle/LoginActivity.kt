@@ -76,6 +76,9 @@ class LoginActivity : AppCompatActivity() {
             goToWebsiteToSignUp()
         }
 
+
+
+
     }
 
     fun hideKeyboard() {
@@ -154,13 +157,13 @@ class LoginActivity : AppCompatActivity() {
             val builder = AlertDialog.Builder(it)
             builder.apply {
                 setTitle("Open in web browser?")
-                setPositiveButton("Yes",
+                setPositiveButton("Open",
                     DialogInterface.OnClickListener { dialog, id ->
                         val openURL = Intent(Intent.ACTION_VIEW)
                         openURL.data = Uri.parse("https://react.agricircle.com/register")
                         startActivity(openURL)
                     })
-                setNegativeButton("No",
+                setNegativeButton("Cancel",
                     DialogInterface.OnClickListener { dialog, id ->
                         // User cancelled the dialog
                     })

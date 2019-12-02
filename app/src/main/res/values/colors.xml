@@ -10,6 +10,7 @@
     <color name="colorGreen">#4DAF69</color>
     <color name="colorOrange">#FD9209</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
     <color name="colorGrey">#323232</color>
     <color name="colorLightGreen">#799D8D</color>
     <color name="colorLightGrey">#919191</color>

@@ -147,7 +147,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         fabSpeedDial = root!!.findViewById(R.id.fabSpeedDial)
 
         //Find field
-        fabSpeedDial!!.addActionItem(SpeedDialActionItem.Builder(R.id.findFieldFloatingActionButton, R.drawable.ic_field_dashboard_white_24dp)
+        fabSpeedDial!!.addActionItem(SpeedDialActionItem.Builder(R.id.findFieldFloatingActionButton, R.drawable.ic_search_white_24dp)
             .setFabBackgroundColor(resources.getColor(R.color.colorOrange))
             .setFabImageTintColor(resources.getColor(R.color.colorWhite))
             .setLabel(getString(R.string.menu_item_find_field))
@@ -157,7 +157,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             .create())
 
         //Create field
-        fabSpeedDial!!.addActionItem(SpeedDialActionItem.Builder(R.id.createFieldFloatingActionButton, R.drawable.ic_add_black_24dp)
+        fabSpeedDial!!.addActionItem(SpeedDialActionItem.Builder(R.id.createFieldFloatingActionButton, R.drawable.ic_create_white_24dp)
             .setFabBackgroundColor(resources.getColor(R.color.colorOrange))
             .setFabImageTintColor(resources.getColor(R.color.colorWhite))
             .setLabel(getString(R.string.menu_item_create_field))
@@ -611,16 +611,27 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         val adapter = ArrayAdapter<String>(context!!, R.layout.dialog_field_list_item, arrayList)
 
-        val alertDialog: androidx.appcompat.app.AlertDialog? = root!!.context?.let {
+        var alertDialog: androidx.appcompat.app.AlertDialog? = null
+        alertDialog = root!!.context?.let {
             val builder = androidx.appcompat.app.AlertDialog.Builder(it)
             val inflater = requireActivity().layoutInflater
             val dialogView : View = inflater.inflate(R.layout.dialog_field_list, null)
+            val listView = dialogView.findViewById<ListView>(R.id.dialog_field_list_listview)
+
+
+            dialogView.setBackgroundResource(android.R.color.transparent)
+
+            listView.adapter = adapter
+
+            listView.setOnItemClickListener { adapterView, view, position: Int, id: Long ->
+                goToField(sortedArrayList[position].id)
+                alertDialog!!.dismiss()
+            }
+
 
             builder.setView(dialogView)
                 .setTitle("Find field")
-                .setAdapter(adapter) { dialog, which ->
-                    goToField(sortedArrayList[which].id)
-                }
+
 
             builder.create()
 
@@ -671,7 +682,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
             builder.setView(dialogView)
                 // Add action buttons
-                .setPositiveButton("Done",
+                .setTitle("Create field")
+                .setPositiveButton("Create",
                     DialogInterface.OnClickListener { dialog, id ->
                         //Upload
                         var fieldName = fieldNameInput.text.toString()
