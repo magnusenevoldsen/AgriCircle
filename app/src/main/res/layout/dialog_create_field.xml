@@ -16,7 +16,7 @@
 
     <EditText
         android:id="@+id/dialog_field_name"
-        android:inputType="text"
+        android:inputType="textCapWords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
