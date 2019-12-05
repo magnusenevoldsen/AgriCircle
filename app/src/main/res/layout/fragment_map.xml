@@ -351,13 +351,13 @@
 
     <ImageView
         android:id="@+id/mapCrosshair"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         app:layout_constraintBottom_toBottomOf="@+id/mapMapView"
         app:layout_constraintEnd_toEndOf="@+id/mapMapView"
         app:layout_constraintStart_toStartOf="@+id/mapMapView"
         app:layout_constraintTop_toTopOf="@+id/mapMapView"
-        app:srcCompat="@drawable/map_crosshair" />
+        app:srcCompat="@drawable/newcrosshair" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/addPointFloatingActionButton"

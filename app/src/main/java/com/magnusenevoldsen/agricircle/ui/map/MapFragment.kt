@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -106,7 +107,11 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
         //Add new fields settings
         mapCrosshair = root!!.findViewById(R.id.mapCrosshair)
-        mapCrosshair!!.setColorFilter(R.color.colorOrange)
+        mapCrosshair!!.setColorFilter(resources.getColor(R.color.colorOrange, null))
+
+
+
+
         toggleCrosshair(false)
         addPointFloatingActionButton = root!!.findViewById(R.id.addPointFloatingActionButton)
         finishFloatingActionButton = root!!.findViewById(R.id.finishPointFloatingActionButton)
