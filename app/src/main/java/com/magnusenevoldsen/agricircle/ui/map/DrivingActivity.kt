@@ -5,17 +5,13 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Camera
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
-import android.text.InputType
 import android.util.Log
-import android.util.TypedValue
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -27,7 +23,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.magnusenevoldsen.agricircle.LocalBackend
@@ -38,7 +33,6 @@ import kotlin.collections.ArrayList
 class DrivingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap : GoogleMap
-    private val zoom : Float = 18.0f
     private var locationRequest : LocationRequest? = null
     private var fusedLocationClient : FusedLocationProviderClient? = null
     private var locationCallback : LocationCallback? = null

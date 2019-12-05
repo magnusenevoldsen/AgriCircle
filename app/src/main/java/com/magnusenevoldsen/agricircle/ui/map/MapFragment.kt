@@ -1,7 +1,5 @@
 package com.magnusenevoldsen.agricircle.ui.map
 
-import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -10,11 +8,9 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -32,7 +28,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.leinardi.android.speeddial.SpeedDialActionItem
@@ -42,7 +37,6 @@ import com.magnusenevoldsen.agricircle.LocalBackend
 import com.magnusenevoldsen.agricircle.model.Field
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_map.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 class MapFragment : Fragment(), OnMapReadyCallback{
@@ -67,9 +61,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     //Permission
     private var locationPermissionGranted : Boolean = false
-    
-    //Shared prefs
-    var myPref : SharedPreferences? = null
 
     //Standard Action Buttons
     private var fabSpeedDial : SpeedDialView? = null
@@ -108,8 +99,6 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         //Add new fields settings
         mapCrosshair = root!!.findViewById(R.id.mapCrosshair)
         mapCrosshair!!.setColorFilter(resources.getColor(R.color.colorOrange, null))
-
-
 
 
         toggleCrosshair(false)
@@ -262,36 +251,36 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     }
 
-    private fun findFieldButton() {
-        toggleCrosshair(false)
-        currentlySelectedField = counter
-
-        toggleTopView(true)
-
-        val field0 = LocalBackend.allFields[counter].centerPoint
-
-        fieldNameTextView.text = LocalBackend.allFields[counter].name
-        fieldSizeTextView.text = LocalBackend.allFields[counter].surface.toString() +" "+ getString(R.string.map_hectare)
-        topTopImageView!!.setImageResource(R.drawable.stock_crop_image)
-        topBottomImageView!!.setImageResource(R.drawable.stock_crop_image)
-
-        val imageUrl = LocalBackend.allFields[counter].activeCropImageUrl
-
-        if (!imageUrl.equals("null")){
-            try {
-                Picasso.get().load(imageUrl).into(topTopImageView)
-                Picasso.get().load(imageUrl).into(topBottomImageView)
-            } catch (e : IllegalArgumentException) {
-                Log.d("", e.toString())
-            }
-        }
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(field0, zoom))
-        var countMax = LocalBackend.allFields.size - 1 //7 fields -> 0..6
-        if (counter < countMax)
-            counter ++
-        else counter = 0
-    }
+//    private fun findFieldButton() {
+//        toggleCrosshair(false)
+//        currentlySelectedField = counter
+//
+//        toggleTopView(true)
+//
+//        val field0 = LocalBackend.allFields[counter].centerPoint
+//
+//        fieldNameTextView.text = LocalBackend.allFields[counter].name
+//        fieldSizeTextView.text = LocalBackend.allFields[counter].surface.toString() +" "+ getString(R.string.map_hectare)
+//        topTopImageView!!.setImageResource(R.drawable.stock_crop_image)
+//        topBottomImageView!!.setImageResource(R.drawable.stock_crop_image)
+//
+//        val imageUrl = LocalBackend.allFields[counter].activeCropImageUrl
+//
+//        if (!imageUrl.equals("null")){
+//            try {
+//                Picasso.get().load(imageUrl).into(topTopImageView)
+//                Picasso.get().load(imageUrl).into(topBottomImageView)
+//            } catch (e : IllegalArgumentException) {
+//                Log.d("", e.toString())
+//            }
+//        }
+//
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(field0, zoom))
+//        var countMax = LocalBackend.allFields.size - 1 //7 fields -> 0..6
+//        if (counter < countMax)
+//            counter ++
+//        else counter = 0
+//    }
 
 
     private fun makeFieldList () {
